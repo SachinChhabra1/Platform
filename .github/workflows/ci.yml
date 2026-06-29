@@ -19,3 +19,14 @@ jobs:
       # ...then prove real source is clean.
       - name: Lint gates
         run: node scripts/lint/run.mjs
+
+  api-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      # Validate the shared OpenAPI contract (packages/types; Book VIII ch. 4).
+      - name: Validate API contract
+        run: npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.base.yaml

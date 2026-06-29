@@ -10,6 +10,7 @@
   "scripts": {
     "lint:gates": "node scripts/lint/run.mjs",
     "lint:gates:selftest": "node scripts/lint/selftest.mjs",
+    "verify": "bash scripts/verify.sh",
     "ci": "pnpm run lint:gates:selftest && pnpm run lint:gates"
   },
   "license": "UNLICENSED"
