@@ -1,0 +1,9 @@
+# Redocly config for the Nia API contract.
+# The base contract (packages/types/openapi/openapi.base.yaml) intentionally defines
+# reusable components before any feature endpoint references them — feature paths arrive
+# only from Engineering-Locked specs. "Unused component" warnings are therefore expected
+# and are disabled; every other recommended rule stays on.
+extends:
+  - recommended
+rules:
+  no-unused-components: off

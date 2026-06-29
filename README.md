@@ -41,3 +41,19 @@ been written. The first feature vertical slice is **Wallet Overview (read-only)*
 TypeScript backend (Node 20 LTS), pnpm workspaces; Flutter apps managed by pub.
 Per-package setup lives in each directory's `README.md`. Open technology and policy
 decisions are tracked in `DECISIONS.md`.
+
+### Local toolchain (canonical)
+
+Build, run, test, and verify **locally before every PR**; CI is a second layer, not the
+primary one. The toolchain installs under `~/.nia-toolchain` and is added to `PATH` via
+`~/.zshenv`:
+
+- **Node 20 LTS + pnpm** (via corepack) — backend, contract, tooling.
+- **Flutter** (bundled Dart) — Member and Operator apps.
+
+Run the full local gate before opening a PR:
+
+```
+pnpm install      # once, and after dependency changes
+pnpm run verify   # lint gates + API contract; mirrors CI
+```

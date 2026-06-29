@@ -2,6 +2,9 @@ openapi: 3.1.0
 info:
   title: Nia API — base contract
   version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
   description: >
     Cross-cutting base contract shared by every Nia API surface (Book VIII ch. 4).
     Reusable components only — no feature endpoints, no domain schemas. Feature
@@ -34,6 +37,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Health"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
         "500":
           $ref: "#/components/responses/InternalError"
 
