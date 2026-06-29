@@ -10,6 +10,8 @@
   "scripts": {
     "lint:gates": "node scripts/lint/run.mjs",
     "lint:gates:selftest": "node scripts/lint/selftest.mjs",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
     "verify": "bash scripts/verify.sh",
     "ci": "pnpm run lint:gates:selftest && pnpm run lint:gates"
   },

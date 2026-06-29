@@ -21,6 +21,15 @@ else
   echo "⊘ npx not found — skipping API contract lint"
 fi
 
+if command -v pnpm >/dev/null 2>&1; then
+  echo "▶ typescript tests"
+  pnpm -r --if-present test || fail=1
+  echo "▶ typescript typecheck"
+  pnpm -r --if-present typecheck || fail=1
+else
+  echo "⊘ pnpm not found — skipping TypeScript tests"
+fi
+
 if [ "$fail" -eq 0 ]; then
   echo "✓ verify passed"
 else

@@ -34,3 +34,4 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0008](0008-first-slice-wallet-overview.md) | First vertical slice: Wallet Overview (read-only) | Accepted |
 | [0009](0009-process-frozen-v1.md) | Development Methodology Freeze | Accepted |
 | [0010](0010-i18n-architecture.md) | i18n architecture | Accepted |
+| [0011](0011-typescript-testing-and-shared-libs.md) | TypeScript test runner and shared backend libraries | Accepted |

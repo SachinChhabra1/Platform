@@ -7,5 +7,6 @@ packages:
   - "packages/tokens"
   - "packages/design-system-web"
   - "packages/types"
+  - "packages/log"
   - "packages/i18n"
   - "packages/test-utils"
