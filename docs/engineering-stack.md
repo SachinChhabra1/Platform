@@ -56,6 +56,10 @@ The critical path, in order:
    route, request logging through `@nia/log` (PII redaction). Runtime only — no product
    behaviour. Error-envelope + idempotency middleware and OpenAPI-base serving are deferred
    to the Membership service slice, where they have a concrete first consumer.
-2. Membership service. ← **next**
-3. Wallet Overview backend.
+2. **Membership service — DONE (2026-06-29, `services/membership`).** Domain core: the
+   lifecycle state machine (Prospective → Member → Paused → Closed) + identity, behind a
+   `MembershipRepository` port with an in-memory adapter. Pure, fully unit-tested; no HTTP,
+   logging, or persistence engine yet. The PostgreSQL adapter (ADR-0006) and HTTP wiring
+   (via `@nia/runtime`) are later slices.
+3. Wallet Overview backend. ← **next**
 4. Wallet Overview frontend.

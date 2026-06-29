@@ -75,26 +75,37 @@ current state of the repository. The repository, not any conversation, is the me
   `pnpm run verify` (Vitest + typecheck) and CI via the pnpm workspace. Runtime only — no
   product behaviour. `tsx` provisioned as the ESM-TS service runner; `fastify` provisioned
   into the offline cache and re-bundled in `backups/`. Verify green.
-- **No production feature built yet.**
+- **Membership service (`services/membership`, `@nia/membership`): domain core complete
+  (2026-06-29).** The lifecycle state machine (Prospective → Member → Paused → Closed) +
+  identity, behind a `MembershipRepository` port with an in-memory adapter. Pure and fully
+  unit-tested (13 tests): legal + illegal transitions; tenure begins at the birthday (FD-3),
+  continues through Paused (FD-5), stays internal (Q4); pause reason + closure cause as opaque
+  metadata (FD-4). **No FD-10 (removal) or FD-13 (death) flow** (legal review pending); no HTTP,
+  logging, or persistence engine yet. Spec §14 step 2. Verify green.
+- **No production feature built yet** (no HTTP surface / persistence yet).
 
 ## Current blocker
 
 **None blocking.** Membership is Engineering-Locked; the bottleneck is now **Engineering, not
-Product**. The Fastify runtime skeleton (step 1) is built; next is the Membership service
-(step 2). (Carried, non-blocking: FD-2 exact Promise headline; FD-10/FD-13 flows pending
-legal review.)
+Product**. The Fastify runtime skeleton (step 1) and the Membership service domain core
+(step 2) are built; next is the **Wallet Overview backend (step 3)**. (Carried, non-blocking:
+FD-2 exact Promise headline; FD-10/FD-13 flows pending legal review.)
 
 ## Next engineering sequence (Membership is Engineering-Locked — sequence is now unblocked)
 
 1. ~~**Fastify runtime skeleton**~~ — **DONE (2026-06-29, `packages/runtime`).** Boots,
    `/health`, wired into `verify` (Vitest + typecheck) and CI, logs through `@nia/log`.
    Fastify + tsx provisioned into the offline cache and re-bundled.
-2. **Membership service** ← **next** — identity + lifecycle state machine
-   (Prospective→Member→Paused→Closed), per spec §5/§13; reason-as-metadata (FD-4); tenure
-   internal (FD-3, Q4). Must **not** build FD-10 (removal) or FD-13 (death) flows — legal
-   review required first.
-3. **Wallet Overview backend** — read-only money story + legibility requirements (spec §3).
+2. ~~**Membership service**~~ — **DONE (2026-06-29, `services/membership`).** Domain core:
+   the lifecycle state machine (Prospective→Member→Paused→Closed) + identity, behind a
+   `MembershipRepository` port (in-memory adapter); reason/cause as metadata (FD-4); tenure
+   internal (FD-3, Q4). FD-10/FD-13 flows **not** built (legal review pending). Pure, 13 tests,
+   no HTTP/persistence yet.
+3. **Wallet Overview backend** ← **next** — read-only money story + legibility requirements (spec §3).
 4. **Wallet Overview frontend** — wire the prototype Wallet to the locked contract.
+
+   *Membership follow-on slices (not yet sequenced): HTTP wiring via `@nia/runtime`;
+   PostgreSQL adapter (ADR-0006); return-after-closure (FD-6) at the Onboarding boundary.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
