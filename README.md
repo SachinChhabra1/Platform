@@ -48,8 +48,12 @@ Build, run, test, and verify **locally before every PR**; CI is a second layer, 
 primary one. The toolchain installs under `~/.nia-toolchain` and is added to `PATH` via
 `~/.zshenv`:
 
-- **Node 20 LTS + pnpm** (via corepack) — backend, contract, tooling.
-- **Flutter** (bundled Dart) — Member and Operator apps.
+- **Node 20.18.1 + pnpm 9.12.0** (via corepack) — backend, contract, tooling.
+- **Flutter 3.44.4 / Dart 3.12.2** — Member and Operator apps.
+
+Device build toolchains (Xcode for iOS, Android SDK) are **not** installed yet; they are
+needed only to build to physical devices. `flutter analyze`, `flutter test`, and the web
+target work without them.
 
 Run the full local gate before opening a PR:
 

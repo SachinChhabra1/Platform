@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Nia — managed living, wage, savings and remittance for migrant workers in India.",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.12.0",
   "engines": {
     "node": ">=20 <21"
   },
