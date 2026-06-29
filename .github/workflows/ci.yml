@@ -44,3 +44,17 @@ jobs:
         run: pnpm -r --if-present typecheck
       - name: Test
         run: pnpm -r --if-present test
+
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.4"
+          channel: stable
+      # i18n first — the Member app depends on it via a path dependency.
+      - name: i18n analyze + test
+        run: cd packages/i18n && flutter pub get && flutter analyze && flutter test
+      - name: member analyze + test
+        run: cd apps/member && flutter pub get && flutter analyze && flutter test

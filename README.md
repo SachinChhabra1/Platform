@@ -58,6 +58,6 @@ target work without them.
 Run the full local gate before opening a PR:
 
 ```
-pnpm install      # once, and after dependency changes
-pnpm run verify   # lint gates + API contract; mirrors CI
+pnpm install      # once, and after dependency changes (Flutter deps: `flutter pub get` per app/package)
+pnpm run verify   # lint gates, API contract, TypeScript tests, Flutter analyze/test; mirrors CI
 ```

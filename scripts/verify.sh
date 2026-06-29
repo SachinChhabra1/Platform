@@ -30,6 +30,19 @@ else
   echo "⊘ pnpm not found — skipping TypeScript tests"
 fi
 
+if command -v flutter >/dev/null 2>&1; then
+  for dir in packages/i18n apps/member; do
+    if [ -f "$dir/pubspec.yaml" ]; then
+      echo "▶ flutter analyze ($dir)"
+      (cd "$dir" && flutter analyze) || fail=1
+      echo "▶ flutter test ($dir)"
+      (cd "$dir" && flutter test) || fail=1
+    fi
+  done
+else
+  echo "⊘ flutter not found — skipping Flutter analyze/test"
+fi
+
 if [ "$fail" -eq 0 ]; then
   echo "✓ verify passed"
 else
