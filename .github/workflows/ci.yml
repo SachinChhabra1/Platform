@@ -1,0 +1,21 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      # Prove the gates are fail-closed (catch planted violations)...
+      - name: Lint gates self-test
+        run: node scripts/lint/selftest.mjs
+      # ...then prove real source is clean.
+      - name: Lint gates
+        run: node scripts/lint/run.mjs

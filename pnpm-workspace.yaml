@@ -1,0 +1,11 @@
+# TypeScript workspace members only.
+# Flutter packages (apps/member, apps/operator, packages/design-system-flutter)
+# are Dart/pub packages and are intentionally NOT pnpm workspace members.
+packages:
+  - "apps/console"
+  - "services/*"
+  - "packages/tokens"
+  - "packages/design-system-web"
+  - "packages/types"
+  - "packages/i18n"
+  - "packages/test-utils"

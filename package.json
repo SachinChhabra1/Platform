@@ -1,0 +1,16 @@
+{
+  "name": "nia",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Nia — managed living, wage, savings and remittance for migrant workers in India.",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "scripts": {
+    "lint:gates": "node scripts/lint/run.mjs",
+    "lint:gates:selftest": "node scripts/lint/selftest.mjs",
+    "ci": "pnpm run lint:gates:selftest && pnpm run lint:gates"
+  },
+  "license": "UNLICENSED"
+}
