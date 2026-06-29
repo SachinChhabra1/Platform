@@ -1,0 +1,8 @@
+# Flutter gen-l10n configuration. Generates real (non-synthetic) Dart sources into
+# lib/src/generated so the package is self-contained.
+arb-dir: lib/src/l10n
+template-arb-file: app_en.arb
+output-dir: lib/src/generated
+output-localization-file: nia_localizations.dart
+output-class: NiaLocalizations
+nullable-getter: false

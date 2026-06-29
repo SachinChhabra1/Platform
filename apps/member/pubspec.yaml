@@ -35,6 +35,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Member-facing localization (all copy lives here; CLAUDE.md §12).
+  nia_i18n:
+    path: ../../packages/i18n
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

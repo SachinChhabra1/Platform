@@ -33,3 +33,4 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0007](0007-openapi-generated-clients.md) | API: OpenAPI with generated clients | Accepted |
 | [0008](0008-first-slice-wallet-overview.md) | First vertical slice: Wallet Overview (read-only) | Accepted |
 | [0009](0009-process-frozen-v1.md) | Development Methodology Freeze | Accepted |
+| [0010](0010-i18n-architecture.md) | i18n architecture | Accepted |

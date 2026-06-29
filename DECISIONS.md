@@ -18,6 +18,7 @@ A decision that conflicts with Nia OS is invalid — the books win (`CLAUDE.md �
 | [0007](docs/adr/0007-openapi-generated-clients.md) | API: OpenAPI with generated clients |
 | [0008](docs/adr/0008-first-slice-wallet-overview.md) | First vertical slice: Wallet Overview (read-only) |
 | [0009](docs/adr/0009-process-frozen-v1.md) | Development Methodology Freeze |
+| [0010](docs/adr/0010-i18n-architecture.md) | i18n architecture |
 
 ## Open decisions — ruling required (expire 2026-07-13)
 

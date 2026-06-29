@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "Nia",
+  "@appTitle": {
+    "description": "The application name (brand). Not translated. Placeholder entry so the localization mechanism compiles; real Member-facing copy is added from Engineering-Locked specs."
+  }
+}
