@@ -19,6 +19,13 @@ asked. A strawman:
 A strawman is a proposal for review, never a product decision. It is marked as a draft
 for Product to own.
 
+**Template & role.** Every specification follows [`SPEC-TEMPLATE.md`](SPEC-TEMPLATE.md):
+the required eleven sections (including the mandatory final *Questions Product Should
+Debate*) and the AI Engineer's role boundaries when helping Product — may organise,
+surface, draft, and challenge; may **not** invent policy, economics, behaviour, pricing,
+prioritisation, or strategy. The first example is
+[`0001-membership-strawman-spec.md`](0001-membership-strawman-spec.md).
+
 **Phase gate.** A specification must be approved before the AI Engineer produces a
 Phase-2 implementation plan, and the plan must be approved before any production code.
 

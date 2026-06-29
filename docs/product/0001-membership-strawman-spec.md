@@ -5,305 +5,260 @@
 | **Status** | DRAFT — Strawman for Founder/Product review. **Not a product decision.** |
 | **Phase** | 1 — Problem definition (product). No implementation, APIs, data models, or architecture. |
 | **Owner** | Founder / Product (to review, correct, and own) |
-| **Drafted by** | AI Engineer, as a starting point to reduce blank-page work |
-| **Date** | 2026-06-29 |
+| **Drafted by** | AI Engineer, to reduce blank-page work (helping Product think; not deciding) |
+| **Date** | 2026-06-29 (rev. 2 — conformed to `SPEC-TEMPLATE.md`) |
 | **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. |
 
-> How to read this. Everything here traces to Nia OS. Where the books are silent, this
-> document **stops** and records the question under **Founder Decisions Required** — it
-> does not invent policy. Assumptions are marked **[A#]** and are not facts. This is a
-> proposal for Product to correct, not a decision made on Product's behalf.
+> How to read this. Everything traces to Nia OS. Where the books are silent, this document
+> **stops** and records the question under **Founder Decisions Required** — it does not
+> invent policy. Assumptions are marked **[A#]** and are not facts. Competing product
+> directions are raised under **Questions Product Should Debate** for Product to weigh.
+> This is a proposal for Product to correct, not a decision made on Product's behalf.
+
+**Scope.** In scope: the membership *relationship* — what Membership is; its lifecycle
+(states + transitions); the Member's identity (product view); tenure and continuity; data
+rights as experienced; conduct, restoration, and exit at the membership level. Out of
+scope (separate specs, referenced only at the boundary): the Onboarding experience (Book IV
+§4.1; Book VII ch. 2); Wage/Remittance/Savings/Curry flows (§4.2–4.5); the Trip Home
+experience (§4.7); the detailed Off-boarding experience (§4.8). The boundary itself is
+**FD-1**.
 
 ---
 
-## 1. Scope
+## 1. Problem
 
-**In scope** — the meaning of Membership and the membership *relationship* itself:
-- what Membership is, and the promise attached to it;
-- the membership lifecycle: its states and the transitions between them;
-- the Member's identity (the product view — not data models);
-- tenure and continuity;
-- the Member's data-ownership rights as experienced;
-- the Member's conduct, restoration, and exit *at the membership level*.
+The Member has no continuing institution that is his, and his own economic life is
+illegible to him. He cannot see, in one place, what he earns, saves, sends, and holds; and
+nothing he can call his own travels with him as he moves between corridors. No durable,
+accountable relationship — a **Membership** — exists between him and the institutions he
+depends on.
 
-**Out of scope** (separate specifications / later sessions). Membership defines the
-states these flows move *between*, and references them only at the boundary:
-- the Onboarding *experience* — the 72-hour creation flow (Book IV §4.1; Book VII ch. 2);
-- the Wage, Remittance, Savings, and Curry flows (Book IV §4.2–4.5);
-- the Trip Home *experience* (Book IV §4.7);
-- the detailed Off-boarding *experience* (Book IV §4.8; Book VII 9.3).
+## 2. Why the problem exists
 
-The exact scope boundary is itself a decision — see **FD-1**.
+- **His records are scattered by the informal economy.** "The wage records sit with the
+  employer. The attendance records sit with the contractor. The savings records sit with
+  the post office. The remittance records sit with the rail of the day… His own economic
+  life is illegible to him" (Book II §4.8).
+- **He migrates repeatedly and no institution follows him.** His working life "is six to
+  ten migrations across thirty-five years," and "a platform that serves the first migration
+  but not the second has not served the Member" (Book II §1.5).
+- **Everything around him is informal and socially enforced** — his debt (§4.5), his
+  savings instruments (§4.3) — so nothing holds a durable, accountable relationship with
+  him over time.
+- **He does not raise problems; he leaves.** "He absorbs. He waits. He leaves" (Book II
+  §3.6). Without a deliberate continuing relationship, his departure is invisible until it
+  is a churn number — by which point the Member is already gone.
 
----
+## 3. Desired Member experience
 
-## 2. The Member problem this solves
+**What Membership is.** Membership *is* the product — "Nia does not sell housing,
+groceries, employment, or software. Every other line item is a benefit of Membership"
+(Book I, Article I). It is "the continuing relationship between the Member and Nia.
+Measured in months. Lost in days" (§4.10) — the spine, with nothing outside it (Book IV
+§1.1). The Member is the customer; in conflict, "the Member wins" (Article XII). Each
+Member sees **The Promise** — what to expect in the next thirty days, uniform across Nia
+(§4.19; *wording is FD-2*).
 
-The Member's economic life is illegible to him. His wage records sit with the employer,
-his attendance with the contractor, his savings with the post office, his remittance
-with the rail of the month — "His own economic life is illegible to him" (Book II §4.8).
-
-He has no institution that travels with him. His working life is not one migration but
-"six to ten migrations across thirty-five years" (Book II §1.5), and "a platform that
-travels with him across corridors" is the one that has served him (Book II §1.5).
-
-**Membership is the answer to both.** It is the continuing relationship that makes the
-Member legible to himself and keeps Nia with him across his working life. "Nia's first
-act of value, before any product, is to assemble his data and show it back to him in a
-form he can read… That assembly is the platform" (Book II §4.8).
-
----
-
-## 3. What Membership is
-
-- **Membership is the product.** "Nia does not sell housing, groceries, employment, or
-  software. Every other line item is a benefit of Membership" (Book I, Article I).
-- **Definition.** "The continuing relationship between the Member and Nia. Measured in
-  months. Lost in days" (Book I §4.10).
-- **The spine.** "There is no Nia experience that exists outside Membership… A Member is
-  created by an onboarding flow. A Member is sustained by the continuity flows. A Member
-  is closed by the off-boarding flow" (Book IV §1.1).
-- **The Member is the customer.** When the interests of employer, capital partner, or
-  investor conflict with the Member's, "the Member wins" (Book I, Article XII).
-- **The Promise.** Each Member sees "a short, written statement of what a Member can
-  expect from Nia in the next thirty days… The Promise is the same across Nia" (Book I
-  §4.19). *The wording of The Promise is a business statement — see FD-2.*
-
----
-
-## 4. Behavioural principles governing Membership
-
-Each principle is a binding behaviour the membership experience must honour.
+**How it should feel.** Each principle below is a binding behaviour the experience must
+honour:
 
 | Principle | Behaviour | Nia OS |
 |---|---|---|
-| Known by name, not number | The Member is addressed by name everywhere; never by an ID or account number | Book I §4.16, Truth 1.7; Book III (voice) |
-| Predictability over surprise | No surprise change to a Member's price, feature, or policy | Book I, Article V |
-| The Member wins | Conflicts of interest resolve for the Member | Book I, Article XII |
-| Defaults beat prompts | Membership defaults are set by Nia and are overridable; most Members never change them | Book I, Article VII |
-| Failures are private | A Member's missed payment, withdrawn goal, or returned product is never shown to other Members | Book II §5.4 |
-| Measured by exit, not complaint | Membership health is read from continuity and exit, not tickets | Book II §3.6; Book I, Article IV |
-| One Floor for everyone | No premium vs basic Membership; every Member gets the same Floor and dignity | Book IV §6.7 |
-| Continuity, not retention | In Member-facing language we say continuity; "retention" is internal only | Book I §4.13 |
-| A human in one tap | The Member can reach his Operator — a named human — within one tap from any screen | Book IV §3.6, §4.9 |
-| Sunday is the Member's | Nia does not initiate contact on a Sunday (except a P0 emergency or a Member-requested confirmation) | Book IV §5.4 |
+| Known by name, not number | Addressed by name everywhere; never an ID or account number | §4.16, Truth 1.7; Book III |
+| Legible to himself | His scattered economic life is assembled and shown back to him; a balance he can see precedes any feature that takes money | Book II §4.8; Article II |
+| Predictability over surprise | No surprise change to his price, feature, or policy | Article V |
+| The Member wins | Conflicts of interest resolve for the Member | Article XII |
+| Defaults beat prompts | Membership defaults set by Nia, overridable; most never change them | Article VII |
+| Failures are private | A missed payment, withdrawn goal, or returned product is never shown to other Members | Book II §5.4 |
+| One Floor for everyone | No premium vs basic Membership; same Floor, same dignity | Book IV §6.7 |
+| Continuity, not retention | Member-facing language says continuity; "retention" is internal only | §4.13 |
+| A human in one tap | He can reach his Operator — a named human — within one tap from any screen | Book IV §3.6, §4.9 |
+| Sunday is the Member's | Nia does not initiate contact on a Sunday (except P0 emergency or a confirmation he requested) | Book IV §5.4 |
 
----
+## 4. User journeys
 
-## 5. The membership lifecycle
+- **J1 — Becoming a Member.** Creation begins wherever he first meets Nia — station, gate,
+  or Studio door (Book IV §4.1). He becomes a **Member** when the onboarding completion
+  criteria are met: Nest assigned, bed made, locker keyed, wage account opened, first
+  remittance sent, first Curry eaten, Operator known by name, Nest photo sent to family
+  (§4.1). Onboarding "ends at the first Saturday after move-in. Not before" (§4.12). Only
+  minimum identity is collected — name, phone, employer (if relevant), wage account,
+  language, home state/district, emergency contact, photo; no Aadhaar/biometric unless a
+  compliance flow requires it (§6.5; Article XV). *[A3] Early creation is Operator-mediated
+  — "software follows operations" (Article X).*
+- **J2 — Being a Member.** He can draw his map after three months: Home, My Wallet, My
+  Living, My Work, My Essentials, My Family, RafiQi (§2.2). He always knows his Operator and
+  reaches him in one tap (§3.6). He sees The Promise (§4.19). His history is shown back to
+  him, balance before any money-taking feature (Book II §4.8; Article II). **Tenure accrues**
+  monthly and is "the most predictive number Nia tracks" (§4.11). Membership never tiers
+  (§6.7).
+- **J3 — His data rights.** He owns his data; Nia is custodian, not owner (Article XV). He
+  can see his full history; every access by a non-Member actor is logged and inspectable by
+  him; a request for his data from employer, recruiter, government, or capital partner
+  defaults to **no**; any consent is "in writing, in his language, by name, in the current
+  month." He may ask to be forgotten — personal details removed, the trail of past activity
+  retained for integrity. *Consent mechanics — FD-7.*
+- **J4 — When the Member breaks the rules.** A missed payment, skipped shift, broken
+  fitting, fight, or arriving drunk does not end Membership (Article XVII). A **restoration
+  process runs first**; removal happens only if he chooses to leave or his presence "would
+  violate the dignity of other Members." In emergency, "the Operator's call stands," logged
+  and reviewed within 48 hours (Article XVIII). *Restoration processes — FD-9; removal due
+  process — FD-10.*
+- **J5 — Pausing (Trip Home) — boundary.** He moves to **Paused**: Nest held (≤15 days at
+  half-rate), Curry paused without penalty, schedules adjusted, family told he is on his
+  way; return reverses it (§4.7). The internal experience is the Trip Home spec.
+- **J6 — Leaving (Off-boarding) — boundary.** He moves to **Closed**, dignified and fast:
+  Wallet settled ≤48h, locked savings transferred, closing statement by SMS + print, record
+  retained 90 days; no retention prompt, no manipulation, no slowdown (§4.8).
+- **J7 — Returning.** Returning is normal (§1.5). "Tenure resets if the Member leaves and
+  returns" (§4.11), yet the closed record is kept 90 days "in case he returns" (§4.8) — the
+  interaction is **FD-6**.
 
-Nia OS names the underlying membership states **pending, active, paused, closed**
-(referenced here as the canonical state vocabulary only). In Member-facing terms:
+## 5. States
 
-- **Prospective** *(pending)* — a person Nia intends to serve, met at the station, gate,
-  or Studio door (Book IV §4.1). Not yet a Member; the guarantees of Membership do not
-  yet apply.
-- **Member** *(active)* — the continuing relationship is live; every guarantee of
-  Membership applies; **tenure accrues** (Book I §4.11).
-- **Paused** *(paused)* — Membership is intact but dormant by an agreed event, primarily
-  the Trip Home (Book IV §4.7). Guarantees are held; the Nest is held (≤15 days at
-  half-rate), Curry is paused without penalty. *Tenure treatment while paused — see FD-5.*
-- **Closed** *(closed)* — the relationship has ended through off-boarding (Book IV §4.8).
-  The exit is dignified and fast; the Member's record is retained 90 days in case he
-  returns.
+Member-facing states (mapping to Nia OS's pending / active / paused / closed):
 
-**Restoration** is not a state but a *process* (Book I, Article XVII): a Member in breach
-is returned to good standing **before** any question of removal arises.
+- **Prospective** *(pending)* — a person Nia intends to serve; guarantees not yet applied.
+- **Member** *(active)* — relationship live; all guarantees apply; tenure accrues (§4.11).
+- **Paused** *(paused)* — intact but dormant, primarily Trip Home (§4.7); *tenure treatment
+  FD-5*.
+- **Closed** *(closed)* — ended via off-boarding (§4.8); record retained 90 days.
 
----
-
-## 6. User journeys (product level)
-
-### J1 — Becoming a Member
-Creation begins wherever the Member first meets Nia — railway station, factory gate, or
-Studio doorway (Book IV §4.1). The relationship becomes **Member (active)** when the
-onboarding completion criteria are met: a Nest assigned, bed made, locker keyed, wage
-account opened, first remittance sent, first Curry eaten, Operator known by name, and a
-photograph of the Nest sent to his family (Book IV §4.1). Onboarding "ends at the first
-Saturday after move-in. Not before" (Book I §4.12). *The exact moment tenure begins is
-not fixed by the books — see FD-3.*
-
-Only the minimum identity required to deliver Membership is collected: name, phone,
-employer (if relevant), wage account, language, home address at state/district level,
-emergency contact, and the photograph for the Nia card. No Aadhaar or biometric data
-unless a specific compliance flow requires it (Book IV §6.5; Book I, Article XV).
-
-**[A1]** Membership is held by an individual Member; the family is treated as part of
-the Member, not as a separate Member (Book II §6.1). **[A2]** A person holds one active
-Membership at a time. **[A3]** In early production, creation is Operator-mediated rather
-than self-serve, because "software follows operations… we do not ship the app before we
-have run the corridor" (Book I, Article X).
-
-### J2 — Being a Member (the continuing relationship)
-The Member can draw his whole map from memory after three months: Home, My Wallet, My
-Living, My Work, My Essentials, My Family, RafiQi (Book IV §2.2). He always knows who his
-Operator is and can reach him in one tap (Book IV §3.6). He sees The Promise — what to
-expect in the next thirty days (Book I §4.19). His assembled history is shown back to him,
-and a balance he can see comes before any feature that takes money from him (Book II §4.8;
-Book I, Article II). **Tenure accrues month by month** and is "the most predictive number
-Nia tracks" (Book I §4.11). The Membership itself never tiers (Book IV §6.7).
-
-### J3 — The Member's data rights
-The Member owns his data; Nia is custodian, not owner (Book I, Article XV). As experienced,
-this means: he can see his full history; every access to his record by any non-Member
-actor is logged and is inspectable by him; a request for his data from an employer,
-recruiter, government department, or capital partner defaults to **no**; and any consent
-he gives is "in writing, in his language, by name, in the current month." He may ask to be
-forgotten — his personal details are removed while the trail of past activity remains for
-integrity. *The product mechanics and renewal cadence of consent — see FD-7.*
-
-### J4 — When the Member breaks the rules
-"A Member who misses a payment, skips a shift, breaks a Nest fitting, fights with a
-roommate, or arrives drunk has not stopped being a Member" (Book I, Article XVII). A
-**restoration process runs first**; the relationship is restored before it is removed. A
-Member is removed only when he chooses to leave, or when his continued presence "would
-violate the dignity of other Members." In an emergency, "the Operator's call stands," is
-logged, and is reviewed within forty-eight hours (Book I, Article XVIII). *The restoration
-processes themselves, and the due process for a dignity-based removal, are business policy
-— see FD-9 and FD-10.*
-
-### J5 — Pausing (Trip Home) — boundary
-Membership moves to **Paused** when the Member declares a trip home: the Nest is held
-(≤15 days at half-rate), Curry is paused without penalty, wage and remittance schedules
-adjust, and the family is told he is on his way; the return reverses all of it (Book IV
-§4.7). The internal experience of this flow is the Trip Home spec. *Whether Membership can
-pause for reasons other than a trip home, and any maximum pause duration, are open — see
-FD-4 and FD-5.*
-
-### J6 — Leaving (Off-boarding) — boundary
-Membership moves to **Closed** with dignity and speed: the Wallet is settled within
-forty-eight hours, locked savings are transferred to the Member's bank account or a
-remittance, a closing statement is sent by SMS and print, and the record is retained 90
-days. "Nia does not run a retention prompt… does not run a 'are you sure?' screen designed
-to manipulate… does not slow the off-boarding by even one hour" (Book IV §4.8). The
-detailed experience is the Off-boarding spec.
-
-### J7 — Returning
-The Member migrates six to ten times across his working life (Book II §1.5); returning is
-normal. "Tenure resets if the Member leaves and returns" (Book I §4.11), yet a closed
-record is retained 90 days "in case he returns" (Book IV §4.8). How these two interact —
-resume vs. reset for a return within 90 days — is **FD-6**.
-
----
-
-## 7. State transitions (summary)
+**Restoration** (Article XVII) is a *process*, not a state: it returns a Member in breach to
+good standing **before** any slide toward Closed.
 
 | From | To | Trigger | Nia OS |
 |---|---|---|---|
-| Prospective | Member | Onboarding completion criteria met | Book IV §4.1; Book I §4.12 |
-| Member | Paused | Member declares a Trip Home | Book IV §4.7 |
-| Paused | Member | Member returns | Book IV §4.7 |
-| Member | Closed | Member declares departure (voluntary) | Book IV §4.8 |
-| Member | Closed | Removal — continued presence violates others' dignity | Book I, Articles XVII, XVIII |
-| Closed | Member / Prospective | Member returns (within / after 90 days) | Book IV §4.8; Book I §4.11 — *see FD-6* |
-| Prospective | (lapses) | Onboarding not completed (the 72 hours fail) | Book II §1.4 — *handling is FD-8* |
+| Prospective | Member | Onboarding completion criteria met | §4.1; §4.12 |
+| Member | Paused | Member declares a Trip Home | §4.7 |
+| Paused | Member | Member returns | §4.7 |
+| Member | Closed | Member declares departure (voluntary) | §4.8 |
+| Member | Closed | Removal — presence violates others' dignity | Articles XVII, XVIII |
+| Closed | Member / Prospective | Return (within / after 90 days) | §4.8; §4.11 — *FD-6* |
+| Prospective | (lapses) | Onboarding not completed in the 72 hours | Book II §1.4 — *FD-8* |
 
-Restoration (Article XVII) acts within the **Member** state to prevent a slide to Closed;
-it is a process, not a transition.
+## 6. Edge cases
 
----
-
-## 8. Edge cases (product level)
-
-1. **Onboarding not completed.** "A Member who finds a bed, a hot meal, and a paid first
-   wage within seventy-two hours stays… one who does not, leaves" (Book II §1.4). A
-   Prospective who never completes does not become a Member. *Handling of the lapsed
-   Prospective record — FD-8.*
-2. **Return within the 90-day retention window** (Book IV §4.8) — resume or reset tenure
-   (FD-6).
-3. **Breach during a Trip Home pause** — does restoration (Article XVII) run while Paused,
-   or only on return? *Open.*
-4. **Employer demands surveillance of, restriction of, or data on the Member** — refused;
-   Membership is unaffected and Nia may exit the corridor rather than comply (Book I,
-   Articles XIII, XV).
+1. **Onboarding not completed** within 72 hours (Book II §1.4) — stays Prospective, never
+   becomes a Member. *Handling of the lapsed record — FD-8.*
+2. **Return within the 90-day window** (§4.8) — resume or reset tenure (FD-6).
+3. **Breach during a Trip Home pause** — does restoration run while Paused, or only on
+   return? *Open.*
+4. **Employer demands surveillance, restriction, or the Member's data** — refused;
+   Membership unaffected; Nia may exit the corridor rather than comply (Articles XIII, XV).
 5. **Woman Member** — same Member, but "the dignity floor is higher, the safety floor is
-   higher, and the privacy floor is higher" (Book II §1.1). *What concretely changes in the
-   membership experience — FD-11.*
-6. **Member loses his phone** (Book II §4.7) — he can still reach Nia through the Operator
-   (Book IV §4.9); Membership is unaffected. *How identity is re-established on a new
-   device — open.*
-7. **Death of a Member** — closure with dignity and settlement to the family/recipient.
-   *The books do not specify this process — open, and a Founder/ops decision.*
-8. **No valid emergency contact at arrival** — the Member "arrives… with the name of a
-   contact who may or may not still be at that address" (Book II §1.4). The membership
-   experience must not block on an unreachable contact. *Open.*
+   higher, and the privacy floor is higher" (Book II §1.1). *What changes — FD-11.*
+6. **Lost phone** (Book II §4.7) — still reachable through the Operator (§4.9); Membership
+   unaffected. *Re-establishing identity on a new device — open.*
+7. **Death of a Member** — closure with dignity and settlement to family/recipient. *Books
+   are silent — FD-13.*
+8. **No valid emergency contact at arrival** — he arrives "with the name of a contact who
+   may or may not still be at that address" (Book II §1.4); the experience must not block on
+   an unreachable contact. *Open.*
 
----
+## 7. Success criteria
 
-## 9. Success criteria (in Member terms)
+Behaviour, not a dashboard. Membership works when:
 
-A behaviour, not a dashboard. Membership is working when:
+1. **The relationship persists** — continuity holds, read from tenure and exit, not tickets
+   (Book II §3.6; Article IV); tenure is the most predictive number (§4.11).
+2. **The Member can draw his map** after three months (§2.2).
+3. **He is addressed by name** on every surface (Truth 1.7).
+4. **He can see his full assembled history, and every access to it** (Articles II, XV).
+5. **Members leave clean** — "a Member who left clean tells five future Members" (§4.8).
+6. **No second tier exists** (§6.7).
 
-1. **The relationship persists.** Continuity holds; read from tenure and exit, not tickets
-   (Book II §3.6; Book I, Article IV). Tenure is the most predictive number Nia tracks
-   (Book I §4.11).
-2. **The Member can draw his map** after three months (Book IV §2.2).
-3. **The Member is addressed by name** on every surface (Truth 1.7).
-4. **The Member can see his full assembled history, and every access to it** (Book I,
-   Articles II, XV).
-5. **Members leave clean.** A dignified exit is the most powerful retention surface; "a
-   Member who left clean tells five future Members" (Book IV §4.8).
-6. **No second tier exists** (Book IV §6.7).
+*Numeric targets (continuity rate, tenure goals) are economics and prioritisation, reserved
+to Founder/Product — not set here.*
 
-*Numeric targets (continuity rate, tenure goals) are economics and prioritisation, which
-the methodology reserves to Founder/Product — not set here.*
+## 8. Assumptions (to confirm or correct)
 
----
-
-## 10. Assumptions (to confirm or correct)
-
-- **[A1]** Membership is individual; the family is part of the Member, not a separate
-  Member (Book II §6.1).
+- **[A1]** Membership is individual; family is part of the Member, not a separate Member
+  (Book II §6.1).
 - **[A2]** One active Membership per person at a time.
-- **[A3]** Early-production membership creation is Operator-mediated, not self-serve
-  (Book I, Article X).
-- **[A4]** "My Family" is a *view* the Member sees (Book IV §2.2), not a separate family
-  login or account.
-- **[A5]** The Member-facing lifecycle names (Prospective / Member / Paused / Closed)
-  correspond to Nia OS's pending / active / paused / closed.
-- **[A6]** A membership number identifies the Member and is stable for the life of a
-  single, continuous Membership.
+- **[A3]** Early-production creation is Operator-mediated, not self-serve (Article X).
+- **[A4]** "My Family" is a *view* the Member sees (§2.2), not a separate family account.
+- **[A5]** Member-facing names (Prospective / Member / Paused / Closed) correspond to Nia
+  OS's pending / active / paused / closed.
+- **[A6]** A membership number identifies the Member and is stable for one continuous
+  Membership.
 
----
+## 9. Founder decisions required
 
-## 11. Founder Decisions Required
+Where Nia OS is silent or a business ruling is needed, this document stops here.
 
-Where Nia OS is silent or a business/economic ruling is needed, this document stops here.
+- **FD-1 — Scope boundary.** Confirm Membership = lifecycle + identity + rights, with
+  Onboarding, Trip Home, Off-boarding as separate specs — or widen it.
+- **FD-2 — The Promise.** Author the actual wording (Book I §4.19).
+- **FD-3 — When tenure begins.** Move-in, first Saturday (§4.12), or first wage?
+- **FD-4 — Pause reasons.** May Membership pause beyond a trip home (§4.7)?
+- **FD-5 — Tenure while paused, and maximum pause** before it becomes closure.
+- **FD-6 — Return within 90 days.** Resume tenure or reset (§4.11 vs §4.8)?
+- **FD-7 — Consent experience** and renewal cadence (Article XV).
+- **FD-8 — Lapsed Prospective.** Handling of an incomplete-onboarding record (Book II §1.4).
+- **FD-9 — Restoration processes** — the "process for each" breach (Article XVII).
+- **FD-10 — Dignity-based removal** — due process and authority (Articles XVII, XVIII).
+- **FD-11 — Women Members** — what is concretely higher (Book II §1.1).
+- **FD-12 — Eligibility at creation** — enforced, and by Operator judgment or rule (Book II
+  ch. 7)?
+- **FD-13 — Death of a Member** — closure-and-settlement process (unspecified by the books).
 
-- **FD-1 — Scope boundary.** Confirm Membership covers *lifecycle + identity + rights*,
-  with Onboarding, Trip Home, and Off-boarding as separate specs — or widen it.
-- **FD-2 — The Promise.** Author the actual wording of The Promise (what a Member can
-  expect in the next 30 days). The books require it exists and is uniform (Book I §4.19);
-  the words are a Founder/brand statement.
-- **FD-3 — When tenure begins.** At move-in, at the first Saturday (Book I §4.12), or at
-  first wage? The books fix the end of onboarding, not the start of tenure.
-- **FD-4 — Pause reasons.** May Membership pause for reasons beyond a trip home (e.g.,
-  hospitalisation, between jobs)? The books define only the Trip Home pause (Book IV §4.7).
-- **FD-5 — Tenure while paused, and maximum pause.** Does tenure accrue during a pause? Is
-  there a maximum pause before it becomes closure?
-- **FD-6 — Return within 90 days.** Does a Member returning within the retention window
-  resume tenure or reset it? (Book I §4.11 says reset; Book IV §4.8 retains the record.)
-- **FD-7 — Consent experience.** The product mechanics and renewal cadence for the
-  "in his language, by name, in the current month" consent (Book I, Article XV).
-- **FD-8 — Lapsed Prospective.** What happens to the record of a person who began but
-  never completed onboarding within the 72 hours (Book II §1.4)?
-- **FD-9 — Restoration processes.** The actual "process for each" breach — missed payment,
-  skipped shift, broken fitting, fight, arriving drunk (Book I, Article XVII). These are
-  operational policy.
-- **FD-10 — Dignity-based removal.** The due process and decision authority for removing a
-  Member whose presence "would violate the dignity of other Members" (Articles XVII, XVIII).
-- **FD-11 — Women Members.** What concretely is higher in the dignity, safety, and privacy
-  floors of the membership experience (Book II §1.1)?
-- **FD-12 — Eligibility at creation.** Is eligibility (Book II ch. 7 — who Nia does not
-  serve) enforced at membership creation, and by Operator judgment or by rule?
-- **FD-13 — Death of a Member.** The closure-and-settlement process on death is unspecified
-  by the books.
+## 10. References to Nia OS
 
----
+Every behaviour above cites its section inline. Primary sources: **Book I** — Articles I,
+II, V, VII, XII, XIII, XV, XVII, XVIII; §4.10–4.19 (definitions); Truth 1.7. **Book II** —
+§1.1, §1.4, §1.5, §3.6, §4.3, §4.5, §4.7, §4.8, §5.3, §5.4, §6.1, §6.2; ch. 7. **Book IV** —
+§1.1, §2.2, §3.6, §4.1, §4.7, §4.8, §4.9, §5.4, §6.5, §6.7. Where a trace did not exist, the
+item was moved to *Founder Decisions Required* rather than resolved.
 
-## 12. Traceability note
+## 11. Questions Product Should Debate
 
-Every behaviour above cites the Nia OS section that justifies it. Nothing in this document
-is introduced that cannot be traced to the books; where a trace did not exist, the item
-was moved to **Founder Decisions Required** rather than resolved. This strawman is a
-proposal for Product review and carries no decision authority.
+Competing product directions — not Founder decisions, but design tensions worth Product's
+discussion. No recommendation is offered unless Nia OS already answers.
+
+- **Q1 — Operator-mediated creation, or evolving toward Member self-initiation?**
+  *Trade-off:* Operator-mediated creation honours the human, dignified first 72 hours and
+  "software follows operations"; self-initiation scales a corridor faster but risks the cold,
+  illegible intake Nia exists to replace. *Why it matters:* it shapes how a corridor grows
+  and whether the most expensive 72 hours stay human. *Options:* (a) permanently
+  Operator-mediated; (b) Operator-mediated with Member-completed steps; (c) self-initiation
+  once a corridor matures. *What Nia OS says:* it leans to Operator-mediated **early**
+  (Article X; Book II §1.4; the Operator as "the human shape of the Studio," §3.6) but does
+  not forbid the relationship evolving — so the long-run direction is open.
+
+- **Q2 — How visible should the Member's lifecycle state be to him?**
+  *Trade-off:* showing state (e.g., "Paused") is transparent and predictable (Article V);
+  hiding it protects dignity and avoids making a Member feel labelled or "lesser" (Book II
+  §5.3 pride, §5.4 shame). *Why it matters:* it sits exactly on the line between predictability
+  and dignity, both of which Nia OS holds. *Options:* (a) states fully visible; (b) only
+  Paused surfaced, framed as a kindness ("your Nest is held until you return"); (c) states
+  never named to the Member, who experiences only continuity. *Nia OS does not resolve this.*
+
+- **Q3 — Is "My Family" a Member-only view, or a surface the family can also reach?**
+  *Trade-off:* the family is "part of the Member" (§6.1) and the remittance is "heard before
+  it is spent" (§6.2), so family visibility could deepen trust and pre-empt the "phone call
+  from a frightened wife" (§4.4); but a second audience adds consent complexity (Article XV)
+  and risks importing control or surveillance dynamics into the relationship. *Why it
+  matters:* it touches data ownership and the Member–family bond at once. *Options:* (a)
+  Member-only view; (b) Member-controlled family view he switches on; (c) family receives
+  only remittance confirmations, no app. *Nia OS constrains but does not decide* — any family
+  access must satisfy Article XV consent.
+
+- **Q4 — Is tenure shown to the Member as visible evidence, or kept internal?**
+  *Trade-off:* tenure is "hope made visible" and could stand as quiet pride (Book II §5.5);
+  but surfacing a growing counter risks drifting into gamification, and a Member whose tenure
+  *resets* on return could feel shame (§5.4). *Why it matters:* it is the line between
+  evidence and a streak. *Options:* (a) show tenure as a plain fact; (b) surface only
+  milestones, quietly; (c) keep tenure internal. *What Nia OS says:* gamification is
+  **forbidden** — "no badges, no streaks, no leaderboards, no points" (§6.3) — so any visible
+  treatment must not become a game; within that hard limit, the choice is open.
+
+- **Q5 — How proactive should Nia be in restoration?**
+  *Trade-off:* reaching out when a Member is in breach honours "the process restores the
+  relationship before it removes the Member" (Article XVII) and catches the dangerous
+  silent-then-disappears signal (§3.6); but unsolicited contact risks a benefactor tone
+  (§5.3) and must never breach Sunday silence (§5.4). *Why it matters:* it is the gap between
+  care and intrusion. *Options:* (a) Operator-initiated human outreach; (b) Member-pull only,
+  with help always one tap away; (c) automated nudges — *which would collide with the ban on
+  engagement notifications (§6.2).* *Nia OS bounds the posture; the specific restoration steps
+  remain FD-9.*
