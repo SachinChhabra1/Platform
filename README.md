@@ -6,6 +6,11 @@ more of what they earn and send more home.
 **Nia OS is the source of truth.** When code and Nia OS disagree, the code is wrong.
 Build instructions live in `CLAUDE.md`. The specification lives in `/docs/nia-os`.
 
+**The repository is the memory.** No AI session depends on a previous chat. New here?
+Start with [`docs/SESSION-START.md`](docs/SESSION-START.md). How we build:
+[`docs/methodology.md`](docs/methodology.md). Why things are the way they are:
+[`docs/adr/`](docs/adr/) (and the register in [`DECISIONS.md`](DECISIONS.md)).
+
 ## Source-code organisation
 
 A **single git repository** (source-code organisation) hosting **independently
