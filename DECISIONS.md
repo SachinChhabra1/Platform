@@ -17,6 +17,7 @@ A decision that conflicts with Nia OS is invalid — the books win (`CLAUDE.md �
 | [0006](docs/adr/0006-database-postgresql.md) | Database: PostgreSQL |
 | [0007](docs/adr/0007-openapi-generated-clients.md) | API: OpenAPI with generated clients |
 | [0008](docs/adr/0008-first-slice-wallet-overview.md) | First vertical slice: Wallet Overview (read-only) |
+| [0009](docs/adr/0009-process-frozen-v1.md) | Development process frozen at Version 1 |
 
 ## Open decisions — ruling required (expire 2026-07-13)
 

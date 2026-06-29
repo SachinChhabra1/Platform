@@ -32,3 +32,4 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0006](0006-database-postgresql.md) | Database: PostgreSQL | Accepted |
 | [0007](0007-openapi-generated-clients.md) | API: OpenAPI with generated clients | Accepted |
 | [0008](0008-first-slice-wallet-overview.md) | First vertical slice: Wallet Overview (read-only) | Accepted |
+| [0009](0009-process-frozen-v1.md) | Development process frozen at Version 1 | Accepted |
