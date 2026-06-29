@@ -9,9 +9,12 @@ conversation. Every session begins by reading, in this order:
    directory READMEs for the scope you will touch.
 3. **ADRs** — `docs/adr/` in full. **Read these before proposing any alternative**
    (`methodology.md` → Architecture Decisions). The register is `DECISIONS.md`.
-4. **Current Product Specification** — `docs/product/`. A feature needs an approved
-   Phase-1 specification, owned by Founder/Product. If none exists, ask for it; do not
-   invent what to build.
+4. **Current Product Specification** — `docs/product/` (and its register). A feature is
+   built from an **Engineering-Locked** specification, owned by Founder/Product. The
+   contract chain is `Nia OS → Product Specification → Implementation Plan → Code`:
+   **implementation derives from the spec, never directly from Nia OS.** If no locked spec
+   exists, the work is not ready — ask; do not invent what to build, and do not infer
+   behaviour from the books.
 5. **Current Task** — the specific task to implement this session.
 
 ## Then follow the development cycle

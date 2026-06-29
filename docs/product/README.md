@@ -26,12 +26,24 @@ surface, draft, and challenge; may **not** invent policy, economics, behaviour, 
 prioritisation, or strategy. The first example is
 [`0001-membership-strawman-spec.md`](0001-membership-strawman-spec.md).
 
-**Phase gate.** A specification must be approved before the AI Engineer produces a
-Phase-2 implementation plan, and the plan must be approved before any production code.
+**The contract chain.** `Nia OS → Product Specification → Implementation Plan → Code`.
+Implementation derives from the **Engineering-Locked** specification, never directly from
+Nia OS. A behaviour the spec does not state is a gap to resolve in the spec, not one for
+Engineering to infer from the books.
 
-**Status:** No specifications yet. The **Membership Product Specification** is the next
-expected input (Session 3). Until it is approved, Membership implementation does not
-begin.
+**Living-document lifecycle.** Each spec moves through four phases — Strawman → Founder
+Review → Engineering Readiness Review → Engineering Lock — and carries a status:
+`Draft` → `Founder Review` → `Engineering Review` → `Engineering Locked` → `In Development`
+→ `Implemented` → `Deprecated` (see [`SPEC-TEMPLATE.md`](SPEC-TEMPLATE.md)). No production
+code begins before a spec reaches Engineering Lock.
+
+## Specification register
+
+The repository must always show where every specification sits.
+
+| Spec | Title | Status | Phase |
+|------|-------|--------|-------|
+| [0001](0001-membership-strawman-spec.md) | Membership | **Founder Review** | Spec Phase 2 — awaiting Founder/Product review |
 
 **Owner:** _Founder / Product._
 **Nia OS books:** all — a spec cites the books that bind it.

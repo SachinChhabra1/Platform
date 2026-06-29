@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Status** | DRAFT — Strawman for Founder/Product review. **Not a product decision.** |
-| **Phase** | 1 — Problem definition (product). No implementation, APIs, data models, or architecture. |
+| **Status** | **Founder Review** — Spec Phase 2 of 4. Phase 1 Strawman complete; **not yet approved.** Not a product decision. |
+| **Spec lifecycle** | Strawman ✓ → **Founder Review (here)** → Engineering Readiness Review → Engineering Lock |
 | **Owner** | Founder / Product (to review, correct, and own) |
 | **Drafted by** | AI Engineer, to reduce blank-page work (helping Product think; not deciding) |
-| **Date** | 2026-06-29 (rev. 2 — conformed to `SPEC-TEMPLATE.md`) |
-| **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. |
+| **Date** | 2026-06-29 (rev. 3 — lifecycle/status + Future Extensions) |
+| **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. No implementation/APIs/data models/architecture. |
 
 > How to read this. Everything traces to Nia OS. Where the books are silent, this document
 > **stops** and records the question under **Founder Decisions Required** — it does not
@@ -262,3 +262,25 @@ discussion. No recommendation is offered unless Nia OS already answers.
   with help always one tap away; (c) automated nudges — *which would collide with the ban on
   engagement notifications (§6.2).* *Nia OS bounds the posture; the specific restoration steps
   remain FD-9.*
+
+## 12. Future Extensions
+
+Ideas intentionally excluded from this version, recorded so future sessions do not
+rediscover them. **Not backlog and not commitments — recorded possibilities only.** Each
+would need its own Founder/Product decision to ever enter scope.
+
+- **FE-1 — Member self-initiated onboarding.** Once a corridor is mature, allow a Member to
+  begin (or complete) creation himself, rather than fully Operator-mediated. Excluded now —
+  early creation stays Operator-mediated (Article X; see Q1, [A3]).
+- **FE-2 — A family-facing surface.** A surface the family can reach directly, beyond the
+  Member's own "My Family" view. Excluded now; raises consent and control questions (Q3,
+  Article XV).
+- **FE-3 — Cross-corridor membership continuity.** A deliberate "transfer" of Membership
+  when a Member changes corridor, instead of tenure reset — so the institution truly travels
+  with him across the 6–10 migrations (Book II §1.5). Excluded now; current rule is reset
+  (§4.11; see FD-6).
+- **FE-4 — Returning-Member fast-path.** Recognise a Member returning within the 90-day
+  retention window and shorten his re-entry (§4.8). Excluded now; depends on FD-6.
+- **FE-5 — Tenure surfaced as quiet evidence.** Show tenure or its milestones to the Member
+  as dignified evidence of progress (Book II §5.5) — strictly within the no-gamification
+  limit (§6.3). Excluded now; see Q4.
