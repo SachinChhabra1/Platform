@@ -3,12 +3,22 @@
 Every significant decision becomes an ADR (`docs/methodology.md` → Architecture
 Decisions). **Future sessions read these before proposing alternatives.**
 
-Each ADR contains: **Problem · Options considered · Decision · Reasoning · Consequences**,
-plus a status (`Accepted` · `Superseded`) and date. A decision that conflicts with
-Nia OS is invalid — the books win (`CLAUDE.md §1`).
+Each ADR contains, in order:
+
+- **Status** · **Owner** · **Date** · **Nia OS references** (metadata block)
+- **Context** — the background and forces in play
+- **Problem** — the question this ADR settles
+- **Options considered**
+- **Decision**
+- **Reasoning**
+- **Consequences**
+
+Status is `Accepted` or `Superseded`. A decision that conflicts with Nia OS is invalid —
+the books win (`CLAUDE.md §1`). The Founder decides *what* is built; the AI Engineer
+decides *how* — these ADRs record the *how*, approved by the Founder.
 
 The lightweight register (this index plus the open decisions awaiting a ruling) lives
-in `/DECISIONS.md`.
+in [`/DECISIONS.md`](../../DECISIONS.md).
 
 ## Index
 

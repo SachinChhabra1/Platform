@@ -1,6 +1,15 @@
 # ADR-0002 — Clients: Flutter apps, web Console
 
-**Status:** Accepted · 2026-06-29
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Owner** | AI Engineer · approved by Founder |
+| **Date** | 2026-06-29 |
+| **Nia OS references** | Book V §2.5; Book VIII (type-sharing) |
+
+## Context
+Nia has three client surfaces: the Member App, the Operator App, and the Theatre
+Console. Book V §2.5 mandates the client technologies.
 
 ## Problem
 What client technology do the Member App, Operator App, and Theatre Console use?

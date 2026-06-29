@@ -1,10 +1,20 @@
 # ADR-0003 — Split design system over shared tokens
 
-**Status:** Accepted · 2026-06-29
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Owner** | AI Engineer · approved by Founder |
+| **Date** | 2026-06-29 |
+| **Nia OS references** | Book VI (components, theme module); Book III (design); Book VII |
+
+## Context
+Book VI requires one component per concept and forbids a separate design system for the
+Operator. But the clients span Flutter (apps) and web (Console) — two rendering
+technologies that cannot share one component library.
 
 ## Problem
-Book VI requires one component per concept, but the clients span Flutter (apps) and web
-(Console) — a single component library cannot serve both runtimes.
+How do we keep a single design language across a Flutter/web split without either a
+shared component library (impossible) or two divergent systems (drift)?
 
 ## Options considered
 1. One shared web/TS component library (cannot run inside Flutter).
@@ -15,7 +25,8 @@ Book VI requires one component per concept, but the clients span Flutter (apps) 
 Option 3. `packages/tokens` is the single source for colour, type scale, spacing,
 radius, shadow, and motion timing (the Book VI theme module), consumed by
 `packages/design-system-flutter` (member + operator) and `packages/design-system-web`
-(console).
+(console). The implementations differ only because Flutter and the Console require
+different rendering technologies.
 
 ## Reasoning
 Honours Book VI at the token level — the one place drift is most dangerous — while
