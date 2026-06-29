@@ -95,3 +95,20 @@ under delegated engineering authority; no product policy changed, no Founder Dec
   FD-11, Q2, Q3, Q4) · no backend / API / auth / persistence / Wallet logic / business behaviour.
 - **Outstanding Product questions:** none new this iteration. (The Iteration 2 Home-ordering
   question is now resolved by Founder ruling above.)
+
+---
+
+## Founder Review session — decisions taken (2026-06-29, spec rev 5)
+
+Not a build iteration — a Founder Review of the running Iteration-3 prototype. First-principles
+critique recorded; FDs/Qs resolved into [`0001-membership-strawman-spec.md`](0001-membership-strawman-spec.md)
+rev 5. **Resolved:** FD-2 (Promise anchor C-1, wording revised), FD-11 (women — full concrete floor),
+FD-12 (eligibility — rule-bounded Operator judgment), FD-13 (death — nominee-based settlement),
+Q1–Q5. **Proposed, awaiting Founder confirmation:** FD-8/9/10.
+
+**Iteration 4 is now due** (UI trails the spec): apply the Promise wording; remove the resolved
+Q2/Q3/Q4 placeholders (active Member shows no state label; My Family is a Member view; tenure stays
+internal); fix "Tuesday, a quiet day" (no mood narration); rename the Member-facing "Clusters" label
+to the Member's vocabulary; add an Operator one-tap from The Promise screen. Iteration 4 will be a
+full Product Review Build (screenshots + navigation GIF + Engineering Quality Certification) once the
+remaining gate (FD-2 wording, FD-8/9/10, the RafiQi/Rafiki name) is confirmed.

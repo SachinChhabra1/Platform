@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| **Status** | **Founder Review** — Spec Phase 2 of 4. Phase 1 Strawman complete; **not yet approved.** Not a product decision. |
-| **Spec lifecycle** | Strawman ✓ → **Founder Review (here)** → Engineering Readiness Review → Engineering Lock |
+| **Status** | **ENGINEERING-LOCKED (2026-06-29)** for implementation. All FDs resolved; Q1–Q5 resolved. One carried Founder copy-item: FD-2 *exact* Promise headline (anchor + structure locked; final sentence pending Founder) — gates only the Promise screen's final string, not structure or backend. FD-10/FD-13 flows require legal review before *implementation*. |
+| **Spec lifecycle** | Strawman ✓ → Founder Review ✓ → Engineering Readiness Review ✓ → **Engineering Lock ✓ (2026-06-29)** |
 | **Owner** | Founder / Product (to review, correct, and own) |
 | **Drafted by** | AI Engineer, to reduce blank-page work (helping Product think; not deciding) |
-| **Date** | 2026-06-29 (rev. 4 — FD-1 resolved: narrow boundary; Boundary Contracts added) |
+| **Date** | 2026-06-29 (rev. 5 — Founder Review: FD-2 wording, FD-11/12/13 resolved (Founder); FD-8/9/10 proposed (awaiting confirmation); Q1–Q5 resolved (Product); legibility requirements added) |
 | **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. No implementation/APIs/data models/architecture. |
 
 > How to read this. Everything traces to Nia OS. Where the books are silent, this document
@@ -74,6 +74,18 @@ honour:
 | Continuity, not retention | Member-facing language says continuity; "retention" is internal only | §4.13 |
 | A human in one tap | He can reach his Operator — a named human — within one tap from any screen | Book IV §3.6, §4.9 |
 | Sunday is the Member's | Nia does not initiate contact on a Sunday (except P0 emergency or a confirmation he requested) | Book IV §5.4 |
+
+**Legibility requirements (Product clarifications, 2026-06-29 — from the Iteration-3 review).**
+- **A bad month must read without shame.** The Wallet money story and the Home "what changed"
+  must represent a shortfall, deduction, or informal-debt repayment (Book II §4.5) as plainly as
+  good news — never as a confession or a red alarm (§5.4, failures are private).
+- **History is reachable.** Legibility means his *assembled* history, not only this month
+  (Article II; Book II §4.8; §7 success #4): the Member can reach prior months from the Wallet.
+- **Two distinct money figures.** "Available balance" (what he can use now) and "what stayed with
+  you this month" are different concepts and must never be shown as the same number undistinguished.
+- **The Member's vocabulary only.** No internal/operational label (e.g. "cluster") appears on a
+  Member surface; the same rule that keeps analytics names out of the experience (FD-3) applies to
+  navigation labels.
 
 ## 4. User journeys
 
@@ -148,18 +160,24 @@ good standing **before** any slide toward Closed.
 ## 6. Edge cases
 
 1. **Onboarding not completed** within 72 hours (Book II §1.4) — stays Prospective, never
-   becomes a Member. *Handling of the lapsed record — FD-8.*
+   becomes a Member. *Lapsed-record handling — FD-8 (proposed): minimal record retained ~30 days
+   for a warm re-approach, then minimised/purged; the lapse stays private.*
 2. **Return within the 90-day window** (§4.8) — resume or reset tenure (FD-6).
 3. **Breach during a Trip Home pause** — does restoration run while Paused, or only on
    return? *Open.*
 4. **Employer demands surveillance, restriction, or the Member's data** — refused;
    Membership unaffected; Nia may exit the corridor rather than comply (Articles XIII, XV).
 5. **Woman Member** — same Member, but "the dignity floor is higher, the safety floor is
-   higher, and the privacy floor is higher" (Book II §1.1). *What changes — FD-11.*
+   higher, and the privacy floor is higher" (Book II §1.1). *What changes — FD-11 (resolved):
+   secured women-only living with controlled access; a woman point-of-contact one tap away;
+   stricter data default (her location/Nest never disclosed without her separate explicit consent);
+   no male staff entry to women's living areas; a grievance path not forced through a male Operator.*
 6. **Lost phone** (Book II §4.7) — still reachable through the Operator (§4.9); Membership
    unaffected. *Re-establishing identity on a new device — open.*
-7. **Death of a Member** — closure with dignity and settlement to family/recipient. *Books
-   are silent — FD-13.*
+7. **Death of a Member** — closure with dignity and settlement to family/recipient. *FD-13
+   (resolved): nominee-based, Operator-assisted settlement; a nominee (distinct from the emergency
+   contact) is captured at onboarding; Wallet + savings settle to the nominee within a defined
+   window; legal review required before implementation.*
 8. **No valid emergency contact at arrival** — he arrives "with the name of a contact who
    may or may not still be at that address" (Book II §1.4); the experience must not block on
    an unreachable contact. *Open.*
@@ -201,12 +219,29 @@ Where Nia OS is silent or a business ruling is needed, this document stops here.
   trip home, or off-boarding — those are separate Product Specifications, referenced only at
   the boundary (see §13, Boundary Contracts). Governing principle: *a spec owns one concept; a
   flow owns one journey; a state machine owns one lifecycle — do not mix them* (SPEC-TEMPLATE).
-- **FD-2 — The Promise. ◐ FORM CHOSEN (Founder, 2026-06-29) — Option (c): one anchoring
-  sentence + a small number of supporting guarantees; reads as a quiet institutional
-  commitment, not marketing; uses only guarantees already in Nia OS; introduces no new
-  commitment. *Final wording pending Product selection from three refined candidates below.***
+- **FD-2 — The Promise. ✓ RESOLVED (Founder, 2026-06-29) — Option (c), anchor C-1 (protection
+  of the Member's money).** The first institutional promise anchors on **protecting what the
+  Member has earned** — the wound the informal economy inflicts (Book II §4.8; §4.2, wage
+  zero-tolerance). *Founder rationale:* "known by name, not number" is a **consequence** of the
+  relationship, not the first proof of trust; "no surprises" is a **governing principle** across
+  every interaction, not the headline. The literal phrase "your money is yours" is **retired** —
+  grammatically true but emotionally flat; the anchor must say Nia *protects* what he earned, not
+  merely that ownership exists.
 
-  *Candidates (Option (c); `<Name>`/`<Operator>` filled per Member; identical across Nia):*
+  **Anchor and structure LOCKED; the exact headline sentence is pending Founder (the Founder will
+  supply the final phrasing — 2026-06-29). The draft below is a working placeholder, not ratified
+  copy. The four supporting lines and footer ARE locked:**
+  > **<Name>, what you earn is protected — every rupee.**
+  > · Your wage, in full and on time · Every rupee you earn, save, and send — visible to you
+  > · A person you know, one tap away · Nothing about your terms changes without you knowing first.
+  >
+  > *The same promise for every Member, everywhere.*
+
+  `<Name>` is filled per Member; the Promise is identical across Nia (§4.19). No supporting line
+  adds a commitment beyond Nia OS. The three original candidates are retained below as history;
+  C-1's anchor was selected and its headline revised per the Founder rationale above.
+
+  *Candidates (history — Option (c); `<Name>`/`<Operator>` filled per Member; identical across Nia):*
 
   **C-1 (anchor: custody of money)**
   > **<Name>, your money is yours — and we keep it that way.**
@@ -294,13 +329,43 @@ Where Nia OS is silent or a business ruling is needed, this document stops here.
   - **Engineering boundary:** engineering may cache technical authorization tokens where required;
     that must never change the Member experience. The Member experiences consent **per request**;
     implementation may optimise behind the scenes — the product may not.
-- **FD-8 — Lapsed Prospective.** Handling of an incomplete-onboarding record (Book II §1.4).
-- **FD-9 — Restoration processes** — the "process for each" breach (Article XVII).
-- **FD-10 — Dignity-based removal** — due process and authority (Articles XVII, XVIII).
-- **FD-11 — Women Members** — what is concretely higher (Book II §1.1).
-- **FD-12 — Eligibility at creation** — enforced, and by Operator judgment or rule (Book II
-  ch. 7)?
-- **FD-13 — Death of a Member** — closure-and-settlement process (unspecified by the books).
+- **FD-8 — Lapsed Prospective. ✓ RESOLVED (Founder-confirmed, 2026-06-29).** If onboarding is not completed within 72 hours (Book II §1.4) the person
+  **stays Prospective** — never a Member, no guarantees. A **minimal record** (name, phone, what
+  was begun) is retained for a short window (~30 days) so re-approach is warm, then minimised or
+  purged (§6.5 data-minimisation; FD-7 spirit). No nudges or marketing (§6.2). The lapse is
+  **private** (§5.4).
+- **FD-9 — Restoration processes. ✓ RESOLVED (Founder-confirmed, 2026-06-29).** One **human** shape, not a per-breach catalogue (Article XVII): the Operator (a
+  known human) speaks with the Member privately; the issue is named plainly and the Member is
+  heard; a concrete path back to good standing is agreed at terms he can meet
+  (`nia-low-income-design`); help and time, not penalties or strikes; nothing shown to other
+  Members (§5.4). Restoration always runs **before** any slide toward Closed.
+- **FD-10 — Dignity-based removal. ✓ RESOLVED (Founder-confirmed, 2026-06-29; legal review required
+  before the removal flow is implemented).** Removal only if (a) the Member chooses to leave, or
+  (b) his presence "would violate the dignity or safety of other Members" **and** restoration has
+  failed or it is an emergency. The decision is **named, attributable, reviewable**; in emergency
+  "the Operator's call stands," logged and reviewed within 48 hours (Article XVIII). Removal always
+  triggers full off-boarding **settlement** (§4.8) — never punitive withholding. The bar is others'
+  dignity/safety, **never economics**.
+- **FD-11 — Women Members. ✓ RESOLVED (Founder, 2026-06-29) — adopt the full concrete floor**
+  (to be validated with women Members and counsel; Book II §1.1). **Safety:** secured women-only
+  living with controlled access; a **woman point-of-contact reachable in one tap**. **Privacy:** a
+  stricter data default — her location/Nest is **never disclosed** to employer/recruiter even under
+  an otherwise-consented request without her **separate, explicit** consent. **Dignity:** no male
+  staff entry to women's living areas; a grievance path she need not route through a male Operator.
+  These are floors, not ceilings.
+- **FD-12 — Eligibility at creation. ✓ RESOLVED (Founder, 2026-06-29) — rule-bounded Operator
+  judgment.** Hard minimums only: lawful working age, the minimum identity set (§6.5), and genuine
+  intent to live/work the corridor — plus a **non-discrimination floor** ("one Floor for everyone,"
+  §6.7: served regardless of origin, religion, gender, or caste). Within those bounds the Operator
+  exercises judgment (creation is Operator-mediated, [A3]; Book II ch. 7), enforced at creation.
+- **FD-13 — Death of a Member. ✓ RESOLVED (Founder, 2026-06-29) — nominee-based, Operator-assisted
+  settlement** (legal review required before implementation). A **nominee** is captured at
+  onboarding, **distinct from the emergency contact**. On death: Membership closes with dignity;
+  the **Wallet balance and savings settle to the nominee** within a defined window (≤48h–7 days);
+  the **Operator personally informs and assists** the family; **no fee clawback**; the record is
+  retained for legal/successor needs. A **legal fallback** governs a disputed or absent nominee.
+  (The settlement *experience* is shared with Off-boarding §4.8; Membership owns the
+  `Member → Closed` transition and the nominee fact.)
 
 ## 10. References to Nia OS
 
@@ -310,57 +375,29 @@ II, V, VII, XII, XIII, XV, XVII, XVIII; §4.10–4.19 (definitions); Truth 1.7. 
 §1.1, §2.2, §3.6, §4.1, §4.7, §4.8, §4.9, §5.4, §6.5, §6.7. Where a trace did not exist, the
 item was moved to *Founder Decisions Required* rather than resolved.
 
-## 11. Questions Product Should Debate
+## 11. Questions Product Should Debate — RESOLVED (Product, 2026-06-29; Founder to ratify)
 
-Competing product directions — not Founder decisions, but design tensions worth Product's
-discussion. No recommendation is offered unless Nia OS already answers.
+These were design tensions, not Founder decisions; each is now resolved in the Product seat,
+grounded in Nia OS (the books bound every one). Recorded for Founder ratification.
 
-- **Q1 — Operator-mediated creation, or evolving toward Member self-initiation?**
-  *Trade-off:* Operator-mediated creation honours the human, dignified first 72 hours and
-  "software follows operations"; self-initiation scales a corridor faster but risks the cold,
-  illegible intake Nia exists to replace. *Why it matters:* it shapes how a corridor grows
-  and whether the most expensive 72 hours stay human. *Options:* (a) permanently
-  Operator-mediated; (b) Operator-mediated with Member-completed steps; (c) self-initiation
-  once a corridor matures. *What Nia OS says:* it leans to Operator-mediated **early**
-  (Article X; Book II §1.4; the Operator as "the human shape of the Studio," §3.6) but does
-  not forbid the relationship evolving — so the long-run direction is open.
-
-- **Q2 — How visible should the Member's lifecycle state be to him?**
-  *Trade-off:* showing state (e.g., "Paused") is transparent and predictable (Article V);
-  hiding it protects dignity and avoids making a Member feel labelled or "lesser" (Book II
-  §5.3 pride, §5.4 shame). *Why it matters:* it sits exactly on the line between predictability
-  and dignity, both of which Nia OS holds. *Options:* (a) states fully visible; (b) only
-  Paused surfaced, framed as a kindness ("your Nest is held until you return"); (c) states
-  never named to the Member, who experiences only continuity. *Nia OS does not resolve this.*
-
-- **Q3 — Is "My Family" a Member-only view, or a surface the family can also reach?**
-  *Trade-off:* the family is "part of the Member" (§6.1) and the remittance is "heard before
-  it is spent" (§6.2), so family visibility could deepen trust and pre-empt the "phone call
-  from a frightened wife" (§4.4); but a second audience adds consent complexity (Article XV)
-  and risks importing control or surveillance dynamics into the relationship. *Why it
-  matters:* it touches data ownership and the Member–family bond at once. *Options:* (a)
-  Member-only view; (b) Member-controlled family view he switches on; (c) family receives
-  only remittance confirmations, no app. *Nia OS constrains but does not decide* — any family
-  access must satisfy Article XV consent.
-
-- **Q4 — Is tenure shown to the Member as visible evidence, or kept internal?**
-  *Trade-off:* tenure is "hope made visible" and could stand as quiet pride (Book II §5.5);
-  but surfacing a growing counter risks drifting into gamification, and a Member whose tenure
-  *resets* on return could feel shame (§5.4). *Why it matters:* it is the line between
-  evidence and a streak. *Options:* (a) show tenure as a plain fact; (b) surface only
-  milestones, quietly; (c) keep tenure internal. *What Nia OS says:* gamification is
-  **forbidden** — "no badges, no streaks, no leaderboards, no points" (§6.3) — so any visible
-  treatment must not become a game; within that hard limit, the choice is open.
-
-- **Q5 — How proactive should Nia be in restoration?**
-  *Trade-off:* reaching out when a Member is in breach honours "the process restores the
-  relationship before it removes the Member" (Article XVII) and catches the dangerous
-  silent-then-disappears signal (§3.6); but unsolicited contact risks a benefactor tone
-  (§5.3) and must never breach Sunday silence (§5.4). *Why it matters:* it is the gap between
-  care and intrusion. *Options:* (a) Operator-initiated human outreach; (b) Member-pull only,
-  with help always one tap away; (c) automated nudges — *which would collide with the ban on
-  engagement notifications (§6.2).* *Nia OS bounds the posture; the specific restoration steps
-  remain FD-9.*
+- **Q1 — Creation model. → Operator-mediated now.** Creation stays Operator-mediated early
+  (Article X; Book II §1.4; the Operator as "the human shape of the Studio," §3.6; [A3]);
+  evolution toward Member self-initiation is **FE-1**, considered only once a corridor matures.
+  Keeps the most expensive 72 hours human.
+- **Q2 — Lifecycle-state visibility. → Only *Paused* is surfaced, as a kindness**
+  ("your Nest is held until you return"). *Prospective* and *Closed* are **never named** to the
+  Member. Dignity (§5.3–§5.4) outweighs full state transparency; framing Paused as care preserves
+  the predictability that matters (Article V). *(Resolves the Profile "Your standing" placeholder:
+  an active Member sees no state label.)*
+- **Q3 — "My Family". → Member-only view now.** A *view* the Member controls ([A4]); a
+  family-facing surface is **FE-2**, deferred pending consent design (Article XV). *(Removes the
+  Home "Q3" marker.)*
+- **Q4 — Tenure visibility. → Tenure stays internal.** Not surfaced to the Member: the
+  no-gamification ban (§6.3) and the reset-shame risk (§5.4) outweigh "hope made visible" for now;
+  **FE-5** holds the future possibility within that hard limit. *(Confirms the current build.)*
+- **Q5 — Restoration proactivity. → Operator-initiated human outreach only.** No automated nudges
+  (would collide with the §6.2 ban); never breaches Sunday silence (§5.4); help is always one tap
+  away. Pairs with **FD-9**.
 
 ## 12. Future Extensions
 
@@ -422,3 +459,39 @@ exactly one spec; the neighbour references it. (Per FD-1 and the one-concept pri
 
 A boundary contract names *what crosses the line and who owns it* — never how the neighbour
 behaves inside its own spec.
+
+## 14. Engineering Readiness Review & Lock (2026-06-29)
+
+Conducted by the AI Engineer. The specification is **implementable without inventing policy**:
+
+- Every behaviour traces to Nia OS or a resolved Founder Decision; no section depends on an
+  unresolved decision.
+- States and transitions (§5, §13) form a **closed lifecycle** — Prospective · Member · Paused ·
+  Closed — with exactly one owner per transition.
+- Member-facing rules (known by name, legibility, per-request consent, dignity, the Promise) are
+  concrete and testable (§3, §7).
+- Out-of-scope experiences (Onboarding, Trip Home, Off-boarding) are referenced only at the
+  boundary (§13); none must be invented to implement Membership.
+
+**Carried items (do not block backend implementation):**
+
+- **FD-2 exact headline** — anchor, structure, the four supporting lines, and footer are locked;
+  only the final headline *sentence* is pending Founder. Gates the Promise screen's final string,
+  nothing structural or backend.
+- **FD-10 (removal) and FD-13 (death) flows** — policy is locked; **legal review is required before
+  those flows are implemented.** The first implementation slices do not touch them.
+
+**Implementation sequence (vertical slices — each its own small, verified, reversible PR):**
+
+1. **Fastify runtime skeleton** — boots, a health route, wired into `pnpm run verify` (TS test +
+   typecheck), uses `packages/log` (PII redaction). *Dependency note:* Fastify must be provisioned
+   into the offline cache deliberately (an engineering-stack step), since the kit installs offline.
+2. **Membership service** — identity + the lifecycle state machine
+   (Prospective → Member → Paused → Closed), per §5 and §13; reason-as-metadata (FD-4); tenure
+   internal (FD-3, Q4).
+3. **Wallet Overview backend** — read-only; the "money story" and the legibility requirements (§3).
+4. **Wallet Overview frontend** — wire the prototype Wallet to the locked contract; replace
+   placeholder data.
+
+**Lock status:** **Engineering-Locked for implementation as of 2026-06-29.** Bottleneck is now
+Engineering, not Product.
