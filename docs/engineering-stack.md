@@ -31,6 +31,23 @@ Installed under `~/.nia-toolchain`, on `PATH` via `~/.zshenv`:
 Node 20.18.1 · pnpm 9.12.0 · Flutter 3.44.4 / Dart 3.12.2. Run `pnpm run verify` before
 every PR (see the root `README.md`).
 
+## Forward modeling notes (from resolved Founder Decisions)
+
+Recorded now so the Membership service is built right; not yet implemented (no backend exists).
+
+- **Membership states (FD-4):** the state machine is exactly `Prospective → Member → Paused →
+  Closed`. **Pause Reason is metadata** on the Paused state, never an enumeration that drives
+  the state model — new reasons (medical, detention, employment gap, …) are added as data, with
+  no state-machine change. Operator-initiated transitions are logged, attributable, reviewable,
+  and reversible where appropriate (Article XVIII).
+- **Tenure (FD-3):** one clock — Member-facing **Relationship Tenure** begins at the
+  `Prospective → Member` transition (first Saturday). Any internal lifecycle timestamps
+  (first wage, first remittance, …) are **operational metrics, never exposed as tenure.**
+- **Consent (FD-7):** the Member experiences consent **per request** — explicit, named,
+  purpose/requester-specific, default no, revocable. Engineering may cache technical
+  authorization tokens behind the scenes, but that optimisation must never surface as a
+  standing permission; the product stays per-request.
+
 ## When Membership reaches Engineering Lock
 
 The critical path begins, in order:

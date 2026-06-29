@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nia_i18n/nia_i18n.dart';
 
-import 'routing/app_router.dart';
-import 'routing/app_routes.dart';
+import 'features/shell/member_shell.dart';
+import 'theme/nia_theme.dart';
 
-/// The Member App shell.
+/// The Member App — running as a **Product Review Prototype** (docs/methodology.md
+/// → Product Review Prototypes). It compiles, runs, and navigates so Founder and
+/// Product can review the *experience* while the Membership spec is still
+/// evolving.
 ///
-/// Routing, scaffolding, and localization wiring only. No Membership or Wallet
-/// behaviour, no real screens, no API calls, no auth. Real screens and theming
-/// arrive from Engineering-Locked Product Specifications (the contract chain,
+/// It deliberately contains no backend, no API calls, no Wallet logic, and no
+/// product behaviour; every figure is placeholder and every unresolved Founder
+/// Decision is shown as a marked placeholder, never invented. Production code
+/// still derives only from an Engineering-Locked spec (the contract chain,
 /// ADR-0009).
 class NiaMemberApp extends StatelessWidget {
   const NiaMemberApp({super.key});
@@ -18,11 +22,10 @@ class NiaMemberApp extends StatelessWidget {
     return MaterialApp(
       onGenerateTitle: (context) => NiaLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
+      theme: buildNiaPrototypeTheme(),
       localizationsDelegates: NiaLocalizations.localizationsDelegates,
       supportedLocales: NiaLocalizations.supportedLocales,
-      initialRoute: AppRoutes.home,
-      onGenerateRoute: AppRouter.onGenerateRoute,
+      home: const MemberShell(),
     );
   }
 }

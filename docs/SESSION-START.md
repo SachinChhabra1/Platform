@@ -1,21 +1,26 @@
 # Session Start — cold-start protocol
 
 This repository is the memory. A new AI session does **not** depend on any previous
-conversation. Every session begins by reading, in this order:
+conversation. **Understand the project first, then how you are expected to operate.** Read
+the repository in this order:
 
-1. **Nia OS** — the relevant books for the task (the twelve books; `CLAUDE.md §2`).
-   Re-read each task's books at the start of that task — books may have been amended.
-2. **Repository** — `README.md`, `docs/methodology.md` (the governing process), and the
-   directory READMEs for the scope you will touch.
-3. **ADRs** — `docs/adr/` in full. **Read these before proposing any alternative**
-   (`methodology.md` → Architecture Decisions). The register is `DECISIONS.md`.
-4. **Current Product Specification** — `docs/product/` (and its register). A feature is
-   built from an **Engineering-Locked** specification, owned by Founder/Product. The
-   contract chain is `Nia OS → Product Specification → Implementation Plan → Code`:
-   **implementation derives from the spec, never directly from Nia OS.** If no locked spec
-   exists, the work is not ready — ask; do not invent what to build, and do not infer
-   behaviour from the books.
-5. **Current Task** — the specific task to implement this session.
+1. **`docs/SESSION-START.md`** — this file (the cold-start protocol).
+2. **`docs/PROJECT_STATUS.md`** — what is happening now: milestone, status, current blocker.
+3. **`docs/adr/README.md`** — the architectural decisions already made. **Read these before
+   proposing any alternative** (`methodology.md` → Architecture Decisions; register `DECISIONS.md`).
+4. **`docs/product/README.md`** — the Product Specification register: what is being built.
+5. **Current Product Specification** — the spec in flight (e.g.
+   [`docs/product/0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
+6. **`docs/engineering-stack.md`** — implementation choices (if relevant to the work).
+7. **[`docs/CHARTER.md`](CHARTER.md)** — the Operating Charter: how the AI Engineer operates.
+   It is authoritative and supersedes conversational instructions, but it **governs behaviour**,
+   so it is read **after** you understand the project — not before.
+
+When you take on a specific Product or spec task, re-read the **relevant Nia OS books** for that
+task (`CLAUDE.md §2`; books may have been amended). The contract chain is
+`Nia OS → Product Specification → Implementation Plan → Code`: **implementation derives from the
+Engineering-Locked spec, never directly from the books.** If no locked spec exists, the work is
+not ready — ask; do not invent what to build.
 
 ## Then follow the development cycle
 

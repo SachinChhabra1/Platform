@@ -63,6 +63,61 @@ becomes the permanent memory.
 
 ---
 
+## Product Review Prototypes
+
+*Founder decision, 2026-06-29. A working rhythm that runs alongside Phase 1, before Engineering Lock.*
+
+As Founder Decisions are approved, the AI Engineer produces a **Product Review Prototype** so
+Founder and Product can review the *experience* visually while the specification is still
+evolving — rather than imagining it from documents.
+
+A Product Review Prototype **is a thinking tool, not production software.** It must:
+
+- compile, run, and navigate;
+- follow Book III design principles;
+- use **placeholder data only** — no backend, no API calls, no Wallet logic, no product behaviour;
+- render **every unresolved Founder Decision as a clearly marked placeholder**, never as invented behaviour.
+
+It exists to improve Product thinking, **not to accelerate implementation.** Nothing in a
+prototype is a contract; only an Engineering-Locked spec is. The prototype evolves continuously
+as Founder Decisions are approved. When real implementation begins (post-Lock, Phase 3), screens
+are wired to backend per the locked spec — the prototype's placeholders are replaced, not trusted.
+
+This does **not** relax the contract chain: prototypes are explicitly Founder-authorised
+visual exploration; production code still derives only from an Engineering-Locked spec.
+
+---
+
+## Founder Decisions — just-in-time
+
+*Founder decision, 2026-06-29. Changes the **timing** of Founder Decisions, not the process.*
+
+Do **not** work through Founder Decisions sequentially. Raise a Founder Decision only when it
+becomes the **next genuine blocker**. The question is never "what is the next FD in the
+document?" but "**what Founder Decision must be resolved to make the next Product Review Build
+or Engineering milestone meaningfully better?**" — that is the next one.
+
+Raise an FD only if at least one is true:
+- it blocks implementation, **or**
+- it blocks a Product Review, **or**
+- it blocks a Product Specification from reaching Engineering Lock, **or**
+- it materially changes the Member experience **now**.
+
+Otherwise: **continue building, carry the unresolved item as an explicit placeholder, and do
+not force a decision early.** Product Review Builds are the primary driver — as Founder and
+Product review the running application, the next real decisions surface naturally; resolve
+them then. This increases Founder control: attention is spent on decisions that matter now,
+while the product is visible and the consequences are concrete — not on theoretical decisions
+months before they affect the Member.
+
+**Working rhythm:** Product Review Build → identify the next real blocker → Founder Decision →
+specification updated → prototype updated → implementation continues → repeat.
+
+Engineering note: if an unresolved Founder Decision does not block engineering work, continue
+within delegated authority; if it does, surface it.
+
+---
+
 ## AI Session Strategy
 
 Never attempt to build Nia in one conversation. Instead:

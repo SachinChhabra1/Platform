@@ -6,7 +6,7 @@
 | **Spec lifecycle** | Strawman ✓ → **Founder Review (here)** → Engineering Readiness Review → Engineering Lock |
 | **Owner** | Founder / Product (to review, correct, and own) |
 | **Drafted by** | AI Engineer, to reduce blank-page work (helping Product think; not deciding) |
-| **Date** | 2026-06-29 (rev. 3 — lifecycle/status + Future Extensions) |
+| **Date** | 2026-06-29 (rev. 4 — FD-1 resolved: narrow boundary; Boundary Contracts added) |
 | **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. No implementation/APIs/data models/architecture. |
 
 > How to read this. Everything traces to Nia OS. Where the books are silent, this document
@@ -20,8 +20,8 @@
 rights as experienced; conduct, restoration, and exit at the membership level. Out of
 scope (separate specs, referenced only at the boundary): the Onboarding experience (Book IV
 §4.1; Book VII ch. 2); Wage/Remittance/Savings/Curry flows (§4.2–4.5); the Trip Home
-experience (§4.7); the detailed Off-boarding experience (§4.8). The boundary itself is
-**FD-1**.
+experience (§4.7); the detailed Off-boarding experience (§4.8). The boundary is **resolved**
+(FD-1 — narrow; see §13 Boundary Contracts).
 
 ---
 
@@ -90,14 +90,17 @@ honour:
   Living, My Work, My Essentials, My Family, RafiQi (§2.2). He always knows his Operator and
   reaches him in one tap (§3.6). He sees The Promise (§4.19). His history is shown back to
   him, balance before any money-taking feature (Book II §4.8; Article II). **Tenure accrues**
-  monthly and is "the most predictive number Nia tracks" (§4.11). Membership never tiers
-  (§6.7).
+  monthly from the first Saturday (FD-3) and is "the most predictive number Nia tracks"
+  (§4.11); it stays internal — not surfaced to the Member — until Q4 is decided. Membership
+  never tiers (§6.7).
 - **J3 — His data rights.** He owns his data; Nia is custodian, not owner (Article XV). He
   can see his full history; every access by a non-Member actor is logged and inspectable by
   him; a request for his data from employer, recruiter, government, or capital partner
   defaults to **no**; any consent is "in writing, in his language, by name, in the current
   month." He may ask to be forgotten — personal details removed, the trail of past activity
-  retained for integrity. *Consent mechanics — FD-7.*
+  retained for integrity. **Consent is an event, not a setting** (FD-7): every external request
+  is explicit, named, purpose- and requester-specific, and ends when answered — no standing
+  authorization.
 - **J4 — When the Member breaks the rules.** A missed payment, skipped shift, broken
   fitting, fight, or arriving drunk does not end Membership (Article XVII). A **restoration
   process runs first**; removal happens only if he chooses to leave or his presence "would
@@ -110,9 +113,11 @@ honour:
 - **J6 — Leaving (Off-boarding) — boundary.** He moves to **Closed**, dignified and fast:
   Wallet settled ≤48h, locked savings transferred, closing statement by SMS + print, record
   retained 90 days; no retention prompt, no manipulation, no slowdown (§4.8).
-- **J7 — Returning.** Returning is normal (§1.5). "Tenure resets if the Member leaves and
-  returns" (§4.11), yet the closed record is kept 90 days "in case he returns" (§4.8) — the
-  interaction is **FD-6**.
+- **J7 — Returning.** Returning is normal (§1.5). Tenure **resets** on return — a new birthday
+  (§4.11; FD-6) — while his **history is preserved** (identity, documents, past Studios,
+  Employers, Operators, journeys). The 90-day record (§4.8) serves dignity, not tenure: he is
+  welcomed back without starting from zero administratively. It should feel *familiar, not
+  identical*. The re-entry *experience* (how much onboarding is skipped) is the Onboarding spec.
 
 ## 5. States
 
@@ -120,8 +125,10 @@ Member-facing states (mapping to Nia OS's pending / active / paused / closed):
 
 - **Prospective** *(pending)* — a person Nia intends to serve; guarantees not yet applied.
 - **Member** *(active)* — relationship live; all guarantees apply; tenure accrues (§4.11).
-- **Paused** *(paused)* — intact but dormant, primarily Trip Home (§4.7); *tenure treatment
-  FD-5*.
+- **Paused** *(paused)* — intact but dormant; entered whenever there is a **genuine intention to
+  return** (Trip Home is one example; FD-4). The reason is **metadata**, not a state. Tenure
+  **continues** while Paused (FD-5). Remains Paused until the Member resumes, the Membership is
+  Closed, or operational policy requires review (FD-5).
 - **Closed** *(closed)* — ended via off-boarding (§4.8); record retained 90 days.
 
 **Restoration** (Article XVII) is a *process*, not a state: it returns a Member in breach to
@@ -129,12 +136,13 @@ good standing **before** any slide toward Closed.
 
 | From | To | Trigger | Nia OS |
 |---|---|---|---|
-| Prospective | Member | Onboarding completion criteria met | §4.1; §4.12 |
-| Member | Paused | Member declares a Trip Home | §4.7 |
+| Prospective | Member | Onboarding completion criteria met — **the one birthday: Membership and tenure both begin here** (FD-3) | §4.1; §4.12 |
+| Member | Paused | Genuine intention to return (Member, or Operator on his behalf — Art. XVIII); reason recorded as metadata | §4.7; FD-4 |
 | Paused | Member | Member returns | §4.7 |
 | Member | Closed | Member declares departure (voluntary) | §4.8 |
 | Member | Closed | Removal — presence violates others' dignity | Articles XVII, XVIII |
-| Closed | Member / Prospective | Return (within / after 90 days) | §4.8; §4.11 — *FD-6* |
+| Paused | Closed | Operational-policy review leads to closure (durations/thresholds in policy, not this spec) | FD-5 |
+| Closed | Member / Prospective | Return — **tenure resets, new birthday; history preserved** (FD-6). The re-entry *experience* is the Onboarding spec | §4.8; §4.11; FD-6 |
 | Prospective | (lapses) | Onboarding not completed in the 72 hours | Book II §1.4 — *FD-8* |
 
 ## 6. Edge cases
@@ -187,14 +195,105 @@ to Founder/Product — not set here.*
 
 Where Nia OS is silent or a business ruling is needed, this document stops here.
 
-- **FD-1 — Scope boundary.** Confirm Membership = lifecycle + identity + rights, with
-  Onboarding, Trip Home, Off-boarding as separate specs — or widen it.
-- **FD-2 — The Promise.** Author the actual wording (Book I §4.19).
-- **FD-3 — When tenure begins.** Move-in, first Saturday (§4.12), or first wage?
-- **FD-4 — Pause reasons.** May Membership pause beyond a trip home (§4.7)?
-- **FD-5 — Tenure while paused, and maximum pause** before it becomes closure.
-- **FD-6 — Return within 90 days.** Resume tenure or reset (§4.11 vs §4.8)?
-- **FD-7 — Consent experience** and renewal cadence (Article XV).
+- **FD-1 — Scope boundary. ✓ RESOLVED (Founder, 2026-06-29) — Option (a), narrow boundary.**
+  Membership owns the relationship: **identity, lifecycle, states, tenure, continuity, Member
+  rights, data ownership, restoration.** It does **not** own the *experience* of onboarding,
+  trip home, or off-boarding — those are separate Product Specifications, referenced only at
+  the boundary (see §13, Boundary Contracts). Governing principle: *a spec owns one concept; a
+  flow owns one journey; a state machine owns one lifecycle — do not mix them* (SPEC-TEMPLATE).
+- **FD-2 — The Promise. ◐ FORM CHOSEN (Founder, 2026-06-29) — Option (c): one anchoring
+  sentence + a small number of supporting guarantees; reads as a quiet institutional
+  commitment, not marketing; uses only guarantees already in Nia OS; introduces no new
+  commitment. *Final wording pending Product selection from three refined candidates below.***
+
+  *Candidates (Option (c); `<Name>`/`<Operator>` filled per Member; identical across Nia):*
+
+  **C-1 (anchor: custody of money)**
+  > **<Name>, your money is yours — and we keep it that way.**
+  > · Your wage, in full and on time · Every rupee you earn, save, and send, visible to you
+  > · A person you know, one tap away · Nothing about your terms changes without you knowing first.
+
+  **C-2 (anchor: known, not numbered)**
+  > **<Name>, here you are known by name, not by number.**
+  > · Your wage arrives in full, on time · You can see everything you earn, save, and send home
+  > · Your Operator is one tap away, any day · You are free to leave whenever you choose, settled within two days.
+
+  **C-3 (anchor: predictability)**
+  > **<Name>, here there are no surprises.**
+  > · Your wage in full and on time — and if it is ever wrong, we fix it first · Your balance, always visible to you
+  > · A named person, one tap away · The same promise for every Member, everywhere.
+
+  Traceability: wage in full/on time (§4.2, zero tolerance); visible money (Article II; Book II
+  §4.8); Operator one tap (Book IV §3.6, §4.9); no surprise to terms (Article V); leave clean,
+  settled ≤48h (§4.8); same across Nia (§4.19). No candidate adds a commitment beyond these.
+- **FD-3 — When tenure begins. ✓ RESOLVED (Founder, 2026-06-29) — Option (b): the first
+  Saturday after move-in.** *Principle: a Member has one birthday.* The `Prospective → Member`
+  transition, the start of Membership, and the start of tenure are **one moment** — the first
+  Saturday onboarding ends (§4.1; §4.12). Move-in is arrival; first wage is an economic event;
+  neither is the beginning of Membership. There is never more than one clock for the relationship.
+
+  **Two clocks, recorded (Founder refinement):**
+  - **Relationship Tenure** — Member-facing; months continuously a Member; begins on the first
+    Saturday; the **only** "tenure" Product knows. (Member visibility is **Q4**, still open — see below.)
+  - **Analytics Tenure** — internal only. Engineering/Data may keep operational lifecycle
+    timestamps (first arrival, first wage, first remittance, first savings, first referral) for
+    analysis. These are **operational metrics, not tenure.** They must never be exposed as
+    tenure, and engineering/analytics names must never leak into the Member experience.
+- **FD-4 — Pause reasons. ✓ RESOLVED (Founder, 2026-06-29) — Option (c): Hybrid, refined to a
+  continuity principle.** Paused exists to **preserve continuity**, not to classify absences.
+  A Membership enters Paused whenever there is a **genuine intention to return and continue the
+  relationship** — Trip Home is one example; medical leave, a family emergency, temporary
+  detention, a short employment gap are others. Nia does **not** enumerate reasons.
+  - **Reason is metadata, not state.** The specific reason is recorded as metadata on the Paused
+    state; it does not create new states or drive the state machine. New reasons may be added
+    later without changing the state model.
+  - **Operator authority (Article XVIII).** The Operator may place a Member into Paused when the
+    Member requests it, when circumstances clearly indicate temporary absence, or when the Member
+    cannot reasonably act for himself. Every such action is logged, attributable, reviewable, and
+    reversible where appropriate.
+  - **State machine stays simple:** Prospective → Member → Paused → Closed. Complexity lives in
+    reason metadata and operating policy, never in additional states. *Nia optimises for
+    continuity, not administrative classification.*
+- **FD-5 — Tenure while paused, and maximum pause. ✓ RESOLVED (Founder, 2026-06-29).**
+  - **Tenure continues while Paused** — a pause preserves continuity, it does not interrupt it;
+    the relationship remains alive. Tenure does **not** freeze and does **not** reset. (Reset
+    applies only after Membership has been **Closed** — §4.11; FD-3 one-birthday.)
+  - **Maximum pause is not a product concept** — it is operational policy and is **not** defined
+    here (governing principle: no operational parameters in the spec). The spec states only the
+    *shape*: **a Paused Membership remains Paused until the Member resumes, the Membership is
+    Closed, or operational policy requires review.** Review thresholds/durations live in operating
+    policy, so operations can change them without changing the product definition.
+  - **Summary:** tenure continues while Paused · tenure never resets while the relationship
+    remains active · pause reasons remain metadata (FD-4) · pause durations are governed by
+    operational policy · policy may trigger review · review may lead to Closure · **Closure
+    remains an explicit state transition.**
+- **FD-6 — Return within 90 days. ✓ RESOLVED (Founder, 2026-06-29) — Option (a): tenure resets
+  on return.** *Principle: history is preserved; tenure is earned.* The apparent contradiction
+  dissolves once **relationship history** and **relationship tenure** are separated:
+  - **History belongs to the person** and is never lost on return — identity, preferences,
+    documents, previous Studios, Employers, Operators, and journeys.
+  - **Tenure belongs to the current continuous relationship.** When it is Closed, the tenure clock
+    ends; a new relationship begins a new clock (§4.11; FD-3 one-birthday).
+  - **The 90-day record (§4.8) exists for dignity, not tenure** — it lets Nia welcome him back
+    without making him start from zero *administratively*; it does **not** preserve the tenure clock.
+  - **Returning should feel familiar, not identical** — "we remember you," not "nothing changed."
+    The relationship has changed; the respect has not.
+  - **Boundary (FD-1):** Membership owns only the **reset**, the **new birthday**, and the
+    **preserved history**. *How much onboarding is skipped* on return belongs to the **Onboarding**
+    spec (see FE-4), not here.
+- **FD-7 — Consent experience and renewal cadence. ✓ RESOLVED (Founder, 2026-06-29).**
+  - **Consent shape (as Article XV implies, now closed):** default = **no** · explicit · written ·
+    in the Member's language · addressed by name · purpose-specific · requester-specific · logged ·
+    reviewable · revocable · right to be forgotten preserved.
+  - **Cadence = per-request (Option a), a deliberate product decision.** Every external request is
+    an explicit act requiring his permission; the permission **ends** when the request is answered.
+    **No standing authorization, no monthly blanket approval, no silent continuation.**
+  - **Principle: consent is an *event*, not a *setting*.** The Member should never wonder who
+    currently has permission; the answer is always "only the people I explicitly approved, for that
+    request." He experiences every request as "May I use your information?" — he answers — it ends.
+  - **Engineering boundary:** engineering may cache technical authorization tokens where required;
+    that must never change the Member experience. The Member experiences consent **per request**;
+    implementation may optimise behind the scenes — the product may not.
 - **FD-8 — Lapsed Prospective.** Handling of an incomplete-onboarding record (Book II §1.4).
 - **FD-9 — Restoration processes** — the "process for each" breach (Article XVII).
 - **FD-10 — Dignity-based removal** — due process and authority (Articles XVII, XVIII).
@@ -284,3 +383,42 @@ would need its own Founder/Product decision to ever enter scope.
 - **FE-5 — Tenure surfaced as quiet evidence.** Show tenure or its milestones to the Member
   as dignified evidence of progress (Book II §5.5) — strictly within the no-gamification
   limit (§6.3). Excluded now; see Q4.
+
+## 13. Boundary Contracts
+
+Membership owns the **relationship and its lifecycle**; the neighbouring specs own the
+**experiences** that move a Member across a boundary. Each transition below is owned by
+exactly one spec; the neighbour references it. (Per FD-1 and the one-concept principle.)
+
+**What enters Membership**
+
+| Enters | From | As |
+|---|---|---|
+| Onboarding completion (the eight criteria, Book IV §4.1) | **Onboarding** spec | The trigger that creates a Member: `Prospective → Member` |
+| Return from a trip home (§4.7) | **Trip Home** spec | The trigger to reactivate: `Paused → Member` |
+| A return after closure, within/after the 90-day window (§4.8) | **Off-boarding** spec | A re-entry signal: `Closed → Member / Prospective` (rule is *FD-6*) |
+
+**What leaves Membership**
+
+| Leaves | To | As |
+|---|---|---|
+| A declared trip home (§4.7) | **Trip Home** spec | Membership records `Member → Paused`, then hands the *experience* over |
+| A declared departure or dignity-based removal (§4.8; Articles XVII–XVIII) | **Off-boarding** spec | Membership records `Member → Closed`, then hands the *settlement experience* over |
+| A person Nia intends to serve | **Onboarding** spec | The Prospective record onboarding acts upon |
+
+**Who owns each transition**
+
+| Transition | Owner | Notes |
+|---|---|---|
+| `Prospective → Member` | **Membership** | Fires on Onboarding's completion signal; criteria defined in Onboarding |
+| `Member → Paused` | **Membership** | The pause *experience* is Trip Home |
+| `Paused → Member` | **Membership** | Fires on Trip Home's return signal |
+| `Member → Closed` | **Membership** | The exit *experience* is Off-boarding |
+| `Closed → Member / Prospective` | **Membership** | Re-entry rule pending *FD-6* |
+| `Prospective → (lapses)` | **Membership** | Lapse handling pending *FD-8* |
+| Onboarding's internal steps (Nest, bed, locker, wage account, first remittance, etc.) | **Onboarding** | Membership references the completion bundle, not the steps |
+| Trip Home internals (Nest half-rate hold, Curry pause, schedule shift) | **Trip Home** | Membership only holds the `Paused` state |
+| Off-boarding internals (Wallet settlement ≤48h, locked-savings transfer, closing statement, 90-day retention) | **Off-boarding** | Membership only holds the `Closed` state and the fact of the 90-day record |
+
+A boundary contract names *what crosses the line and who owns it* — never how the neighbour
+behaves inside its own spec.
