@@ -5,6 +5,11 @@ in [`docs/adr/`](docs/adr/)** (Problem · Options · Decision · Reasoning · Co
 Read those before proposing alternatives (`docs/methodology.md` → Architecture Decisions).
 A decision that conflicts with Nia OS is invalid — the books win (`CLAUDE.md §1`).
 
+Routine engineering **implementation** choices (frameworks, tools, libraries) live in
+[`docs/engineering-stack.md`](docs/engineering-stack.md), **not** as ADRs. ADRs are
+reserved for decisions that are hard to reverse, have long-term architectural
+consequences, or materially change how Nia is built. Keep ADRs rare so they stay valuable.
+
 ## Accepted ADRs
 
 | ADR | Title |
@@ -20,7 +25,6 @@ A decision that conflicts with Nia OS is invalid — the books win (`CLAUDE.md �
 | [0009](docs/adr/0009-process-frozen-v1.md) | Development Methodology Freeze |
 | [0010](docs/adr/0010-i18n-architecture.md) | i18n architecture |
 | [0011](docs/adr/0011-typescript-testing-and-shared-libs.md) | TypeScript test runner and shared backend libraries |
-| [0012](docs/adr/0012-backend-http-framework-fastify.md) | Backend HTTP framework: Fastify (build deferred until Membership lock) |
 
 ## Open decisions — ruling required (expire 2026-07-13)
 
