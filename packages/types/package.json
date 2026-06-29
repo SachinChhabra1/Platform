@@ -1,0 +1,18 @@
+{
+  "name": "@nia/types",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared API contract (OpenAPI) and generated Dart/TypeScript clients. Book VIII ch. 4; ADR-0007.",
+  "type": "module",
+  "scripts": {
+    "lint:openapi": "redocly lint openapi/openapi.base.yaml",
+    "generate:ts": "openapi-typescript openapi/openapi.base.yaml -o generated/ts/schema.d.ts",
+    "generate:dart": "openapi-generator-cli generate -i openapi/openapi.base.yaml -g dart -o generated/dart",
+    "generate": "pnpm run generate:ts && pnpm run generate:dart"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0",
+    "openapi-typescript": "^7.4.0",
+    "@openapitools/openapi-generator-cli": "^2.15.0"
+  }
+}
