@@ -61,5 +61,10 @@ The critical path, in order:
    `MembershipRepository` port with an in-memory adapter. Pure, fully unit-tested; no HTTP,
    logging, or persistence engine yet. The PostgreSQL adapter (ADR-0006) and HTTP wiring
    (via `@nia/runtime`) are later slices.
-3. Wallet Overview backend. ← **next**
-4. Wallet Overview frontend.
+3. **Wallet Overview backend — DONE (2026-06-29, `services/wallet`).** A pure read-only
+   read model (no ledger engine, no money movement, no policy): projects an assembled
+   `WalletActivity` log into a `MonthlyOverview` with two **distinct** figures —
+   `availableBalance` (usable now) vs `stayedThisMonth` (what stayed his this month) — plus
+   a neutral, shame-free money story and reachable prior months (spec §3; ADR-0008).
+4. Wallet Overview frontend. ← **next** — wire the prototype Wallet to this read model;
+   replace placeholder data; render the two distinct figures the spec §3 legibility note requires.

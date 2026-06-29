@@ -82,14 +82,26 @@ current state of the repository. The repository, not any conversation, is the me
   continues through Paused (FD-5), stays internal (Q4); pause reason + closure cause as opaque
   metadata (FD-4). **No FD-10 (removal) or FD-13 (death) flow** (legal review pending); no HTTP,
   logging, or persistence engine yet. Spec §14 step 2. Verify green.
-- **No production feature built yet** (no HTTP surface / persistence yet).
+- **Wallet Overview backend (`services/wallet`, `@nia/wallet`): read model complete
+  (2026-06-29).** The first Member-visible production slice (ADR-0008). A pure read-only
+  projection (10 tests): `WalletActivity` log → `MonthlyOverview` with two **distinct** figures
+  — `availableBalance` (usable now) vs `stayedThisMonth` (what stayed his this month) — a
+  neutral shame-free money story (no severity/alarm field), and reachable prior months
+  (`availableMonths`). Honours spec §3 legibility. **No** money movement, ledger engine,
+  lending/credit/deductions/settlement policy, or FD-10/FD-13. Money in integer paise;
+  formatting is i18n's job. Spec §14 step 3. Verify green. *Carried for Product confirmation:
+  the exact arithmetic of "stayed with you this month" (driven by a data-provided
+  `changesHoldings` flag; the spec mandates distinctness, not the formula).*
+- **No HTTP surface / persistence engine built yet** (read models + domain only).
 
 ## Current blocker
 
 **None blocking.** Membership is Engineering-Locked; the bottleneck is now **Engineering, not
-Product**. The Fastify runtime skeleton (step 1) and the Membership service domain core
-(step 2) are built; next is the **Wallet Overview backend (step 3)**. (Carried, non-blocking:
-FD-2 exact Promise headline; FD-10/FD-13 flows pending legal review.)
+Product**. Steps 1–3 are built (Fastify runtime skeleton, Membership domain core, Wallet
+Overview read model); next is the **Wallet Overview frontend (step 4)** — wiring the prototype
+Wallet to the read model. (Carried, non-blocking: FD-2 exact Promise headline; FD-10/FD-13
+flows pending legal review; "stayed with you" arithmetic to confirm at the next Wallet Product
+Review.)
 
 ## Next engineering sequence (Membership is Engineering-Locked — sequence is now unblocked)
 
@@ -101,11 +113,16 @@ FD-2 exact Promise headline; FD-10/FD-13 flows pending legal review.)
    `MembershipRepository` port (in-memory adapter); reason/cause as metadata (FD-4); tenure
    internal (FD-3, Q4). FD-10/FD-13 flows **not** built (legal review pending). Pure, 13 tests,
    no HTTP/persistence yet.
-3. **Wallet Overview backend** ← **next** — read-only money story + legibility requirements (spec §3).
-4. **Wallet Overview frontend** — wire the prototype Wallet to the locked contract.
+3. ~~**Wallet Overview backend**~~ — **DONE (2026-06-29, `services/wallet`).** Pure read-only
+   read model: `WalletActivity` → `MonthlyOverview`; `availableBalance` distinct from
+   `stayedThisMonth`; shame-free money story; reachable prior months (spec §3; ADR-0008).
+   No money movement, ledger engine, policy, or FD-10/FD-13. 10 tests.
+4. **Wallet Overview frontend** ← **next** — wire the prototype Wallet (`apps/member`) to the
+   read model; replace placeholder data; render the two distinct figures (§3 legibility note).
 
-   *Membership follow-on slices (not yet sequenced): HTTP wiring via `@nia/runtime`;
-   PostgreSQL adapter (ADR-0006); return-after-closure (FD-6) at the Onboarding boundary.*
+   *Follow-on slices (not yet sequenced): HTTP/API surface for the read model (via
+   `@nia/runtime`); Membership HTTP wiring; PostgreSQL adapters (ADR-0006); Wallet ledger
+   event store (senior review); return-after-closure (FD-6) at the Onboarding boundary.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
