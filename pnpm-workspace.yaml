@@ -8,5 +8,6 @@ packages:
   - "packages/design-system-web"
   - "packages/types"
   - "packages/log"
+  - "packages/runtime"
   - "packages/i18n"
   - "packages/test-utils"

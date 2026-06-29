@@ -70,22 +70,29 @@ current state of the repository. The repository, not any conversation, is the me
 - Logging / PII redaction (`packages/log`): **complete**.
 - Fastify: **approved** as the backend implementation choice; recorded in
   [`docs/engineering-stack.md`](engineering-stack.md) (not an ADR).
-- **No backend runtime built yet.**
+- **Fastify runtime skeleton (`packages/runtime`, `@nia/runtime`): complete (2026-06-29).**
+  Boots, `/health` route, request logging through `@nia/log` (PII redaction); wired into
+  `pnpm run verify` (Vitest + typecheck) and CI via the pnpm workspace. Runtime only — no
+  product behaviour. `tsx` provisioned as the ESM-TS service runner; `fastify` provisioned
+  into the offline cache and re-bundled in `backups/`. Verify green.
 - **No production feature built yet.**
 
 ## Current blocker
 
 **None blocking.** Membership is Engineering-Locked; the bottleneck is now **Engineering, not
-Product**. Implementation may begin with the Fastify runtime skeleton. (Carried, non-blocking:
-FD-2 exact Promise headline; FD-10/FD-13 flows pending legal review.)
+Product**. The Fastify runtime skeleton (step 1) is built; next is the Membership service
+(step 2). (Carried, non-blocking: FD-2 exact Promise headline; FD-10/FD-13 flows pending
+legal review.)
 
 ## Next engineering sequence (Membership is Engineering-Locked — sequence is now unblocked)
 
-1. **Fastify runtime skeleton** — boots, health route, wired into `verify`, uses `packages/log`.
-   *First sub-step:* provision Fastify into the offline cache deliberately (the kit installs
-   offline; adding a dep is its own engineering-stack step — do not assume network).
-2. **Membership service** — identity + lifecycle state machine (Prospective→Member→Paused→Closed),
-   per spec §5/§13.
+1. ~~**Fastify runtime skeleton**~~ — **DONE (2026-06-29, `packages/runtime`).** Boots,
+   `/health`, wired into `verify` (Vitest + typecheck) and CI, logs through `@nia/log`.
+   Fastify + tsx provisioned into the offline cache and re-bundled.
+2. **Membership service** ← **next** — identity + lifecycle state machine
+   (Prospective→Member→Paused→Closed), per spec §5/§13; reason-as-metadata (FD-4); tenure
+   internal (FD-3, Q4). Must **not** build FD-10 (removal) or FD-13 (death) flows — legal
+   review required first.
 3. **Wallet Overview backend** — read-only money story + legibility requirements (spec §3).
 4. **Wallet Overview frontend** — wire the prototype Wallet to the locked contract.
 

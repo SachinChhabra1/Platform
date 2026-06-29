@@ -15,7 +15,8 @@ inline.
 | Area | Choice | Recorded |
 |------|--------|----------|
 | Backend language | TypeScript (Node 20 LTS) | [ADR-0005](adr/0005-backend-typescript.md) |
-| Backend HTTP framework | **Fastify** (approved 2026-06-29; build deferred until Membership Engineering Lock) | here |
+| Backend HTTP framework | **Fastify** (runtime skeleton built 2026-06-29: `packages/runtime`) | here · `packages/runtime` |
+| TS service runner | **tsx** (runs ESM TypeScript entrypoints on Node 20) | here |
 | Database | PostgreSQL | [ADR-0006](adr/0006-database-postgresql.md) |
 | API contract | OpenAPI, generated Dart + TS clients | [ADR-0007](adr/0007-openapi-generated-clients.md) |
 | Clients | Flutter (member, operator); web (console) | [ADR-0002](adr/0002-flutter-apps-web-console.md) |
@@ -50,9 +51,11 @@ Recorded now so the Membership service is built right; not yet implemented (no b
 
 ## When Membership reaches Engineering Lock
 
-The critical path begins, in order:
-1. Fastify runtime skeleton — health, error-envelope + idempotency + request-logging
-   middleware, served per the OpenAPI base. No product behaviour.
-2. Membership service.
+The critical path, in order:
+1. **Fastify runtime skeleton — DONE (2026-06-29, `packages/runtime`).** Boots, a `/health`
+   route, request logging through `@nia/log` (PII redaction). Runtime only — no product
+   behaviour. Error-envelope + idempotency middleware and OpenAPI-base serving are deferred
+   to the Membership service slice, where they have a concrete first consumer.
+2. Membership service. ← **next**
 3. Wallet Overview backend.
 4. Wallet Overview frontend.
