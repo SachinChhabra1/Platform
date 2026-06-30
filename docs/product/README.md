@@ -43,7 +43,8 @@ The repository must always show where every specification sits.
 
 | Spec | Title | Status | Phase |
 |------|-------|--------|-------|
-| [0001](0001-membership-strawman-spec.md) | Membership | **Founder Review** | Spec Phase 2 — awaiting Founder/Product review |
+| [0001](0001-membership-strawman-spec.md) | Membership | **Engineering Locked** (2026-06-29) | Implemented in part (Membership + Wallet surfaces); see PROJECT_STATUS |
+| [0002](0002-member-session-recovery-spec.md) | Member Session & Recovery | **Draft (Strawman)** | Spec Phase 1 — awaiting Founder Review |
 
 **Owner:** _Founder / Product._
 **Nia OS books:** all — a spec cites the books that bind it.
