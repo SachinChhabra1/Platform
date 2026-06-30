@@ -10,7 +10,7 @@
 
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { API_PREFIX, memberFromSession, type SessionStore } from '@nia/runtime';
+import { API_PREFIX, sessionFromRequest, type SessionStore } from '@nia/runtime';
 import type { Membership } from './membership.js';
 import type { MembershipRepository } from './repository.js';
 
@@ -73,13 +73,20 @@ export function registerMembershipRoutes(
   });
 
   app.get(`${API_PREFIX}/membership/me`, async (request, reply) => {
-    const member = memberFromSession(request, deps.sessions);
-    if (!member) {
+    const session = sessionFromRequest(request, deps.sessions);
+    if (!session) {
       return reply
         .code(401)
         .send(errorEnvelope('unauthorized', 'Missing or invalid session.'));
     }
-    const membership = await deps.repository.findById(member);
+    // A Prospective's limited onboarding-status session never reaches the
+    // Membership view (spec 0002 FD-S8 / ERR-1).
+    if (session.scope !== 'member') {
+      return reply
+        .code(403)
+        .send(errorEnvelope('forbidden', 'This needs a full Member session.'));
+    }
+    const membership = await deps.repository.findById(session.membershipId);
     if (!membership) {
       return reply
         .code(404)

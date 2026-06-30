@@ -9,9 +9,9 @@
 /// the client's job (Book III §6.4). Request logging and the lifecycle belong to
 /// `@nia/runtime`'s `createServer`; this only registers routes.
 
-import type { FastifyInstance, FastifyReply } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { API_PREFIX, memberFromSession, type SessionStore } from '@nia/runtime';
+import { API_PREFIX, sessionFromRequest, type SessionStore } from '@nia/runtime';
 import type { Money } from './money.js';
 import type { MoneyStoryLine, MonthlyOverview } from './overview.js';
 import {
@@ -115,13 +115,34 @@ export function registerWalletOverviewRoutes(
       .send(errorEnvelope('internal_error', 'An unexpected error occurred.'));
   });
 
-  app.get(`${API_PREFIX}/wallet/overview`, async (request, reply) => {
-    const member = memberFromSession(request, deps.sessions);
-    if (!member) {
-      return reply
+  // Resolve the signed-in Member, enforcing the session boundary AND its scope:
+  //   • no/invalid session → 401 default-deny (Book VIII §1.4);
+  //   • a `pre_membership` session → 403 — Wallet is never reachable by a
+  //     Prospective's limited onboarding-status session (spec 0002 FD-S8 / ERR-1).
+  // Sends the error and returns `undefined` on denial; the caller then returns.
+  function memberOrDeny(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): string | undefined {
+    const session = sessionFromRequest(request, deps.sessions);
+    if (!session) {
+      void reply
         .code(401)
         .send(errorEnvelope('unauthorized', 'Missing or invalid session.'));
+      return undefined;
     }
+    if (session.scope !== 'member') {
+      void reply
+        .code(403)
+        .send(errorEnvelope('forbidden', 'This needs a full Member session.'));
+      return undefined;
+    }
+    return session.membershipId;
+  }
+
+  app.get(`${API_PREFIX}/wallet/overview`, async (request, reply) => {
+    const member = memberOrDeny(request, reply);
+    if (member === undefined) return reply;
     const month = (request.query as { month?: string }).month;
     if (month !== undefined && !MONTH.test(month)) {
       return reply
@@ -139,12 +160,8 @@ export function registerWalletOverviewRoutes(
   });
 
   app.get(`${API_PREFIX}/wallet/overview/months`, async (request, reply) => {
-    const member = memberFromSession(request, deps.sessions);
-    if (!member) {
-      return reply
-        .code(401)
-        .send(errorEnvelope('unauthorized', 'Missing or invalid session.'));
-    }
+    const member = memberOrDeny(request, reply);
+    if (member === undefined) return reply;
     const activities = await deps.source.listForMember(member);
     return reply.code(200).send({ months: availableMonths(activities) });
   });

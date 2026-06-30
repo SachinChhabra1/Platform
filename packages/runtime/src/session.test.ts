@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   InMemorySessionStore,
   memberFromSession,
+  sessionFromRequest,
   type SessionStore,
 } from './session.js';
 
@@ -39,5 +40,79 @@ describe('session boundary — opaque token → Member (not the bearer-is-id stu
   it('exposes the device binding on the resolved session (Book VIII §1.3)', () => {
     expect(store.resolve('sess-ramesh-001')?.deviceId).toBe('dev-ramesh-phone');
     expect(store.resolve('nope')).toBeUndefined();
+  });
+});
+
+describe('session scope — full vs pre-membership (FD-S8 / ERR-1)', () => {
+  it('defaults a seeded session to member scope (no churn for member-only seeds)', () => {
+    const s = new InMemorySessionStore({
+      'sess-a': { membershipId: 'm-a', deviceId: 'dev-a' },
+    });
+    expect(s.resolve('sess-a')?.scope).toBe('member');
+  });
+
+  it('carries an explicit pre_membership scope through resolve', () => {
+    const s = new InMemorySessionStore({
+      'sess-pros': { membershipId: 'm-pros', deviceId: 'dev-pros', scope: 'pre_membership' },
+    });
+    expect(s.resolve('sess-pros')?.scope).toBe('pre_membership');
+  });
+
+  it('sessionFromRequest exposes the full session incl. scope; default-denies like memberFromSession', () => {
+    const s = new InMemorySessionStore({
+      'sess-pros': { membershipId: 'm-pros', deviceId: 'dev-pros', scope: 'pre_membership' },
+    });
+    expect(sessionFromRequest(req('Bearer sess-pros'), s)).toEqual({
+      membershipId: 'm-pros',
+      deviceId: 'dev-pros',
+      scope: 'pre_membership',
+    });
+    expect(sessionFromRequest(req('Bearer m-pros'), s)).toBeUndefined();
+    expect(sessionFromRequest(req(), s)).toBeUndefined();
+  });
+});
+
+describe('session lifecycle — issue / revoke / one active device (FD-S3)', () => {
+  it('issues a fresh opaque token that resolves to the bound session', () => {
+    const s = new InMemorySessionStore({}, { newToken: () => 'sess-new' });
+    const token = s.issue({ membershipId: 'm-1', deviceId: 'dev-1', scope: 'member' });
+    expect(token).toBe('sess-new');
+    expect(s.resolve(token)).toEqual({
+      membershipId: 'm-1',
+      deviceId: 'dev-1',
+      scope: 'member',
+    });
+  });
+
+  it('revoking a token ends that session; revoking an unknown token is a no-op', () => {
+    const s = new InMemorySessionStore({
+      'sess-x': { membershipId: 'm-1', deviceId: 'dev-1' },
+    });
+    s.revoke('sess-x');
+    expect(s.resolve('sess-x')).toBeUndefined();
+    expect(() => s.revoke('never-existed')).not.toThrow();
+  });
+
+  it('issuing for a member REVOKES his prior device — one active bound device (FD-S3)', () => {
+    let n = 0;
+    const s = new InMemorySessionStore(
+      { 'sess-old': { membershipId: 'm-1', deviceId: 'old-phone' } },
+      { newToken: () => `sess-issued-${++n}` },
+    );
+    const fresh = s.issue({ membershipId: 'm-1', deviceId: 'new-phone', scope: 'member' });
+    // The new device is bound; the old device's session is gone.
+    expect(s.resolve(fresh)?.deviceId).toBe('new-phone');
+    expect(s.resolve('sess-old')).toBeUndefined();
+  });
+
+  it('issuing for a different member leaves other members\' sessions intact', () => {
+    let n = 0;
+    const s = new InMemorySessionStore(
+      { 'sess-a': { membershipId: 'm-a', deviceId: 'dev-a' } },
+      { newToken: () => `sess-issued-${++n}` },
+    );
+    const bToken = s.issue({ membershipId: 'm-b', deviceId: 'dev-b', scope: 'member' });
+    expect(s.resolve('sess-a')?.membershipId).toBe('m-a');
+    expect(s.resolve(bToken)?.membershipId).toBe('m-b');
   });
 });

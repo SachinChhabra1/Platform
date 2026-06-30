@@ -9,8 +9,11 @@ export {
 export { API_PREFIX } from './prefix.js';
 export {
   type Session,
+  type SessionScope,
   type SessionStore,
+  type InMemorySessionStoreOptions,
   type BearerCarrier,
   InMemorySessionStore,
   memberFromSession,
+  sessionFromRequest,
 } from './session.js';

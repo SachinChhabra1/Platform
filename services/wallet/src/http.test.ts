@@ -28,10 +28,13 @@ const LOG: readonly WalletActivity[] = [
 
 const MEMBER = 'm-001';
 const MEMBER_NO_ACTIVITY = 'm-quiet';
+const PROSPECT = 'm-pros';
 // Opaque session tokens — NOT the membership id (that was the old stub). The
 // store resolves them to the bound Member; an unknown token is no session.
 const SESSION = 'sess-ramesh-001';
 const SESSION_QUIET = 'sess-quiet';
+// A Prospective's limited onboarding-status session (pre_membership scope).
+const SESSION_PROSPECT = 'sess-prospect';
 const BEARER = { authorization: `Bearer ${SESSION}` };
 
 let server: FastifyInstance | undefined;
@@ -43,6 +46,11 @@ function build(): FastifyInstance {
     sessions: new InMemorySessionStore({
       [SESSION]: { membershipId: MEMBER, deviceId: 'dev-1' },
       [SESSION_QUIET]: { membershipId: MEMBER_NO_ACTIVITY, deviceId: 'dev-2' },
+      [SESSION_PROSPECT]: {
+        membershipId: PROSPECT,
+        deviceId: 'dev-3',
+        scope: 'pre_membership',
+      },
     }),
     now: () => ASOF,
   });
@@ -150,6 +158,19 @@ describe('Wallet Overview HTTP — access and validation', () => {
       });
       expect(response.statusCode).toBe(401);
       expect(response.json().code).toBe('unauthorized');
+    }
+  });
+
+  it('forbids a pre_membership session — Wallet needs a full Member (FD-S8)', async () => {
+    server = build();
+    for (const url of ['/v1/wallet/overview', '/v1/wallet/overview/months']) {
+      const response = await server.inject({
+        method: 'GET',
+        url,
+        headers: { authorization: `Bearer ${SESSION_PROSPECT}` },
+      });
+      expect(response.statusCode).toBe(403);
+      expect(response.json().code).toBe('forbidden');
     }
   });
 

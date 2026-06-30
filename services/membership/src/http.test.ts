@@ -13,6 +13,8 @@ const BORN = new Date('2026-01-04T00:00:00.000Z');
 const SESSION = 'sess-ramesh-001';
 const SESSION_PAUSED = 'sess-sunita';
 const SESSION_GHOST = 'sess-ghost';
+// A Prospective's limited onboarding-status session (pre_membership scope).
+const SESSION_PROSPECT = 'sess-prospect';
 const BEARER = { authorization: `Bearer ${SESSION}` };
 const BEARER_PAUSED = { authorization: `Bearer ${SESSION_PAUSED}` };
 
@@ -34,6 +36,11 @@ async function build(): Promise<FastifyInstance> {
       [SESSION]: { membershipId: 'm-001', deviceId: 'dev-1' },
       [SESSION_PAUSED]: { membershipId: 'm-002', deviceId: 'dev-2' },
       [SESSION_GHOST]: { membershipId: 'm-ghost', deviceId: 'dev-3' },
+      [SESSION_PROSPECT]: {
+        membershipId: 'm-001',
+        deviceId: 'dev-4',
+        scope: 'pre_membership',
+      },
     }),
     now: () => ASOF,
   });
@@ -114,5 +121,19 @@ describe('Membership HTTP — GET /membership/me', () => {
     });
     expect(response.statusCode).toBe(404);
     expect(response.json().code).toBe('not_found');
+  });
+
+  it('forbids a pre_membership session — even for a real Member record (FD-S8)', async () => {
+    server = await build();
+    // SESSION_PROSPECT is bound to m-001 (who HAS a record), so a 403 here proves
+    // scope is enforced BEFORE the membership lookup — a Prospective's
+    // onboarding-status session never reaches the Membership view (ERR-1).
+    const response = await server.inject({
+      method: 'GET',
+      url: '/v1/membership/me',
+      headers: { authorization: `Bearer ${SESSION_PROSPECT}` },
+    });
+    expect(response.statusCode).toBe(403);
+    expect(response.json().code).toBe('forbidden');
   });
 });
