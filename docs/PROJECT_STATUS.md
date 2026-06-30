@@ -171,11 +171,25 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    live (valid session 200, old `m-001` 401). App unchanged in code; `NIA_MEMBER_TOKEN` is now a
    session token.
 
-   *Follow-on slices (not yet sequenced) ← **next**: session ISSUANCE surface (`POST /v1/sessions`,
-   device-bound, Idempotency-Key) and eventually the phone-first verification flow — both need a
-   Founder/Product spec first (Book VIII §1.3 not yet Engineering-Locked). Also: Membership
-   write/command surface (lifecycle transitions); PostgreSQL adapters (ADR-0006); Wallet ledger
-   event store (senior review); return-after-closure (FD-6).*
+9. ~~**Spec 0002 (Member Session & Recovery) Engineering-Locked + implementation plan**~~ —
+   **DONE (2026-06-30).** The session issuance/recovery spec is locked (FD-S1–S8, ERR-1–8) with a
+   per-slice implementation plan (`docs/plans/0002-session-issuance-recovery-implementation-plan.md`).
+   No code in that commit — the gate that previously blocked issuance is cleared.
+
+10. ~~**Slice A — session model: scope + revocation**~~ — **DONE (2026-06-30, plan 0002 §5).** Pure
+    `@nia/runtime` (no contract, no new route). `Session` gains `scope` (`pre_membership`|`member`,
+    FD-S8/ERR-1); `SessionStore` gains `issue(session)→token` (with one-active-device revoke-prior,
+    FD-S3) and `revoke(token)`; `InMemorySessionStore` is mutable (injectable token factory).
+    `sessionFromRequest` added; `memberFromSession` unchanged (now a projection). Both services 403
+    a `pre_membership` session before any record lookup (FD-S8). Tests: runtime issue/revoke +
+    scope + revoke-prior + isolation; per-service `pre_membership`→403. Verify green; no drift.
+
+   *Next ← **Slice B**: issuance HTTP surface `POST /v1/sessions` (re-proof path; `Idempotency-Key`;
+   `device_id`; drives `SessionStore.issue` → revokes the prior device). Then C (sign-out) → D
+   (operator recovery rebind, needs a minimal ops credential — critical path) → E (Closed force-end)
+   → F (app wiring). Not blocked on this plan: Membership write/command surface (lifecycle
+   transitions); PostgreSQL adapters (ADR-0006); Wallet ledger event store (senior review);
+   return-after-closure (FD-6).*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
