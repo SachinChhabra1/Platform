@@ -18,7 +18,10 @@ kit_cache="$(cd -P "$repo/.." && pwd)/cache/openapi-generator"
 gen_ver="7.10.0"
 jar="$kit_cache/openapi-generator-cli-$gen_ver.jar"
 types="$repo/packages/types"
-spec="$types/openapi/openapi.wallet.yaml"
+# Output base dir. Defaults to the committed location; override (NIA_CODEGEN_OUT)
+# to generate into a throwaway dir — used by `nia verify`'s drift check so it can
+# compare against the working tree WITHOUT ever writing to or reverting it.
+out="${NIA_CODEGEN_OUT:-$types/generated}"
 
 command -v java >/dev/null 2>&1 || {
   echo "java not found — run scripts/bootstrap.sh first (it provisions the JDK)." >&2
@@ -32,30 +35,32 @@ if [ ! -f "$jar" ]; then
     "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/$gen_ver/openapi-generator-cli-$gen_ver.jar"
 fi
 
-# Run from packages/types so the generator gets RELATIVE, space-free paths — the
-# Java generator parses -i as a URI and the kit path contains a space.
+mkdir -p "$out" "$out/ts"
+# pnpm-based tools (redocly, openapi-typescript) run from packages/types and
+# handle spaces in paths fine.
 cd "$types"
 
-echo "▶ Joining contracts (base + features) → generated/nia.combined.yaml"
-mkdir -p generated
+echo "▶ Joining contracts (base + features) → $out/nia.combined.yaml"
 # One client for the whole API (ADR-0007): merge the base contract and every
 # feature surface into a single self-contained doc, then generate from it.
 pnpm exec redocly join \
   openapi/openapi.base.yaml \
   openapi/openapi.wallet.yaml \
   openapi/openapi.membership.yaml \
-  -o generated/nia.combined.yaml >/dev/null
+  -o "$out/nia.combined.yaml" >/dev/null
 
-echo "▶ Dart client → packages/types/generated/dart"
-rm -rf generated/dart
-java -jar "$jar" generate \
-  -i generated/nia.combined.yaml \
-  -g dart \
-  -o generated/dart \
-  --additional-properties=pubName=nia_api,pubVersion=1.0.0 \
-  --global-property=apiTests=false,modelTests=false,apiDocs=false,modelDocs=false
+echo "▶ Dart client → $out/dart"
+rm -rf "$out/dart"
+# The Java generator parses -i as a URI and chokes on spaces, so run it from
+# inside the output dir and reference the combined spec by its relative name.
+( cd "$out" && java -jar "$jar" generate \
+    -i nia.combined.yaml \
+    -g dart \
+    -o dart \
+    --additional-properties=pubName=nia_api,pubVersion=1.0.0 \
+    --global-property=apiTests=false,modelTests=false,apiDocs=false,modelDocs=false )
 
-echo "▶ TypeScript types → packages/types/generated/ts/schema.d.ts"
-pnpm exec openapi-typescript generated/nia.combined.yaml -o generated/ts/schema.d.ts
+echo "▶ TypeScript types → $out/ts/schema.d.ts"
+pnpm exec openapi-typescript "$out/nia.combined.yaml" -o "$out/ts/schema.d.ts"
 
-echo "✓ codegen complete"
+echo "✓ codegen complete (output: $out)"
