@@ -193,12 +193,20 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
     suite 24; verify green, no drift. **Founder direction this session: shift to "can I see it?" —
     priority order Preview → Live Home → Membership UI → Session issuance → Family.**
 
-    *Next: either (a) **Membership UI depth** (product-first, instantly visible in Preview — e.g.
-    resolve Q2, which Preview already leans toward showing), or (b) **Slice B** — issuance surface
-    `POST /v1/sessions` (re-proof; `Idempotency-Key`; `device_id`; drives `SessionStore.issue` →
-    revokes the prior device), then C (sign-out) → D (operator recovery rebind, needs an ops
-    credential — critical path) → E (Closed force-end) → F (app wiring). Not blocked on the plan:
-    Membership write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
+12. ~~**Membership UI depth (Q2 resolved)**~~ — **DONE (2026-06-30).** Founder resolved **Q2**: show
+    the lifecycle state, but only as it helps action — calm for Active, careful/dignified for
+    Paused/Closed (continuity + Operator). `MemberStanding` widget; Home + Profile show the live
+    standing in both modes (the Q2/FD-5 "open" placeholders retired); the preview backend seeds
+    paused (Sunita) + closed (Imran) Members so every standing is walkable (`sess-paused` /
+    `sess-closed`). Founder also kept **Phone** as preview copy (not on the contract) and **Recovery**
+    as a copy mock — so app-only, no codegen. Member suite 28; preview backend 6; verify green.
+
+    *Next: either (a) more product-first, visible-in-Preview work — a returning (Paused→resume) flow,
+    Wallet money-story polish, or **Family** (⑤; a Q3 placeholder today), or (b) **Slice B** —
+    issuance `POST /v1/sessions` (re-proof; `Idempotency-Key`; `device_id`; drives
+    `SessionStore.issue` → revokes the prior device), then C (sign-out) → D (operator recovery
+    rebind, needs an ops credential) → E (Closed force-end) → F (app wiring). Not blocked: Membership
+    write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
