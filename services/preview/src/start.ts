@@ -6,7 +6,13 @@
 /// only. Seeds are demo-only (see server.ts): the Founder Wallet scenario, an
 /// active demo Member, and the `sess-ramesh-001` member session.
 
-import { previewLogger, seededPreviewServer, DEMO_SESSION } from './server.js';
+import {
+  previewLogger,
+  seededPreviewServer,
+  DEMO_SESSION,
+  DEMO_PAUSED_SESSION,
+  DEMO_CLOSED_SESSION,
+} from './server.js';
 
 const host = process.env.HOST ?? '127.0.0.1';
 const port = Number(process.env.PORT ?? 8080);
@@ -25,7 +31,10 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) {
 
 try {
   const address = await app.listen({ host, port });
-  log.info('preview started', { listenAddress: address, demoSession: DEMO_SESSION });
+  log.info('preview started', {
+    listenAddress: address,
+    sessions: [DEMO_SESSION, DEMO_PAUSED_SESSION, DEMO_CLOSED_SESSION],
+  });
 } catch (error) {
   log.error('preview failed to start', { error: String(error) });
   process.exit(1);

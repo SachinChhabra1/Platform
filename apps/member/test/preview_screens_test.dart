@@ -53,8 +53,8 @@ void tall(WidgetTester tester) {
 }
 
 void main() {
-  group('Home — live, Preview mode', () {
-    testWidgets('greets by name, shows the standing, and the two §3 figures',
+  group('Home — live', () {
+    testWidgets('greets by name, shows the standing (Q2), and the two §3 figures',
         (WidgetTester tester) async {
       tall(tester);
       await tester.pumpWidget(MaterialApp(
@@ -62,7 +62,6 @@ void main() {
           body: HomePage(
             walletSource: _Wallet(_overview()),
             membershipSource: _Member(_member(MembershipState.member)),
-            previewMode: true,
           ),
         ),
       ));
@@ -72,9 +71,12 @@ void main() {
       expect(find.text('An active Member of Nia'), findsOneWidget);
       expect(find.text('₹3,480'), findsOneWidget);
       expect(find.textContaining('₹4,800 stayed with you this month'), findsOneWidget);
+      // Q4 tenure stays internal even with the standing now shown.
+      expect(find.textContaining('no tenure is surfaced', findRichText: true),
+          findsOneWidget);
     });
 
-    testWidgets('a Paused Member reads as paused (Preview surfaces state, Q2)',
+    testWidgets('a Paused Member reads as paused, with the Operator offered',
         (WidgetTester tester) async {
       tall(tester);
       await tester.pumpWidget(MaterialApp(
@@ -82,36 +84,17 @@ void main() {
           body: HomePage(
             walletSource: _Wallet(_overview()),
             membershipSource: _Member(_member(MembershipState.paused)),
-            previewMode: true,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      expect(find.text('A paused Member of Nia'), findsOneWidget);
-    });
-
-    testWidgets('offline Home does NOT surface the lifecycle state (Q2 preserved)',
-        (WidgetTester tester) async {
-      tall(tester);
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: HomePage(
-            walletSource: _Wallet(_overview()),
-            membershipSource: _Member(_member(MembershipState.member)),
-            // previewMode defaults to false
-          ),
-        ),
-      ));
-      await tester.pumpAndSettle();
-      expect(find.text('An active Member of Nia'), findsNothing);
-      // The Q4 tenure marker still stands in the prototype.
-      expect(find.textContaining('no tenure is surfaced', findRichText: true),
-          findsOneWidget);
+      expect(find.text('Your membership is paused'), findsOneWidget);
+      expect(find.text('Talk to your Operator'), findsOneWidget);
     });
   });
 
   group('Profile — Preview actions', () {
-    testWidgets('shows phone, the Nia-phone recovery link, and sign out',
+    testWidgets('shows standing, phone, the Nia-phone recovery link, and sign out',
         (WidgetTester tester) async {
       tall(tester);
       await tester.pumpWidget(MaterialApp(
@@ -122,10 +105,11 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
+      expect(find.text('An active Member of Nia'), findsOneWidget);
       expect(find.text('Phone'), findsOneWidget);
       expect(find.text('This phone is your Nia phone'), findsOneWidget);
       expect(find.text('Sign out of this phone'), findsOneWidget);
-      // Preview hides the prototype FD/Q scaffolding.
+      // Preview hides the remaining prototype FD scaffolding.
       expect(find.textContaining('FD-11', findRichText: true), findsNothing);
     });
   });

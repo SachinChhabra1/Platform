@@ -1,34 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:nia_api/api.dart';
 
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../membership/member_standing.dart';
 import '../membership/membership_header.dart';
 import '../membership/membership_source.dart';
 import '../recovery/recovery_page.dart';
 
-/// Profile — the Member's identity, his Operator, his phone, and his data rights.
+/// Profile — the Member's identity, his standing, his Operator, his phone, and
+/// his data rights.
 ///
 /// He is known by name, not number (Book III §6.3, Truth 1.7); he owns his data
-/// and Nia is custodian (Article XV). In the offline prototype, undecided
-/// behaviour (state visibility, tenure) is shown as a marked placeholder, never
-/// invented. In the Developer Preview (`previewMode`) those scaffolding markers
-/// are hidden so the screen reads as the product — the resolved content (consent,
-/// data rights) is unchanged.
-class ProfilePage extends StatelessWidget {
+/// and Nia is custodian (Article XV). His **standing** is shown (Q2 resolved,
+/// Founder 2026-06-30) via [MemberStanding] — calm for Active, careful and
+/// action-helpful for Paused/Closed. In the offline prototype the remaining open
+/// markers (FD-11) are kept; in the Developer Preview (`previewMode`) they are
+/// hidden so the screen reads as the product.
+class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
     this.membershipSource = const SampleMembershipSource(),
     this.previewMode = false,
   });
 
-  /// The identity header's source — live over HTTP or the offline sample,
-  /// chosen by [MemberConfig] at the shell. Defaults to the sample.
+  /// Source for the identity header and the standing — live over HTTP or the
+  /// offline sample, chosen by [MemberConfig] at the shell. Defaults to sample.
   final MembershipSource membershipSource;
 
-  /// Developer Preview: hide the prototype FD/Q placeholders so the screen reads
-  /// as the product. Offline (default) keeps them — the Product Review markers.
+  /// Developer Preview: hide the remaining prototype FD markers so the screen
+  /// reads as the product. Offline (default) keeps them.
   final bool previewMode;
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late final Future<MembershipView> _membership =
+      widget.membershipSource.currentMembership();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
         actions: <Widget>[
-          Center(child: PrototypeChip(label: previewMode ? 'preview' : 'prototype')),
+          Center(child: PrototypeChip(label: widget.previewMode ? 'preview' : 'prototype')),
           const SizedBox(width: NiaTokens.s4),
         ],
       ),
@@ -46,7 +57,23 @@ class ProfilePage extends StatelessWidget {
             NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s8),
         children: <Widget>[
           // Identity header — wired to the Membership read model via nia_api.
-          MembershipHeader(source: membershipSource),
+          MembershipHeader(source: widget.membershipSource),
+          const SizedBox(height: NiaTokens.s7),
+
+          // Your standing (Q2 resolved) — the live lifecycle state, with careful
+          // copy for Paused/Closed.
+          const SectionLabel('Your standing'),
+          const SizedBox(height: NiaTokens.s2),
+          FutureBuilder<MembershipView>(
+            future: _membership,
+            builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
+              if (!snap.hasData) return const SizedBox(height: 44);
+              return MemberStanding(
+                state: snap.data!.state,
+                onOperator: () => openOperatorSheet(context),
+              );
+            },
+          ),
           const SizedBox(height: NiaTokens.s7),
 
           const SectionLabel('Your Operator'),
@@ -93,24 +120,6 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: NiaTokens.s6),
 
-          // Open Product debates — shown as markers in the prototype, hidden in
-          // the Preview so it reads as the product.
-          if (!previewMode) ...<Widget>[
-            const SectionLabel('Your standing'),
-            const FdPlaceholder(
-              code: 'Q2',
-              label:
-                  'Whether the Member’s lifecycle state (Member / Paused / Closed) is shown to him, and how, is an open Product debate — predictability vs dignity. Not shown until decided.',
-            ),
-            const SizedBox(height: NiaTokens.s3),
-            const FdPlaceholder(
-              code: 'FD-5',
-              label:
-                  'Tenure begins on the first Saturday (FD-3, resolved). How it behaves while Paused, and any maximum pause before closure, are undecided.',
-            ),
-            const SizedBox(height: NiaTokens.s6),
-          ],
-
           const SectionLabel('Your data — yours'),
           Text(
             'You own your data. Nia is the custodian, not the owner. You can see your full history, and every time anyone else looks at it.',
@@ -130,7 +139,7 @@ class ProfilePage extends StatelessWidget {
             onPressed: () => prototypeNoOp(context, 'See who accessed my data'),
             child: const Text('See who has accessed my data'),
           ),
-          if (!previewMode) ...<Widget>[
+          if (!widget.previewMode) ...<Widget>[
             const SizedBox(height: NiaTokens.s5),
             const FdPlaceholder(
               code: 'FD-11',

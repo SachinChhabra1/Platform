@@ -26,18 +26,30 @@ import {
 } from '@nia/wallet';
 import {
   activate,
+  close,
   createProspective,
   InMemoryMembershipRepository,
+  pause,
   registerMembershipRoutes,
   type MembershipRepository,
 } from '@nia/membership';
 
-/** The one Member the preview is seeded for, and his opaque session token. The
- *  token is NOT the membership id (that was the retired stub); it is resolved
+/** The primary Member the preview is seeded for, and his opaque session token.
+ *  The token is NOT the membership id (that was the retired stub); it is resolved
  *  server-side to the bound Member (the auth boundary). */
 export const DEMO_MEMBER = 'm-001';
 export const DEMO_SESSION = 'sess-ramesh-001';
 export const DEMO_DEVICE = 'dev-ramesh-phone';
+
+/** Extra demo Members so the Preview can show every standing (Q2): a paused and
+ *  a closed Member, each behind their own session token. Switch `nia preview`'s
+ *  NIA_MEMBER_TOKEN to one of these to walk that state. (A closed Member keeping
+ *  a valid session is a Preview convenience — the force-end on Closed is a later
+ *  backend slice, spec 0002 ERR-7.) */
+export const DEMO_PAUSED_MEMBER = 'm-002';
+export const DEMO_PAUSED_SESSION = 'sess-paused';
+export const DEMO_CLOSED_MEMBER = 'm-003';
+export const DEMO_CLOSED_SESSION = 'sess-closed';
 
 /** The Founder-accepted Wallet scenario (the same figures the sample app shows):
  *  May carried ₹680 forward; June is the wage month. The two §3 figures are
@@ -92,19 +104,37 @@ export function createPreviewServer(deps: PreviewDeps): FastifyInstance {
 export async function seededPreviewServer(
   options: { logger?: Logger; now?: () => Date } = {},
 ): Promise<FastifyInstance> {
+  const born = new Date('2026-01-04T00:00:00.000Z');
   const repository = new InMemoryMembershipRepository();
   // Activated on the demo birthday so the lifecycle state reads `member`.
   await repository.save(
-    activate(
-      createProspective({ membershipId: DEMO_MEMBER, name: 'Ramesh Kumar' }),
-      new Date('2026-01-04T00:00:00.000Z'),
+    activate(createProspective({ membershipId: DEMO_MEMBER, name: 'Ramesh Kumar' }), born),
+  );
+  // A paused Member (continuity preserved, FD-4) and a closed Member, so every
+  // standing is walkable in the Preview.
+  await repository.save(
+    pause(
+      activate(createProspective({ membershipId: DEMO_PAUSED_MEMBER, name: 'Sunita Devi' }), born),
+      { code: 'travel', recordedBy: { kind: 'operator', operatorId: 'op-1' } },
+    ),
+  );
+  await repository.save(
+    close(
+      activate(createProspective({ membershipId: DEMO_CLOSED_MEMBER, name: 'Imran Shaikh' }), born),
+      { code: 'moved_on' },
     ),
   );
   const deps: PreviewDeps = {
-    source: new InMemoryWalletActivitySource({ [DEMO_MEMBER]: DEMO_WALLET_LOG }),
+    source: new InMemoryWalletActivitySource({
+      [DEMO_MEMBER]: DEMO_WALLET_LOG,
+      [DEMO_PAUSED_MEMBER]: DEMO_WALLET_LOG,
+      [DEMO_CLOSED_MEMBER]: DEMO_WALLET_LOG,
+    }),
     repository,
     sessions: new InMemorySessionStore({
       [DEMO_SESSION]: { membershipId: DEMO_MEMBER, deviceId: DEMO_DEVICE, scope: 'member' },
+      [DEMO_PAUSED_SESSION]: { membershipId: DEMO_PAUSED_MEMBER, deviceId: 'dev-sunita', scope: 'member' },
+      [DEMO_CLOSED_SESSION]: { membershipId: DEMO_CLOSED_MEMBER, deviceId: 'dev-imran', scope: 'member' },
     }),
     ...(options.logger ? { logger: options.logger } : {}),
     ...(options.now ? { now: options.now } : {}),

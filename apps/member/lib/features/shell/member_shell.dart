@@ -37,7 +37,6 @@ class _MemberShellState extends State<MemberShell> {
     HomePage(
       walletSource: widget.config.walletSource(),
       membershipSource: widget.config.membershipSource(),
-      previewMode: widget.config.usesLiveBackend,
     ),
     WalletPage(source: widget.config.walletSource()),
     const ClustersPage(),

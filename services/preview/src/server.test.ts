@@ -16,6 +16,8 @@ import {
   seededPreviewServer,
   DEMO_MEMBER,
   DEMO_SESSION,
+  DEMO_PAUSED_SESSION,
+  DEMO_CLOSED_SESSION,
 } from './server.js';
 
 const BEARER = { authorization: `Bearer ${DEMO_SESSION}` };
@@ -46,6 +48,20 @@ describe('Developer Preview backend — both surfaces on one origin', () => {
       name: 'Ramesh Kumar',
       state: 'member',
     });
+  });
+
+  it('serves the paused and closed demo Members so every standing is walkable', async () => {
+    server = await seededPreviewServer();
+    const paused = await server.inject({
+      method: 'GET', url: '/v1/membership/me',
+      headers: { authorization: `Bearer ${DEMO_PAUSED_SESSION}` },
+    });
+    expect(paused.json().state).toBe('paused');
+    const closed = await server.inject({
+      method: 'GET', url: '/v1/membership/me',
+      headers: { authorization: `Bearer ${DEMO_CLOSED_SESSION}` },
+    });
+    expect(closed.json().state).toBe('closed');
   });
 
   it('answers the health probe (one process is up for both surfaces)', async () => {

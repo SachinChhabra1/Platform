@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../membership/member_standing.dart';
 import '../membership/membership_source.dart';
 import '../promise/promise_page.dart';
 import '../wallet/wallet_overview_source.dart';
@@ -24,21 +25,18 @@ import '../wallet/wallet_page.dart' show formatRupees;
 /// the prototype is unchanged; pointed at the backend (Developer Preview) the
 /// Home shows the real services.
 ///
-/// `previewMode` surfaces the Member's lifecycle **state** ("Active"). In the
-/// offline prototype it stays OFF, preserving the Q2 placeholder below — whether
-/// the state is shown to the Member is still an open Product debate; the Preview
-/// lens leans toward showing it, for Founder confirmation.
+/// The greeting line is followed by the Member's **standing** ([MemberStanding]).
+/// Q2 is resolved (Founder, 2026-06-30): the lifecycle state is shown — calm for
+/// Active, careful and action-helpful for Paused/Closed.
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
     this.walletSource = const SampleWalletOverviewSource(),
     this.membershipSource = const SampleMembershipSource(),
-    this.previewMode = false,
   });
 
   final WalletOverviewSource walletSource;
   final MembershipSource membershipSource;
-  final bool previewMode;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -57,45 +55,35 @@ class _HomePageState extends State<HomePage> {
           NiaTokens.s5, NiaTokens.s6, NiaTokens.s5, NiaTokens.s8),
       children: <Widget>[
         // Addressed by name, never a number (Book III §6.3, Truth 1.7). "Namaste"
-        // shows immediately; the name fills in from the live Membership model.
+        // shows immediately; the name and standing fill in from the live model.
         FutureBuilder<MembershipView>(
           future: _membership,
           builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
             final String? name = snap.data?.name;
             final String first =
                 (name != null && name.isNotEmpty) ? name.split(' ').first : '';
-            return Text(
-              first.isEmpty ? 'Namaste' : 'Namaste, $first',
-              style: theme.textTheme.headlineMedium,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  first.isEmpty ? 'Namaste' : 'Namaste, $first',
+                  style: theme.textTheme.headlineMedium,
+                ),
+                const SizedBox(height: NiaTokens.s2),
+                // The Member's standing (Q2 resolved) — calm for Active, careful
+                // for Paused/Closed (MemberStanding owns the copy).
+                if (snap.hasData)
+                  MemberStanding(
+                    state: snap.data!.state,
+                    compact: true,
+                    onOperator: () => openOperatorSheet(context),
+                  )
+                else
+                  const SizedBox(height: 20),
+              ],
             );
           },
         ),
-        const SizedBox(height: NiaTokens.s2),
-
-        // Lifecycle state — Preview only (Q2). A quiet, confident standing line.
-        if (widget.previewMode)
-          FutureBuilder<MembershipView>(
-            future: _membership,
-            builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
-              if (!snap.hasData) return const SizedBox(height: NiaTokens.s2);
-              final _Standing s = _standingFor(snap.data!.state);
-              return Padding(
-                padding: const EdgeInsets.only(bottom: NiaTokens.s2),
-                child: Row(
-                  children: <Widget>[
-                    Icon(s.icon, size: 16, color: s.color),
-                    const SizedBox(width: NiaTokens.s2),
-                    Flexible(
-                      child: Text(s.phrase,
-                          style: theme.textTheme.bodyMedium?.copyWith(color: s.color)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          )
-        else
-          Text('Tuesday, a quiet day.', style: theme.textTheme.bodyMedium),
         const SizedBox(height: NiaTokens.s8),
 
         // 1 — The two §3 figures, live: what he can use now leads (the first
@@ -208,29 +196,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
-  }
-}
-
-/// How a lifecycle state reads on the Home standing line (Preview only).
-class _Standing {
-  const _Standing(this.phrase, this.icon, this.color);
-  final String phrase;
-  final IconData icon;
-  final Color color;
-}
-
-_Standing _standingFor(MembershipState state) {
-  switch (state) {
-    case MembershipState.member:
-      return const _Standing('An active Member of Nia', Icons.check_circle, NiaTokens.green);
-    case MembershipState.paused:
-      return const _Standing('A paused Member of Nia', Icons.pause_circle_outline, NiaTokens.amber);
-    case MembershipState.prospective:
-      return const _Standing('Joining Nia', Icons.schedule, NiaTokens.inkSecondary);
-    case MembershipState.closed:
-      return const _Standing('A former Member of Nia', Icons.circle_outlined, NiaTokens.inkSecondary);
-    default:
-      return const _Standing('A Member of Nia', Icons.circle_outlined, NiaTokens.inkSecondary);
   }
 }
 
