@@ -6,9 +6,7 @@
   "type": "module",
   "scripts": {
     "lint:openapi": "redocly lint openapi/openapi.base.yaml openapi/openapi.wallet.yaml",
-    "generate:ts": "openapi-typescript openapi/openapi.base.yaml -o generated/ts/schema.d.ts",
-    "generate:dart": "openapi-generator-cli generate -i openapi/openapi.base.yaml -g dart -o generated/dart",
-    "generate": "pnpm run generate:ts && pnpm run generate:dart"
+    "generate": "bash ../../scripts/codegen.sh"
   },
   "devDependencies": {
     "@redocly/cli": "^1.25.0",
