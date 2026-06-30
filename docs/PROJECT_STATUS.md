@@ -154,7 +154,11 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    `NIA_API_BASE_URL` + `NIA_MEMBER_TOKEN`). Empty URL ⇒ offline sample (the Product Review
    Prototype default, unchanged); a configured URL ⇒ the app reads the live `/v1` surfaces via the
    generated `nia_api` client. Threaded `NiaMemberApp → MemberShell → WalletPage / ProfilePage →
-   MembershipHeader`. 3 selection guard tests; verify green. **Auth still the bearer PRE-AUTH stub.**
+   MembershipHeader`. **Both modes proven by tests:** 3 selection guards + 4 render/fetch tests
+   (`app_modes_test.dart`) — offline renders the sample; live makes a REAL loopback HTTP fetch
+   through the generated client, asserts it hit `/v1/wallet/overview` + `/v1/membership/me` with the
+   bearer, and renders the fetched figures. Also smoke-tested against the real Fastify services.
+   Verify green. **Auth still the bearer PRE-AUTH stub.**
 
    *Follow-on slices (not yet sequenced) ← **next**: real phone-first session auth (replace the
    bearer-as-membership-id PRE-AUTH stub, shared by both surfaces, Book VIII §1.3); Membership
