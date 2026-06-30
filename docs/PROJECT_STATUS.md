@@ -184,12 +184,21 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
     a `pre_membership` session before any record lookup (FD-S8). Tests: runtime issue/revoke +
     scope + revoke-prior + isolation; per-service `pre_membership`→403. Verify green; no drift.
 
-   *Next ← **Slice B**: issuance HTTP surface `POST /v1/sessions` (re-proof path; `Idempotency-Key`;
-   `device_id`; drives `SessionStore.issue` → revokes the prior device). Then C (sign-out) → D
-   (operator recovery rebind, needs a minimal ops credential — critical path) → E (Closed force-end)
-   → F (app wiring). Not blocked on this plan: Membership write/command surface (lifecycle
-   transitions); PostgreSQL adapters (ADR-0006); Wallet ledger event store (senior review);
-   return-after-closure (FD-6).*
+11. ~~**Developer Preview ("see it")**~~ — **DONE (2026-06-30).** The Member app now runs as a
+    product against the real services in one command. `services/preview` (`@nia/preview`) composes
+    the Wallet + Membership surfaces onto ONE origin (8080) with one seeded session (the app reads a
+    single base URL). Home is live (greeting + the two §3 figures + standing); Profile gains phone,
+    a recovery link, and sign-out; a new Recovery screen mocks spec 0002's in-person rebind.
+    `apps/member/lib/main_preview.dart` + `nia preview` launch it. 5 preview-backend tests + member
+    suite 24; verify green, no drift. **Founder direction this session: shift to "can I see it?" —
+    priority order Preview → Live Home → Membership UI → Session issuance → Family.**
+
+    *Next: either (a) **Membership UI depth** (product-first, instantly visible in Preview — e.g.
+    resolve Q2, which Preview already leans toward showing), or (b) **Slice B** — issuance surface
+    `POST /v1/sessions` (re-proof; `Idempotency-Key`; `device_id`; drives `SessionStore.issue` →
+    revokes the prior device), then C (sign-out) → D (operator recovery rebind, needs an ops
+    credential — critical path) → E (Closed force-end) → F (app wiring). Not blocked on the plan:
+    Membership write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
