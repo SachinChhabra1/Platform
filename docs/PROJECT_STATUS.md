@@ -117,7 +117,8 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
 ## Next engineering sequence (Membership is Engineering-Locked — sequence is now unblocked)
 
 1. ~~**Fastify runtime skeleton**~~ — **DONE (2026-06-29, `packages/runtime`).** Boots,
-   `/health`, wired into `verify` (Vitest + typecheck) and CI, logs through `@nia/log`.
+   `/v1/health` (under the contract's `API_PREFIX`), wired into `verify` (Vitest + typecheck)
+   and CI, logs through `@nia/log`.
    Fastify + tsx provisioned into the offline cache and re-bundled.
 2. ~~**Membership service**~~ — **DONE (2026-06-29, `services/membership`).** Domain core:
    the lifecycle state machine (Prospective→Member→Paused→Closed) + identity, behind a
@@ -140,10 +141,18 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    operational metadata; bearer PRE-AUTH stub, default-deny → 401, no Membership → 404.
    17 tests (13 domain + 4 HTTP); client generation deferred (no Flutter consumer yet).
 
+6. ~~**Serve the contract under `/v1`**~~ — **DONE (2026-06-30).** Every route now mounts under
+   the contract's version prefix (`servers: /v1`): a single `API_PREFIX` in `@nia/runtime` drives
+   `/v1/health` and both feature surfaces (`/v1/wallet/overview[/months]`, `/v1/membership/me`);
+   the Flutter `Api*Source` clients target `…/v1`. Closes the known gap where the services served
+   unversioned paths and only interoperated because the client dropped `/v1`. Route tests updated;
+   verify green; smoke-tested (old unversioned paths now 404).
+
    *Follow-on slices (not yet sequenced) ← **next**: point the Wallet app at the live HTTP
-   surface and add real session auth (replace the bearer-as-membership-id PRE-AUTH stub, shared
-   by both surfaces); Membership write/command surface (lifecycle transitions); PostgreSQL
-   adapters (ADR-0006); Wallet ledger event store (senior review); return-after-closure (FD-6).*
+   surface by config (`Api*Source` instead of the offline `Sample*Source`); add real session auth
+   (replace the bearer-as-membership-id PRE-AUTH stub, shared by both surfaces); Membership
+   write/command surface (lifecycle transitions); PostgreSQL adapters (ADR-0006); Wallet ledger
+   event store (senior review); return-after-closure (FD-6).*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).

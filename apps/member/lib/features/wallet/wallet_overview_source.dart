@@ -68,7 +68,10 @@ class ApiWalletOverviewSource implements WalletOverviewSource {
     required String baseUrl,
     required String memberToken,
   }) {
-    final client = ApiClient(basePath: baseUrl);
+    // baseUrl is the bare host (e.g. http://127.0.0.1:8081); the contract serves
+    // every route under the `/v1` version prefix, so the client basePath carries
+    // it. (The generated client defaults to `/v1`; we override host + keep it.)
+    final client = ApiClient(basePath: '$baseUrl/v1');
     client.addDefaultHeader('Authorization', 'Bearer $memberToken');
     _api = WalletApi(client);
   }

@@ -35,7 +35,7 @@ describe('Membership HTTP — GET /membership/me', () => {
     server = await build();
     const response = await server.inject({
       method: 'GET',
-      url: '/membership/me',
+      url: '/v1/membership/me',
       headers: { authorization: 'Bearer m-001' },
     });
 
@@ -55,7 +55,7 @@ describe('Membership HTTP — GET /membership/me', () => {
     const body = (
       await server.inject({
         method: 'GET',
-        url: '/membership/me',
+        url: '/v1/membership/me',
         headers: { authorization: 'Bearer m-002' },
       })
     ).json();
@@ -69,7 +69,7 @@ describe('Membership HTTP — GET /membership/me', () => {
 
   it('default-denies without a session (401 + envelope)', async () => {
     server = await build();
-    const response = await server.inject({ method: 'GET', url: '/membership/me' });
+    const response = await server.inject({ method: 'GET', url: '/v1/membership/me' });
     expect(response.statusCode).toBe(401);
     const body = response.json();
     expect(body.code).toBe('unauthorized');
@@ -80,7 +80,7 @@ describe('Membership HTTP — GET /membership/me', () => {
     server = await build();
     const response = await server.inject({
       method: 'GET',
-      url: '/membership/me',
+      url: '/v1/membership/me',
       headers: { authorization: 'Bearer nobody' },
     });
     expect(response.statusCode).toBe(404);

@@ -35,7 +35,8 @@ class SampleMembershipSource implements MembershipSource {
 /// (a PRE-AUTH stub on the server until phone-first sessions land).
 class ApiMembershipSource implements MembershipSource {
   ApiMembershipSource({required String baseUrl, required String memberToken}) {
-    final client = ApiClient(basePath: baseUrl);
+    // baseUrl is the bare host; the contract serves every route under `/v1`.
+    final client = ApiClient(basePath: '$baseUrl/v1');
     client.addDefaultHeader('Authorization', 'Bearer $memberToken');
     _api = MembershipApi(client);
   }

@@ -2,7 +2,8 @@
 
 **Purpose:** The Fastify HTTP runtime skeleton shared by Nia backend services
 (`docs/engineering-stack.md`; spec `0001` §14, step 1). It boots a Fastify
-instance, serves a `/health` liveness route, and routes **all** request logging
+instance, serves a `/v1/health` liveness route (under the contract's `API_PREFIX`),
+and routes **all** request logging
 through [`@nia/log`](../log) so a Member personal identifier can never reach a
 log sink unredacted (Book V §5.2).
 
@@ -29,7 +30,7 @@ capture emitted lines.
 
 ```bash
 pnpm --filter @nia/runtime start     # honours PORT / HOST / SERVICE_NAME
-curl -s localhost:8080/health        # {"status":"ok","service":"nia-runtime",...}
+curl -s localhost:8080/v1/health     # {"status":"ok","service":"nia-runtime",...}
 ```
 
 ## Verify

@@ -11,6 +11,7 @@
 
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
+import { API_PREFIX } from '@nia/runtime';
 import type { Money } from './money.js';
 import type { MoneyStoryLine, MonthlyOverview } from './overview.js';
 import {
@@ -98,8 +99,8 @@ function memberFrom(request: FastifyRequest): string | undefined {
 /**
  * Registers the read-only Wallet Overview routes on an existing app (built by
  * `@nia/runtime`'s `createServer`):
- *   • GET /wallet/overview?month=  → MonthlyOverview (current month if omitted)
- *   • GET /wallet/overview/months  → the reachable history, most recent first
+ *   • GET /v1/wallet/overview?month=  → MonthlyOverview (current month if omitted)
+ *   • GET /v1/wallet/overview/months  → the reachable history, most recent first
  * Every response carries `X-Nia-Server-Time`; every error carries the envelope.
  */
 export function registerWalletOverviewRoutes(
@@ -123,7 +124,7 @@ export function registerWalletOverviewRoutes(
       .send(errorEnvelope('internal_error', 'An unexpected error occurred.'));
   });
 
-  app.get('/wallet/overview', async (request, reply) => {
+  app.get(`${API_PREFIX}/wallet/overview`, async (request, reply) => {
     const member = memberFrom(request);
     if (!member) {
       return reply
@@ -146,7 +147,7 @@ export function registerWalletOverviewRoutes(
     return reply.code(200).send(overviewDto(overview));
   });
 
-  app.get('/wallet/overview/months', async (request, reply) => {
+  app.get(`${API_PREFIX}/wallet/overview/months`, async (request, reply) => {
     const member = memberFrom(request);
     if (!member) {
       return reply

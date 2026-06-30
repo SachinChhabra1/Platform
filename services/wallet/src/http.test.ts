@@ -50,7 +50,7 @@ describe('Wallet Overview HTTP — current month', () => {
     server = build();
     const response = await server.inject({
       method: 'GET',
-      url: '/wallet/overview',
+      url: '/v1/wallet/overview',
       headers: BEARER,
     });
 
@@ -68,7 +68,7 @@ describe('Wallet Overview HTTP — current month', () => {
   it('maps story lines to neutral snake_case lines, in order', async () => {
     server = build();
     const body = (
-      await server.inject({ method: 'GET', url: '/wallet/overview', headers: BEARER })
+      await server.inject({ method: 'GET', url: '/v1/wallet/overview', headers: BEARER })
     ).json();
 
     expect(body.story.map((line: { activity_id: string }) => line.activity_id)).toEqual([
@@ -83,7 +83,7 @@ describe('Wallet Overview HTTP — current month', () => {
     server = build();
     const response = await server.inject({
       method: 'GET',
-      url: '/wallet/overview',
+      url: '/v1/wallet/overview',
       headers: BEARER,
     });
     expect(response.headers['x-nia-server-time']).toBe(ASOF.toISOString());
@@ -96,7 +96,7 @@ describe('Wallet Overview HTTP — reachable history (§3)', () => {
     const body = (
       await server.inject({
         method: 'GET',
-        url: '/wallet/overview?month=2026-05',
+        url: '/v1/wallet/overview?month=2026-05',
         headers: BEARER,
       })
     ).json();
@@ -109,7 +109,7 @@ describe('Wallet Overview HTTP — reachable history (§3)', () => {
     const body = (
       await server.inject({
         method: 'GET',
-        url: '/wallet/overview/months',
+        url: '/v1/wallet/overview/months',
         headers: BEARER,
       })
     ).json();
@@ -120,7 +120,7 @@ describe('Wallet Overview HTTP — reachable history (§3)', () => {
 describe('Wallet Overview HTTP — access and validation', () => {
   it('default-denies without a session (401 + error envelope)', async () => {
     server = build();
-    const response = await server.inject({ method: 'GET', url: '/wallet/overview' });
+    const response = await server.inject({ method: 'GET', url: '/v1/wallet/overview' });
     expect(response.statusCode).toBe(401);
     const body = response.json();
     expect(body.code).toBe('unauthorized');
@@ -132,7 +132,7 @@ describe('Wallet Overview HTTP — access and validation', () => {
     server = build();
     const response = await server.inject({
       method: 'GET',
-      url: '/wallet/overview?month=2026-6',
+      url: '/v1/wallet/overview?month=2026-6',
       headers: BEARER,
     });
     expect(response.statusCode).toBe(400);
@@ -144,7 +144,7 @@ describe('Wallet Overview HTTP — access and validation', () => {
     const body = (
       await server.inject({
         method: 'GET',
-        url: '/wallet/overview',
+        url: '/v1/wallet/overview',
         headers: { authorization: 'Bearer someone-else' },
       })
     ).json();

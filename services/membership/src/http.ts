@@ -10,6 +10,7 @@
 
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
+import { API_PREFIX } from '@nia/runtime';
 import type { Membership } from './membership.js';
 import type { MembershipRepository } from './repository.js';
 
@@ -57,7 +58,7 @@ function memberFrom(request: FastifyRequest): string | undefined {
 
 /**
  * Registers the read-only Membership route on an existing app (built by
- * `@nia/runtime`'s `createServer`): GET /membership/me → the signed-in Member's
+ * `@nia/runtime`'s `createServer`): GET /v1/membership/me → the signed-in Member's
  * identity + lifecycle state. Every response carries `X-Nia-Server-Time`; every
  * error carries the Nia envelope.
  */
@@ -80,7 +81,7 @@ export function registerMembershipRoutes(
       .send(errorEnvelope('internal_error', 'An unexpected error occurred.'));
   });
 
-  app.get('/membership/me', async (request, reply) => {
+  app.get(`${API_PREFIX}/membership/me`, async (request, reply) => {
     const member = memberFrom(request);
     if (!member) {
       return reply

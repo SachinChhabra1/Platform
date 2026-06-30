@@ -54,8 +54,9 @@ Recorded now so the Membership service is built right; not yet implemented (no b
 ## When Membership reaches Engineering Lock
 
 The critical path, in order:
-1. **Fastify runtime skeleton — DONE (2026-06-29, `packages/runtime`).** Boots, a `/health`
-   route, request logging through `@nia/log` (PII redaction). Runtime only — no product
+1. **Fastify runtime skeleton — DONE (2026-06-29, `packages/runtime`).** Boots, a `/v1/health`
+   route (under the contract's `API_PREFIX`), request logging through `@nia/log` (PII
+   redaction). Runtime only — no product
    behaviour. Error-envelope + idempotency middleware and OpenAPI-base serving are deferred
    to the Membership service slice, where they have a concrete first consumer.
 2. **Membership service — DONE (2026-06-29, `services/membership`).** Domain core: the
