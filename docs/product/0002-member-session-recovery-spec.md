@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Status** | **DRAFT (Strawman).** Not Founder-approved; not Engineering-Locked. Resolves the brief by **tracing to Nia OS where the books decide**, and **raising a Founder Decision / Question where they are silent** — it does not invent policy. No code (incl. `POST /v1/sessions`) begins before Engineering Lock. |
-| **Spec lifecycle** | **Strawman ✓** → Founder Review ☐ → Engineering Readiness Review ☐ → Engineering Lock ☐ |
+| **Status** | **FOUNDER-APPROVED (2026-06-30).** FD-S1–FD-S7 resolved by the Founder (§9). One item surfaced during approval — **FD-S8** (does a Prospective hold a session?) — remains **open**; it, plus the **Engineering Readiness Review** concerns (§14), must be resolved before **Engineering Lock**. No code (incl. `POST /v1/sessions`) begins before Lock. |
+| **Spec lifecycle** | **Strawman ✓** → **Founder Review ✓ (2026-06-30)** → **Engineering Readiness Review ✓ (prepared — §14)** → Engineering Lock ☐ |
 | **Concept (one per spec)** | The **Member's session** — how a Member is known on his device, and how he **recovers access** when the device is lost or the number changes. Owns *access to what is his*, nothing else. |
 | **Owner** | Founder / Product (to review, correct, and own) |
 | **Drafted by** | AI Engineer, to reduce blank-page work (helping Product think; not deciding) |
-| **Date** | 2026-06-30 (rev. 1 — strawman) |
+| **Date** | 2026-06-30 (rev. 2 — Founder Review: FD-S1–S7 resolved; FD-S7 now records the employer decision and the strawman's Prospective question is renumbered FD-S8 (open); Engineering Readiness Review added) |
 | **Derived from** | Nia OS only. Every behaviour cites the section that justifies it. **No implementation / APIs / data models / token mechanics / architecture.** |
 
 > How to read this. Everything traces to Nia OS. Where the books are silent, this document
@@ -39,7 +39,7 @@ brief asked us to resolve is handled).*
 | Human-mediated recovery | §4 J-S5/J-S6 · §9 **FD-S2**, **FD-S5** |
 | Audit trail | §3 *Security boundaries* · §7 · §9 (Article XV, XVIII) |
 | Operator role | §4 · §9 **FD-S5** · §13 Boundary Contracts |
-| Employer role | §3 *Security boundaries* (none) · §13 Boundary Contracts |
+| Employer role | §9 **FD-S7** (none — Founder-approved) · §3 *Security boundaries* · §13 |
 | Member-facing copy | §3 *Member-facing copy* |
 | Security boundaries | §3 *Security boundaries* |
 | Explicitly out of scope | Scope note (above) · §12 · §13 |
@@ -92,16 +92,14 @@ another person's device, does not make someone him. Default-deny (Book VIII §1.
 **A woman Member recovers without a male in the loop.** Lost-phone recovery reaches a **woman
 point-of-contact in one tap** and never forces her through a male Operator (Membership FD-11).
 
-### Member-facing copy *(illustrative, in the Member's language; exact wording is a Founder copy item — see FD-S6)*
+### Member-facing copy *(in the Member's language; kept deliberately simple — FD-S6, Founder-approved)*
 
-- First session: *"This phone is now yours with Nia. We'll send a code to your number to be sure it's
-  you."*
-- Routine re-proof: *"Quick check — it's still you? We've sent a code to your number."*
-- Lost phone (from another channel / a new device): *"Lost your phone? Your Operator will help you get
-  back in. No one else can."*
-- New device: *"New phone? Let's move you over. Your old phone will be signed out."*
-- Reassurance, always present: *"Only you can get into your Nia. Not your employer, not an agent — only
-  you, and your Operator can help you back in."*
+- **First session (Founder-approved primary string): _"This phone is now your Nia phone."_**
+- The rest follow that simple, plain tone (final wording per the Founder, in each language):
+  - Routine re-proof: *"Quick check — it's still you?"*
+  - Lost phone: *"Lost your phone? Your Operator will help you back in. No one else can."*
+  - New device: *"New phone? Your old phone will be signed out."*
+  - Reassurance: *"Only you can get into your Nia — and only your Operator can help you back in."*
 
 ### Security boundaries *(product-level guarantees — the "must never happen", not mechanism)*
 
@@ -112,9 +110,9 @@ point-of-contact in one tap** and never forces her through a male Operator (Memb
 3. **No one may *become* the Member.** Not an employer, recruiter, or labour agent — and not the
    Operator. The Operator may **restore access *for* him**, audited; never silently **act *as*** him
    (Article XVIII).
-4. **The employer has no role in sessions, at all.** No employer-initiated access, no employer-held
-   credential, no shared device path. (Employer access to *data* is the separate, default-no consent
-   flow — Membership FD-7.)
+4. **The employer has no role in sessions, at all** (FD-S7, Founder-approved). No employer-initiated
+   login, no employer-held credential, no shared-device path, no role in recovery. (Employer access to
+   *data* is the separate, default-no consent flow — Membership FD-7.)
 5. **A lost or stolen device can be cut off** and its session ended, so a found phone is not a way in.
 6. **Every issuance and every recovery is logged, attributable, and reviewable**, and the Member can
    see who got into (or helped him into) his account (Article XV; Article XVIII).
@@ -122,10 +120,10 @@ point-of-contact in one tap** and never forces her through a male Operator (Memb
 
 ## 4. User journeys
 
-- **J-S1 — His first session (the device becomes his).** At onboarding, on **his** device, his number
-  is verified and the session begins, **bound to that device**. Onboarding is already a human, in-person,
-  Operator-mediated moment ("software follows operations", Article X; Membership [A3]). *How* the first
-  proof is done — self-serve code, Operator-assisted, or both — is **FD-S1**.
+- **J-S1 — His first session (the device becomes his).** At onboarding, on **his** device, the
+  **Operator assists** the first session in person and it begins, **bound to that device** (FD-S1,
+  approved — "software follows operations", Article X; Membership [A3]). Routine re-proof later is
+  **phone-first** (J-S2).
 - **J-S2 — Being known (returning).** He opens the app and is himself; no login chore. Now and then he
   is asked to re-prove, gently and phone-first (Book VIII §1.3). *How often* is **operating policy**,
   not product (per the no-operational-parameters principle); the *shape* (an occasional event, never a
@@ -134,9 +132,11 @@ point-of-contact in one tap** and never forces her through a male Operator (Memb
   **Operator-assisted** (FD-S2). The new device becomes his bound device and the **old device is signed
   out** (FD-S3). *(This resolves the open item the Membership spec parked: "re-establishing identity on
   a new device" — Membership §6 edge 6 / §13.)*
-- **J-S4 — A changed SIM / new number (same person, same phone).** A number change is **expected**, not
-  suspicious (Book II §1.5). On his already-bound device it may be a lighter path; a number change
-  **alone** never authenticates a *new* device. The exact allowance is **FD-S4**.
+- **J-S4 — A changed SIM / new number (same person).** A number change is **expected**, not suspicious
+  (Book II §1.5), but it is handled **only through assisted recovery** (FD-S4, approved) — the Operator
+  in the loop, the same human-mediated shape as a lost phone (J-S5). A number change **never** continues
+  or grants a session on its own. *(Engineering Readiness flags the friction this adds for a common
+  event — §14.)*
 - **J-S5 — Lost or stolen phone (human-mediated recovery).** From any other channel he reaches his
   **Operator in one tap** (Book IV §3.6, §4.9; Book II §4.7). The lost device is **cut off**; he is
   restored on a new device with a **known human in the loop**; the whole recovery is **logged and
@@ -161,13 +161,12 @@ A session's product lifecycle is **per device**. (Member-facing language matters
 
 | From | To | Trigger | Nia OS / decision |
 |---|---|---|---|
-| No session | Active | First proof at onboarding, on his device | Book VIII §1.3 — issuance model *FD-S1* |
+| No session | Active | **Operator-assisted** first session at onboarding, on his device | Book VIII §1.3 — **FD-S1 ✓** |
 | Active | Needs re-proof | Occasional gentle check (cadence is **policy**) | Book VIII §1.3; §6.3 |
 | Needs re-proof | Active | Phone-first re-proof succeeds | Book VIII §1.3 |
 | Active | Ended | Member signs out, or moves to a new device, or device is cut off | §4.7 (lost phone); FD-S3 |
-| No session / Ended | Active (new device) | New-device proof — higher bar, Operator-assisted | *FD-S2* |
-| Active / Ended | Locked out → Recovering | He cannot prove it; lost/stolen phone | Book II §4.7; Article XVIII |
-| Recovering | Active (new device) | Operator-mediated recovery completes, audited | Article XVIII — bar *FD-S2*, authority *FD-S5* |
+| Active / Ended | Locked out → Recovering | He cannot prove it; lost/stolen phone, or any number change | Book II §4.7; Article XVIII; **FD-S2 ✓**, **FD-S4 ✓** |
+| Recovering | Active (new device) | **Human-mediated** recovery completes, audited; old device ended | Article XVIII — **FD-S2 ✓**, authority **FD-S5 ✓**, one device **FD-S3 ✓** |
 | any | Ended (forced) | Membership reaches `Closed` (Off-boarding) | §4.8 — boundary (§13) |
 
 **Device binding** holds across every Active state: the session means *this device is him*, never
@@ -177,21 +176,21 @@ Membership FD-5).
 
 ## 6. Edge cases
 
-1. **Changed SIM, same phone.** Expected (Book II §1.5). On the bound device, a lighter path may apply
-   (FD-S4); it is **not** a new-device event.
+1. **Changed SIM, same phone.** Expected (Book II §1.5), but handled **through assisted recovery**
+   (FD-S4, approved) — a number change never continues a session on its own, even on the bound device.
 2. **Same number, new phone.** A new-device event (J-S3) — number alone is insufficient; the higher
    bar applies (FD-S2).
 3. **Number later reassigned by the telco to a stranger.** The stranger holding the number must
    **never** reach his account — the reason the number alone never authenticates (security boundary 2).
 4. **Shared / family phone.** One bound device is one person's session (FD-S3). A shared device is a
    safety risk; the "sign out — this isn't my phone" action must be easy (Q-S4).
-5. **Two devices (e.g. a feature phone + a smartphone).** Default is **one** bound device (FD-S3);
-   multi-device is deferred (Q-S3 / FE-S?).
+5. **Two devices (e.g. a feature phone + a smartphone).** **One** bound device (FD-S3, approved);
+   multi-device is deferred (Q-S3).
 6. **Abroad / roaming / no SMS.** A phone-first code may not arrive. The **Operator path** must work
    without it (Book II §4.7) — recovery cannot depend solely on receiving an SMS (FD-S2).
 7. **Prospective (phone captured, not yet a Member).** Whether a Prospective holds any session, or only
    an **onboarding-scoped** access until the first-Saturday birthday, is a **boundary with Onboarding**
-   (Membership FD-3, FD-8) — raised as FD-S7.
+   (Membership FD-3, FD-8) — **open as FD-S8** (see §9, §14); must be closed before Lock.
 8. **Paused Member (Trip Home).** A Paused Member is still himself and may still sign in to see what is
    his; Paused affects the *relationship*, not *access*. (Boundary with Membership — §13.)
 9. **Coerced access (an agent forces him to open the app).** A dignity/safety matter; the one-tap
@@ -221,48 +220,46 @@ Membership FD-5).
 - **[A-S5]** A Member can be **reached by his number for a routine phone-first check** while he still
   holds the device; recovery does **not** assume this (see edge 6).
 
-## 9. Founder decisions required
+## 9. Founder decisions
 
-Only the Founder can make these; they are **not** resolved here. Each carries a **strawman proposal**
-to react to, not a decision made on Product's behalf.
+**FD-S1–FD-S7 are RESOLVED (Founder, 2026-06-30).** FD-S8 was surfaced during approval and remains
+**open** (it is the strawman's original Prospective question; see the numbering note). Each resolution
+is now a binding part of the spec.
 
-- **FD-S1 — How the first session is issued: OTP vs assisted login.** The books fix the *token shape*
-  ("issued after phone verification with device binding", Book VIII §1.3) but **not** the *flow*.
-  Options:
-  - **(a) Self-serve phone code (OTP).** The Member receives a code on his number and enters it.
-    *Trade-off:* scalable and familiar; but assumes he can receive/read/enter a code, and trusts the
-    SMS channel.
-  - **(b) Operator-assisted.** The Operator, present at onboarding, verifies him in person and starts
-    the session with him. *Trade-off:* highest first-touch trust and inclusion for low-literacy Members
-    ("software follows operations", Article X; Membership [A3]); but human-bound, less scalable.
-  - **(c) Hybrid — assisted first, phone-first after.** Operator-assisted at the **first** session
-    (onboarding is already in-person), self-serve phone-first for routine re-proof and ordinary
-    new-device moves. **← Strawman proposes (c)**, grounding the first touch in Article X and routine
-    proof in Book VIII §1.3. *Founder to decide.*
-- **FD-S2 — The recovery / new-device bar.** What must a Member present to become himself on a **new**
-  device after a lost phone? The bar must stop an agent/impostor **without** locking out a genuine,
-  low-literacy Member who lost everything. *Strawman:* **Operator-mediated human verification is the
-  floor** for new-device and lost-phone recovery (Book II §4.7; Article XVIII); **never number-alone**.
-  Whether a phone-first code can ever *substitute* for the human (e.g. abroad) is part of this decision.
-- **FD-S3 — Device-binding strictness & device count.** Default **one** bound device at a time, and a
-  new bound device **ends** the old session (so a lost phone cannot stay signed in). *Strawman:* adopt
-  one-device + auto-sign-out-old. *Founder/Product to confirm*, given shared/feature-phone realities
+> **Numbering note.** The Founder's approved **FD-S7** records the **employer** decision. The strawman's
+> original FD-S7 — *does a Prospective hold a session?* — is **renumbered FD-S8** and is the one
+> remaining open item, carried into the Engineering Readiness Review (§14).
+
+- **FD-S1 — First session: operator-assisted, phone-first thereafter. ✓ RESOLVED.** The **first**
+  session is **Operator-assisted during onboarding** (in person, "software follows operations",
+  Article X; Membership [A3]); **routine re-proof later is phone-first** (Book VIII §1.3). *(This is the
+  hybrid; the books fix the token shape but not the flow, so it was the Founder's call.)*
+- **FD-S2 — Recovery is human-mediated; never number-alone. ✓ RESOLVED.** Becoming oneself on a **new**
+  device after a lost/stolen phone runs **Operator-mediated human verification** (Book II §4.7; Article
+  XVIII). A number or SMS code **alone never** authenticates a new device — the floor that stops an
+  agent/impostor while keeping a genuine Member recoverable.
+- **FD-S3 — One active bound device. ✓ RESOLVED.** A Member has **one** bound device at a time; binding
+  a new device **ends** the prior session (a lost phone cannot stay signed in). Multi-device is deferred
   (Q-S3).
-- **FD-S4 — What a number change *alone* may do.** Given SIM churn *and* reassignment, may a verified
-  new SIM on the **already-bound device** keep the session (lighter path), or does any number change
-  require Operator re-binding? *Strawman:* on the bound device, a verified new number may continue the
-  session; on a **new** device it never suffices (FD-S2). *Founder to weigh convenience vs reassignment
-  risk.*
-- **FD-S5 — Operator authority in recovery (and the woman-Member path).** The Operator **restores
-  access for** the Member but must not be able to **act as** him or see what he should not; every
-  recovery is **named, attributable, reviewable** (Article XVIII), and a woman recovers through a
-  **woman point-of-contact** (FD-11). *Confirm the exact authority and its audit floor.*
-- **FD-S6 — Member-facing copy.** Exact session/recovery wording, in each supported language, is a
-  Founder copy item (as FD-2 was for the Promise). The §3 copy is **illustrative** pending ratification.
-- **FD-S7 — Does a Prospective hold a session?** Either a Prospective has **no** session until the
-  first-Saturday birthday (access is onboarding-scoped), or a limited Prospective session exists.
-  *Strawman:* **no full session until Member**; onboarding-scoped access only (boundary with Onboarding;
-  Membership FD-3, FD-8). *Founder to confirm the boundary.*
+- **FD-S4 — A phone-number change goes only through assisted recovery. ✓ RESOLVED.** Any number change
+  — even a new SIM on the same phone — is handled **only through assisted recovery** (the Operator in
+  the loop). A number change **never** continues or grants a session on its own. *(Stricter than the
+  strawman's "lighter path on the bound device"; chosen against the reassignment/SIM-swap risk.)*
+- **FD-S5 — The Operator may restore access, never impersonate the Member. ✓ RESOLVED.** The Operator
+  **restores access *for*** the Member; he may **never act *as*** the Member, nor see what the Member
+  alone may see. Every recovery is **named, attributable, reviewable** (Article XVIII), and a woman
+  recovers through a **woman point-of-contact** (Membership FD-11). *(The exact audit floor — what is
+  recorded and shown — is surfaced in §14.)*
+- **FD-S6 — Member copy is simple. ✓ RESOLVED.** The approved primary string is **"This phone is now
+  your Nia phone."** The rest of the session/recovery copy follows that plain, simple tone (final
+  wording per the Founder, in each language; §3).
+- **FD-S7 — The employer has no role in login or recovery. ✓ RESOLVED.** No employer-initiated login,
+  no employer-held credential, no shared-device path, **no role in recovery** — none. (Employer access
+  to *data* remains the separate, default-no consent flow, Membership FD-7; that is not authentication.)
+- **FD-S8 — Does a Prospective hold a session? ✗ OPEN (renumbered from the strawman's FD-S7).** Either a
+  Prospective has **no** session until the first-Saturday birthday (access is onboarding-scoped), or a
+  limited Prospective session exists. *Strawman leans:* **no full session until Member**. This is a
+  boundary with Onboarding (Membership FD-3, FD-8) and **must be resolved before Engineering Lock** (§14).
 
 ## 10. References to Nia OS
 
@@ -289,8 +286,8 @@ already answers it.
 - **Q-S2 — Biometric convenience (fingerprint/face) where the device supports it.** *Trade-off:*
   effortless and literacy-free, but unavailable on basic phones — must be a **convenience layer, never
   required**, or it excludes (Book II §1.1 inclusion; `nia-low-income-design`).
-- **Q-S3 — Multi-device.** A worker with a feature phone *and* a smartphone, or a shared family phone.
-  *Trade-off:* convenience vs the safety and simplicity of one bound device (FD-S3).
+- **Q-S3 — Multi-device. → Deferred by FD-S3 (one bound device).** Re-opens only if FD-S3 is revisited;
+  recorded here so the trade-off (a feature phone *and* a smartphone, or a shared family phone) is not lost.
 - **Q-S4 — A prominent "this isn't my phone — sign me out" action.** *Trade-off:* a strong safety tool
   for sold/lost/shared phones vs one more control on a simple surface. Pairs with edge cases 4 and 9.
 
@@ -349,12 +346,69 @@ Operator, and exit. Each transition is owned by exactly one spec; the neighbour 
 A boundary contract names *what crosses the line and who owns it* — never how the neighbour behaves
 inside its own spec.
 
+## 14. Engineering Readiness Review (Spec Phase 3 — prepared 2026-06-30)
+
+Reviewing the Founder-approved spec **as Engineering**, per `SPEC-TEMPLATE.md` Phase 3: this section
+**surfaces concerns; it does not solve them.** Each item is raised for the Founder/Product to resolve
+(or to confirm an engineering note); the AI Engineer decides none of them. **The spec is not
+Engineering-Locked until the "blocks Lock" items below are closed.**
+
+### A. Blocks Engineering Lock — needs a Founder/Product ruling
+
+- **ERR-1 — FD-S8 is open (missing decision).** Whether a Prospective holds a session, or only
+  onboarding-scoped access, is undecided. Engineering cannot draw the `No session → Active` boundary
+  without it. *Resolve FD-S8.*
+- **ERR-2 — Out-of-band recovery reachability ([A-S3]) is an assumption, not a guarantee (impossible
+  behaviour if false).** Recovery (FD-S2) routes through the Operator, but a locked-out Member has, by
+  definition, lost his device. If he *also* cannot reach the Operator (no second channel), recovery
+  stalls and "never permanently locked out" (§7) fails. *What is the guaranteed second channel?*
+- **ERR-3 — FD-S4 friction on a common event (privacy/UX risk).** "Any number change → full assisted
+  recovery" applies to a mere SIM swap on the **same** phone — frequent for migrant workers (Book II
+  §1.5). This may collide with "he leaves rather than complain" (§3.6). *Confirm the friction is
+  intended, or define a lighter same-device path.*
+- **ERR-4 — "Restore, not impersonate" (FD-S5) needs a testable line + audit floor (audit/privacy).**
+  The product rule is clear in spirit, but engineering needs the boundary made concrete: during
+  recovery, **what may the Operator see and do, what may he never see**, and **exactly what the Member
+  is shown** about it afterward. *Define the line and the Member-visible audit record.*
+- **ERR-5 — Woman point-of-contact availability (FD-11) (missing edge).** Recovery routes a woman
+  Member to a woman contact; the spec does not say what happens if that contact is **unavailable** at
+  recovery time. *Define the fallback that still honours FD-11.*
+- **ERR-6 — Onboarding handoff for FD-S1 (boundary dependency).** "Operator-assisted first session"
+  needs a defined trigger/handoff from **Onboarding** (the verified-device moment). Onboarding is a
+  separate, not-yet-locked spec; the `Enters` row in §13 names a signal that does not yet exist.
+  *The Onboarding boundary must be agreed before this can be built.*
+- **ERR-7 — Paused-member access (edge 8) needs Membership confirmation (consistency).** The spec
+  assumes a Paused Member retains sign-in. *Confirm with the Membership spec that Paused affects the
+  relationship, not access.*
+- **ERR-8 — Q-S4 is now safety-relevant, not just a debate.** With one bound device (FD-S3), an easy
+  "this isn't my phone — sign me out" action materially changes the lost/sold-phone story. *Decide
+  Q-S4 (it is still an open Question), as it affects the lost-phone journey.*
+
+### B. Engineering will handle in the Implementation Plan (no Product decision needed — flagged for planning)
+
+- **ERR-9 — Contract additions.** The `MemberSession` scheme (token shape) exists; the **issuance and
+  recovery operations do not.** Building them is post-Lock and will add contract paths + regenerate
+  clients (ADR-0007). No product input needed.
+- **ERR-10 — Mutating actions need idempotency (Book VIII §1.7)** and must reason on **server time
+  (§1.5)**. Implementation detail; noted for the plan.
+- **ERR-11 — The session *boundary* already exists** (`@nia/runtime`: opaque token → Member,
+  default-deny). Issuance must **write into** that store; "cut off a lost device" implies a revocation
+  capability the in-memory store does not yet have. Engineering scope, no product decision.
+- **ERR-12 — "Device binding" mechanism is engineering.** The product guarantee is "*this device is
+  him*"; how a device is identified/bound is an implementation choice, not a spec concern. Noted so it
+  is not mistaken for an open product question.
+
+### C. Carried after Lock (not blockers)
+
+- Member-facing copy beyond the FD-S6 primary string (final wording per the Founder, in each language).
+- The Questions left open for Product debate (Q-S1, Q-S2; Q-S3 deferred by FD-S3; Q-S4 → ERR-8).
+
 ---
 
 ## Next process step (not part of the spec)
 
-Per the four-phase lifecycle (`SPEC-TEMPLATE.md`): **Founder Review** (resolve FD-S1…S7, weigh
-Q-S1…S4) → **Engineering Readiness Review** (AI Engineer surfaces concerns) → **Engineering Lock**.
-**Only after Lock** does engineering plan and build the session **issuance** surface (`POST /v1/sessions`)
-and the recovery flow. The server-side session **boundary** (opaque token → Member, default-deny) is
-already built and is unaffected by this spec until Lock.
+Per the four-phase lifecycle (`SPEC-TEMPLATE.md`): Strawman ✓ → **Founder Review ✓** → **Engineering
+Readiness Review ✓ (this §14)** → **Engineering Lock** (pending). Lock requires closing **ERR-1…ERR-8**
+(and FD-S8). **Only after Lock** does engineering plan and build the session **issuance** surface
+(`POST /v1/sessions`) and the recovery flow. The server-side session **boundary** (opaque token →
+Member, default-deny) is already built (`74f774a`) and is unaffected by this spec until Lock.

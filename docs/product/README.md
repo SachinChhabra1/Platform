@@ -44,7 +44,7 @@ The repository must always show where every specification sits.
 | Spec | Title | Status | Phase |
 |------|-------|--------|-------|
 | [0001](0001-membership-strawman-spec.md) | Membership | **Engineering Locked** (2026-06-29) | Implemented in part (Membership + Wallet surfaces); see PROJECT_STATUS |
-| [0002](0002-member-session-recovery-spec.md) | Member Session & Recovery | **Draft (Strawman)** | Spec Phase 1 — awaiting Founder Review |
+| [0002](0002-member-session-recovery-spec.md) | Member Session & Recovery | **Founder-Approved** (FD-S1–S7 resolved 2026-06-30) · **Engineering Review** | Spec Phase 3 — ERR prepared; Lock pending ERR-1…8 + FD-S8 |
 
 **Owner:** _Founder / Product._
 **Nia OS books:** all — a spec cites the books that bind it.
