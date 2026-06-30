@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../membership/membership_header.dart';
 
 /// Profile — the Member's identity, his Operator, and his data rights.
 ///
@@ -27,23 +28,9 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(
             NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s8),
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              const Monogram(initials: 'R', size: 64),
-              const SizedBox(width: NiaTokens.s4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(PrototypeData.memberFullName,
-                        style: theme.textTheme.titleLarge),
-                    const SizedBox(height: NiaTokens.s1),
-                    Text('A Member of Nia', style: theme.textTheme.bodySmall),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          // Identity header — wired to the Membership read model via nia_api
+          // (name only; lifecycle state is Q2-gated, see "Your standing" below).
+          const MembershipHeader(),
           const SizedBox(height: NiaTokens.s7),
 
           const SectionLabel('Your Operator'),
