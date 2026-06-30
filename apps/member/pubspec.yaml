@@ -39,6 +39,12 @@ dependencies:
   nia_i18n:
     path: ../../packages/i18n
 
+  # Generated API client (ADR-0007) — the Wallet Overview contract types and the
+  # WalletApi the Wallet screen renders from. Regenerate via
+  # `pnpm --filter @nia/types run generate`.
+  nia_api:
+    path: ../../packages/types/generated/dart
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

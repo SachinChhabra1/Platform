@@ -97,11 +97,8 @@ abstract final class PrototypeData {
 
   static const String membershipNumber = 'illustrative — not a real number';
 
-  // Wallet figures — placeholder only.
+  // Wallet figure for the Home glance — placeholder only. The Wallet screen
+  // itself now renders from the Wallet Overview read model (spec §14 step 4),
+  // so its per-line placeholders were removed.
   static const String walletAvailable = '₹3,480';
-  static const String wageReceived = '₹14,000';
-  static const String rentPaid = '₹2,400';
-  static const String curryPaid = '₹1,800';
-  static const String savedThisMonth = '₹2,000';
-  static const String sentHome = '₹5,000';
 }
