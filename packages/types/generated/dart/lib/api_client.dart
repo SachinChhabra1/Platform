@@ -186,12 +186,20 @@ class ApiClient {
           return Error.fromJson(value);
         case 'ErrorRetry':
           return ErrorRetry.fromJson(value);
+        case 'Health':
+          return Health.fromJson(value);
+        case 'MembershipState':
+          return MembershipStateTypeTransformer().decode(value);
+        case 'MembershipView':
+          return MembershipView.fromJson(value);
         case 'Money':
           return Money.fromJson(value);
         case 'MoneyStoryLine':
           return MoneyStoryLine.fromJson(value);
         case 'MonthlyOverview':
           return MonthlyOverview.fromJson(value);
+        case 'PageInfo':
+          return PageInfo.fromJson(value);
         case 'ReachableMonths':
           return ReachableMonths.fromJson(value);
         default:

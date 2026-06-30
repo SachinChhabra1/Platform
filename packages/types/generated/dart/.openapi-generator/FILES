@@ -5,6 +5,8 @@ README.md
 analysis_options.yaml
 git_push.sh
 lib/api.dart
+lib/api/membership_api.dart
+lib/api/ops_api.dart
 lib/api/wallet_api.dart
 lib/api_client.dart
 lib/api_exception.dart
@@ -16,8 +18,12 @@ lib/auth/http_bearer_auth.dart
 lib/auth/oauth.dart
 lib/model/error.dart
 lib/model/error_retry.dart
+lib/model/health.dart
+lib/model/membership_state.dart
+lib/model/membership_view.dart
 lib/model/money.dart
 lib/model/money_story_line.dart
 lib/model/monthly_overview.dart
+lib/model/page_info.dart
 lib/model/reachable_months.dart
 pubspec.yaml

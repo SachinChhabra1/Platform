@@ -28,13 +28,19 @@ part 'auth/oauth.dart';
 part 'auth/http_basic_auth.dart';
 part 'auth/http_bearer_auth.dart';
 
+part 'api/membership_api.dart';
+part 'api/ops_api.dart';
 part 'api/wallet_api.dart';
 
 part 'model/error.dart';
 part 'model/error_retry.dart';
+part 'model/health.dart';
+part 'model/membership_state.dart';
+part 'model/membership_view.dart';
 part 'model/money.dart';
 part 'model/money_story_line.dart';
 part 'model/monthly_overview.dart';
+part 'model/page_info.dart';
 part 'model/reachable_months.dart';
 
 

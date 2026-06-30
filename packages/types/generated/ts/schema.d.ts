@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness and readiness probe. Operational; not Member-facing. */
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/wallet/overview": {
         parameters: {
             query?: never;
@@ -44,10 +61,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/membership/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The signed-in Member's identity and lifecycle state.
+         * @description Returns the Member's own Membership — resolved from the session, never a path id, so a Member can only ever see his own (default-deny, Book VIII §1.4). Carries no tenure (FD-3, Q4).
+         */
+        get: operations["getMyMembership"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description The Nia error envelope (Book VIII §4.7). A response that lacks these fields is not a valid Nia error response. */
+        Error: {
+            /**
+             * @description Machine-readable, stable across API versions.
+             * @example idempotency_key_required
+             */
+            code: string;
+            /** @description Human-readable, in the requester's language. */
+            message: string;
+            /**
+             * Format: uuid
+             * @description Correlation id for tracing across services and logs.
+             */
+            correlation_id: string;
+            /** @description Present only where the operation is retryable (the retry hint). */
+            retry?: {
+                retryable?: boolean;
+                after_seconds?: number;
+            };
+        };
+        /** @description Cursor-pagination envelope (engineering convention, not product). */
+        PageInfo: {
+            /** @description Cursor for the next page, or null when there is no next page. */
+            next_cursor?: string | null;
+            has_more: boolean;
+        };
+        Health: {
+            /** @enum {string} */
+            status: "ok";
+        };
         /** @description A money amount in the Member's currency, carried in integer minor units (paise) — never a float. Formatting is the client's job (Book III §6.4). */
         Money: {
             /**
@@ -103,25 +170,18 @@ export interface components {
              */
             months: string[];
         };
-        /** @description The Nia error envelope (Book VIII §4.7). A response that lacks these fields is not a valid Nia error response. */
-        Error: {
-            /**
-             * @description Machine-readable, stable across API versions.
-             * @example idempotency_key_required
-             */
-            code: string;
-            /** @description Human-readable, in the requester's language. */
-            message: string;
-            /**
-             * Format: uuid
-             * @description Correlation id for tracing across services and logs.
-             */
-            correlation_id: string;
-            /** @description Present only where the operation is retryable (the retry hint). */
-            retry?: {
-                retryable?: boolean;
-                after_seconds?: number;
-            };
+        /**
+         * @description Canonical lifecycle state (spec §5). A closed four-state machine; the Member-facing label (Prospective / Member / Paused / Closed) is presentation the client owns (FD-3).
+         * @enum {string}
+         */
+        MembershipState: "prospective" | "member" | "paused" | "closed";
+        /** @description The Member's relationship as Membership holds it. Minimal by design: identity + lifecycle state, no tenure (FD-3, Q4), no operational metadata. */
+        MembershipView: {
+            /** @description Stable membership id ([A6]). Not a Member-facing number (§3). */
+            membership_id: string;
+            /** @description The name the Member is known by (§3, "known by name, not number"). */
+            name: string;
+            state: components["schemas"]["MembershipState"];
         };
     };
     responses: {
@@ -137,6 +197,36 @@ export interface components {
         };
         /** @description Missing or invalid session. */
         Unauthorized: {
+            headers: {
+                "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description The actor has no granted permission for this record (default-deny, Book VIII §1.4). */
+        Forbidden: {
+            headers: {
+                "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description The resource does not exist or is not visible to the actor. */
+        NotFound: {
+            headers: {
+                "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description A version or idempotency conflict. */
+        Conflict: {
             headers: {
                 "X-Nia-Server-Time": components["headers"]["ServerTime"];
                 [name: string]: unknown;
@@ -169,6 +259,12 @@ export interface components {
     parameters: {
         /** @description The Member's language (Book VIII §4.1 — every endpoint returns content in the Member's language). BCP-47 tag; falls back to English. */
         AcceptLanguage: string;
+        /** @description Required on every mutating request (Book VIII §1.7, §4.1). A retry with the same key produces the same outcome — no duplicate wage, remittance, or enrolment. */
+        IdempotencyKey: string;
+        /** @description Opaque pagination cursor. Omit for the first page. */
+        Cursor: string;
+        /** @description Maximum number of items to return. */
+        Limit: number;
     };
     requestBodies: never;
     headers: {
@@ -179,6 +275,32 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getHealth: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The Member's language (Book VIII §4.1 — every endpoint returns content in the Member's language). BCP-47 tag; falls back to English. */
+                "Accept-Language"?: components["parameters"]["AcceptLanguage"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Service is healthy. */
+            200: {
+                headers: {
+                    "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Health"];
+                };
+            };
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalError"];
+        };
+    };
     getWalletOverview: {
         parameters: {
             query?: {
@@ -233,6 +355,34 @@ export interface operations {
                 };
             };
             401: components["responses"]["Unauthorized"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    getMyMembership: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The Member's language (Book VIII §4.1 — every endpoint returns content in the Member's language). BCP-47 tag; falls back to English. */
+                "Accept-Language"?: components["parameters"]["AcceptLanguage"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The Member's Membership view. */
+            200: {
+                headers: {
+                    "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MembershipView"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalError"];
         };

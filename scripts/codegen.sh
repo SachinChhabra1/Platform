@@ -36,20 +36,26 @@ fi
 # Java generator parses -i as a URI and the kit path contains a space.
 cd "$types"
 
-echo "▶ Bundling the contract (inline base \$refs) → generated/wallet.bundled.yaml"
+echo "▶ Joining contracts (base + features) → generated/nia.combined.yaml"
 mkdir -p generated
-pnpm exec redocly bundle openapi/openapi.wallet.yaml -o generated/wallet.bundled.yaml >/dev/null
+# One client for the whole API (ADR-0007): merge the base contract and every
+# feature surface into a single self-contained doc, then generate from it.
+pnpm exec redocly join \
+  openapi/openapi.base.yaml \
+  openapi/openapi.wallet.yaml \
+  openapi/openapi.membership.yaml \
+  -o generated/nia.combined.yaml >/dev/null
 
 echo "▶ Dart client → packages/types/generated/dart"
 rm -rf generated/dart
 java -jar "$jar" generate \
-  -i generated/wallet.bundled.yaml \
+  -i generated/nia.combined.yaml \
   -g dart \
   -o generated/dart \
   --additional-properties=pubName=nia_api,pubVersion=1.0.0 \
   --global-property=apiTests=false,modelTests=false,apiDocs=false,modelDocs=false
 
 echo "▶ TypeScript types → packages/types/generated/ts/schema.d.ts"
-pnpm exec openapi-typescript generated/wallet.bundled.yaml -o generated/ts/schema.d.ts
+pnpm exec openapi-typescript generated/nia.combined.yaml -o generated/ts/schema.d.ts
 
 echo "✓ codegen complete"

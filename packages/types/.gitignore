@@ -2,6 +2,7 @@
 # `pnpm --filter @nia/types run generate` and are NEVER edited by hand. They are
 # COMMITTED so a fresh clone and the verify gate work without a JDK; CI regenerates
 # and checks drift. Only the Dart package's local build/tool artifacts are ignored.
+generated/nia.combined.yaml
 generated/wallet.bundled.yaml
 generated/dart/.dart_tool/
 generated/dart/build/
