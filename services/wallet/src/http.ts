@@ -9,9 +9,9 @@
 /// the client's job (Book III §6.4). Request logging and the lifecycle belong to
 /// `@nia/runtime`'s `createServer`; this only registers routes.
 
-import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance, FastifyReply } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { API_PREFIX } from '@nia/runtime';
+import { API_PREFIX, memberFromSession, type SessionStore } from '@nia/runtime';
 import type { Money } from './money.js';
 import type { MoneyStoryLine, MonthlyOverview } from './overview.js';
 import {
@@ -26,6 +26,11 @@ const MONTH = /^\d{4}-\d{2}$/;
 export interface WalletRouteDeps {
   /** Read-only source of each Member's assembled activity (the port). */
   readonly source: WalletActivitySource;
+  /**
+   * Resolves the bearer session token to the signed-in Member (the auth
+   * boundary, `@nia/runtime`). Default-deny: an unknown token is no session.
+   */
+  readonly sessions: SessionStore;
   /**
    * Clock for "the current month" and the server-time header. Injectable for
    * tests; defaults to the system clock. Server time is the only time the
@@ -83,20 +88,6 @@ function errorEnvelope(code: string, message: string) {
 }
 
 /**
- * Resolve the Member from the session. PRE-AUTH STUB: real sessions are
- * phone-first, device-bound, opaque bearer tokens (Book VIII §1.3); until that
- * slice lands, the bearer token IS the membership id. Default-deny: no token,
- * no Wallet (Book VIII §1.4).
- */
-function memberFrom(request: FastifyRequest): string | undefined {
-  const header = request.headers.authorization;
-  if (!header) return undefined;
-  const match = /^Bearer\s+(.+)$/i.exec(header);
-  const token = match?.[1]?.trim();
-  return token && token.length > 0 ? token : undefined;
-}
-
-/**
  * Registers the read-only Wallet Overview routes on an existing app (built by
  * `@nia/runtime`'s `createServer`):
  *   • GET /v1/wallet/overview?month=  → MonthlyOverview (current month if omitted)
@@ -125,7 +116,7 @@ export function registerWalletOverviewRoutes(
   });
 
   app.get(`${API_PREFIX}/wallet/overview`, async (request, reply) => {
-    const member = memberFrom(request);
+    const member = memberFromSession(request, deps.sessions);
     if (!member) {
       return reply
         .code(401)
@@ -148,7 +139,7 @@ export function registerWalletOverviewRoutes(
   });
 
   app.get(`${API_PREFIX}/wallet/overview/months`, async (request, reply) => {
-    const member = memberFrom(request);
+    const member = memberFromSession(request, deps.sessions);
     if (!member) {
       return reply
         .code(401)

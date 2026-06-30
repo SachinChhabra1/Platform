@@ -1,12 +1,20 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { createServer } from '@nia/runtime';
+import { createServer, InMemorySessionStore } from '@nia/runtime';
 import { activate, createProspective, pause } from './membership.js';
 import { InMemoryMembershipRepository } from './repository.js';
 import { registerMembershipRoutes } from './http.js';
 
 const ASOF = new Date('2026-06-20T00:00:00.000Z');
 const BORN = new Date('2026-01-04T00:00:00.000Z');
+
+// Opaque session tokens — NOT membership ids. SESSION_GHOST resolves to a Member
+// id with no stored Membership (the 404 path: a valid session, no record).
+const SESSION = 'sess-ramesh-001';
+const SESSION_PAUSED = 'sess-sunita';
+const SESSION_GHOST = 'sess-ghost';
+const BEARER = { authorization: `Bearer ${SESSION}` };
+const BEARER_PAUSED = { authorization: `Bearer ${SESSION_PAUSED}` };
 
 async function build(): Promise<FastifyInstance> {
   const repository = new InMemoryMembershipRepository();
@@ -20,7 +28,15 @@ async function build(): Promise<FastifyInstance> {
     ),
   );
   const app = createServer({ serviceName: 'membership-test' });
-  registerMembershipRoutes(app, { repository, now: () => ASOF });
+  registerMembershipRoutes(app, {
+    repository,
+    sessions: new InMemorySessionStore({
+      [SESSION]: { membershipId: 'm-001', deviceId: 'dev-1' },
+      [SESSION_PAUSED]: { membershipId: 'm-002', deviceId: 'dev-2' },
+      [SESSION_GHOST]: { membershipId: 'm-ghost', deviceId: 'dev-3' },
+    }),
+    now: () => ASOF,
+  });
   return app;
 }
 
@@ -36,7 +52,7 @@ describe('Membership HTTP — GET /membership/me', () => {
     const response = await server.inject({
       method: 'GET',
       url: '/v1/membership/me',
-      headers: { authorization: 'Bearer m-001' },
+      headers: BEARER,
     });
 
     expect(response.statusCode).toBe(200);
@@ -56,7 +72,7 @@ describe('Membership HTTP — GET /membership/me', () => {
       await server.inject({
         method: 'GET',
         url: '/v1/membership/me',
-        headers: { authorization: 'Bearer m-002' },
+        headers: BEARER_PAUSED,
       })
     ).json();
 
@@ -76,12 +92,25 @@ describe('Membership HTTP — GET /membership/me', () => {
     expect(typeof body.correlation_id).toBe('string');
   });
 
-  it('404s when the session maps to no Membership', async () => {
+  it('rejects an unknown session token (401) — a membership id is not a token', async () => {
+    server = await build();
+    for (const token of ['not-a-real-session', 'm-001']) {
+      const response = await server.inject({
+        method: 'GET',
+        url: '/v1/membership/me',
+        headers: { authorization: `Bearer ${token}` },
+      });
+      expect(response.statusCode).toBe(401);
+      expect(response.json().code).toBe('unauthorized');
+    }
+  });
+
+  it('404s when a valid session maps to no Membership', async () => {
     server = await build();
     const response = await server.inject({
       method: 'GET',
       url: '/v1/membership/me',
-      headers: { authorization: 'Bearer nobody' },
+      headers: { authorization: `Bearer ${SESSION_GHOST}` },
     });
     expect(response.statusCode).toBe(404);
     expect(response.json().code).toBe('not_found');

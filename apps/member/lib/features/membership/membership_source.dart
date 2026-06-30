@@ -31,8 +31,9 @@ class SampleMembershipSource implements MembershipSource {
 }
 
 /// The real wiring: fetches the Member's own Membership from `GET /membership/me`
-/// through the generated [MembershipApi]. Bearer token = the Member's session
-/// (a PRE-AUTH stub on the server until phone-first sessions land).
+/// through the generated [MembershipApi]. Bearer token = the Member's opaque
+/// session token, resolved server-side to the Member (the auth boundary).
+/// Phone-first issuance (Book VIII §1.3) is not built yet — the token is seeded.
 class ApiMembershipSource implements MembershipSource {
   ApiMembershipSource({required String baseUrl, required String memberToken}) {
     // baseUrl is the bare host; the contract serves every route under `/v1`.

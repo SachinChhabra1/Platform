@@ -7,7 +7,7 @@
 /// demonstrably runnable end to end. Configuration is environment-only.
 
 import { createLogger } from '@nia/log';
-import { createServer } from '@nia/runtime';
+import { createServer, InMemorySessionStore } from '@nia/runtime';
 import { registerWalletOverviewRoutes } from './http.js';
 import { InMemoryWalletActivitySource } from './source.js';
 import { rupees } from './money.js';
@@ -35,10 +35,18 @@ const DEMO_LOG: readonly WalletActivity[] = [
   seed({ id: 'a5', occurredOn: '2026-06-15', category: 'remittance', direction: 'out', amount: rupees(5000) }),
 ];
 
+// Demo session only (NOT issuance): one opaque token bound to the demo Member's
+// device. Real tokens are issued after phone verification (Book VIII §1.3) — not
+// built. The token is deliberately NOT the membership id (that was the old stub).
+const DEMO_SESSION = 'sess-ramesh-001';
+
 const log = createLogger({ base: { service: serviceName } });
 const app = createServer({ serviceName, logger: log });
 registerWalletOverviewRoutes(app, {
   source: new InMemoryWalletActivitySource({ [DEMO_MEMBER]: DEMO_LOG }),
+  sessions: new InMemorySessionStore({
+    [DEMO_SESSION]: { membershipId: DEMO_MEMBER, deviceId: 'dev-ramesh-phone' },
+  }),
 });
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {

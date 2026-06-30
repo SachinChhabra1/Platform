@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { createServer } from '@nia/runtime';
+import { createServer, InMemorySessionStore } from '@nia/runtime';
 import { rupees } from './money.js';
 import type { WalletActivity } from './activity.js';
 import { InMemoryWalletActivitySource } from './source.js';
@@ -27,7 +27,12 @@ const LOG: readonly WalletActivity[] = [
 ];
 
 const MEMBER = 'm-001';
-const BEARER = { authorization: `Bearer ${MEMBER}` };
+const MEMBER_NO_ACTIVITY = 'm-quiet';
+// Opaque session tokens — NOT the membership id (that was the old stub). The
+// store resolves them to the bound Member; an unknown token is no session.
+const SESSION = 'sess-ramesh-001';
+const SESSION_QUIET = 'sess-quiet';
+const BEARER = { authorization: `Bearer ${SESSION}` };
 
 let server: FastifyInstance | undefined;
 
@@ -35,6 +40,10 @@ function build(): FastifyInstance {
   const app = createServer({ serviceName: 'wallet-test' });
   registerWalletOverviewRoutes(app, {
     source: new InMemoryWalletActivitySource({ [MEMBER]: LOG }),
+    sessions: new InMemorySessionStore({
+      [SESSION]: { membershipId: MEMBER, deviceId: 'dev-1' },
+      [SESSION_QUIET]: { membershipId: MEMBER_NO_ACTIVITY, deviceId: 'dev-2' },
+    }),
     now: () => ASOF,
   });
   return app;
@@ -128,6 +137,22 @@ describe('Wallet Overview HTTP — access and validation', () => {
     expect(typeof body.correlation_id).toBe('string');
   });
 
+  it('rejects an unknown session token — and the membership id is not a token', async () => {
+    server = build();
+    // A token the store does not know → 401 (the real validation the boundary
+    // adds). Presenting the membership id itself would have "worked" under the
+    // old stub; now it is just an unknown token.
+    for (const token of ['not-a-real-session', MEMBER]) {
+      const response = await server.inject({
+        method: 'GET',
+        url: '/v1/wallet/overview',
+        headers: { authorization: `Bearer ${token}` },
+      });
+      expect(response.statusCode).toBe(401);
+      expect(response.json().code).toBe('unauthorized');
+    }
+  });
+
   it('rejects a malformed month (400 + error envelope)', async () => {
     server = build();
     const response = await server.inject({
@@ -145,7 +170,7 @@ describe('Wallet Overview HTTP — access and validation', () => {
       await server.inject({
         method: 'GET',
         url: '/v1/wallet/overview',
-        headers: { authorization: 'Bearer someone-else' },
+        headers: { authorization: `Bearer ${SESSION_QUIET}` },
       })
     ).json();
     expect(body.received.minor).toBe(0);

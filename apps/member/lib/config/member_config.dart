@@ -7,8 +7,10 @@
 /// the default `const NiaMemberApp()` stays const):
 ///   • `NIA_API_BASE_URL` — the backend host, e.g. `http://127.0.0.1:8081`. The
 ///     `Api*Source` clients append the contract's `/v1` prefix themselves.
-///   • `NIA_MEMBER_TOKEN`  — the Member's session bearer (= the membership id
-///     under the current PRE-AUTH stub, until phone-first sessions land).
+///   • `NIA_MEMBER_TOKEN`  — the Member's opaque session token, validated
+///     server-side (e.g. the seeded demo session `sess-ramesh-001`). Phone-first
+///     issuance (Book VIII §1.3) is not built yet, so tokens are seeded — but the
+///     server no longer treats the bearer as a membership id.
 ///
 /// Empty base URL ⇒ offline: the app keeps serving the sample so the Product
 /// Review Prototype runs with no backend. A non-empty base URL ⇒ the app points

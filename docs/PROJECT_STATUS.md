@@ -160,8 +160,20 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    bearer, and renders the fetched figures. Also smoke-tested against the real Fastify services.
    Verify green. **Auth still the bearer PRE-AUTH stub.**
 
-   *Follow-on slices (not yet sequenced) ← **next**: real phone-first session auth (replace the
-   bearer-as-membership-id PRE-AUTH stub, shared by both surfaces, Book VIII §1.3); Membership
+8. ~~**Session/auth boundary (engineering only)**~~ — **DONE (2026-06-30).** Retired the
+   `bearer = membership-id` PRE-AUTH stub on both surfaces. A real indirection now lives in
+   `@nia/runtime` (`session.ts`): a `SessionStore` port + `InMemorySessionStore` + `memberFromSession`
+   resolve an OPAQUE token, server-side, to the bound Member (with device id, Book VIII §1.3);
+   default-deny. Both services take a `sessions` dep and seed a demo session (`sess-ramesh-001` →
+   `m-001`); presenting the membership id now 401s. **Scope: engineering boundary only** — the
+   phone-verification / issuance flow is NOT built (unspec'd; §13/6 device re-establishment open).
+   Tests: `session.test.ts` (5) + per-service unknown-token → 401 guards. Verify green; smoke-tested
+   live (valid session 200, old `m-001` 401). App unchanged in code; `NIA_MEMBER_TOKEN` is now a
+   session token.
+
+   *Follow-on slices (not yet sequenced) ← **next**: session ISSUANCE surface (`POST /v1/sessions`,
+   device-bound, Idempotency-Key) and eventually the phone-first verification flow — both need a
+   Founder/Product spec first (Book VIII §1.3 not yet Engineering-Locked). Also: Membership
    write/command surface (lifecycle transitions); PostgreSQL adapters (ADR-0006); Wallet ledger
    event store (senior review); return-after-closure (FD-6).*
 

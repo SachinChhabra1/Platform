@@ -61,8 +61,9 @@ class SampleWalletOverviewSource implements WalletOverviewSource {
 
 /// The real wiring: fetches the Overview from the read-only Wallet Overview
 /// endpoint (openapi.wallet.yaml) through the generated [WalletApi]. The bearer
-/// token is the Member's session (a PRE-AUTH STUB on the server: the token is
-/// the membership id until phone-first sessions land).
+/// token is the Member's opaque session token, resolved server-side to the Member
+/// (the auth boundary). Phone-first issuance (Book VIII §1.3) is not built yet, so
+/// the token is a seeded demo session — but it is no longer the membership id.
 class ApiWalletOverviewSource implements WalletOverviewSource {
   ApiWalletOverviewSource({
     required String baseUrl,
