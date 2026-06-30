@@ -1,0 +1,210 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Wallet Overview
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    The Wallet Overview surface (spec 0001 §3 legibility, §14 step 4; ADR-0008).
+    A read-only projection of the Member's assembled money story. It honours the
+    locked legibility requirements (§3): two DISTINCT money figures — what he can
+    use now (`available_balance`) versus what stayed his this month
+    (`stayed_this_month`), never the same number undistinguished — and a money
+    story that carries no severity or shame field (a lean month reads like any
+    other). History is reachable: prior months are enumerable.
+
+    Feature surface only — it references the shared components in the base
+    contract (`openapi.base.yaml`) and adds no cross-cutting components of its own
+    (Book VIII ch. 4; ADR-0007, ADR-0009). Money is carried in integer paise; the
+    Member-facing rendering (the ₹ symbol, the Member's script) is the client's
+    job (Book III §5.3, §6.4).
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: wallet
+    description: The Member's Wallet — the read-only money story (Book IV §1.3).
+
+paths:
+  /wallet/overview:
+    get:
+      operationId: getWalletOverview
+      tags: [wallet]
+      summary: The Member's money story for one month.
+      description: >
+        Returns the Wallet Overview for the requested month, or the current month
+        when `month` is omitted (current is the server's month — server time is
+        the only time the backend uses, Book VIII §1.5). The Member is resolved
+        from the session (default-deny; he sees only his own Wallet, Book VIII
+        §1.4).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: month
+          in: query
+          required: false
+          description: >
+            The month to project, as 'YYYY-MM'. Omit for the current month. Use
+            `GET /wallet/overview/months` to discover the reachable months.
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+            example: "2026-06"
+      responses:
+        "200":
+          description: The money story for the month.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyOverview"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /wallet/overview/months:
+    get:
+      operationId: getWalletOverviewMonths
+      tags: [wallet]
+      summary: The reachable months in the Member's Wallet.
+      description: >
+        The distinct months present in the Member's assembled activity, most
+        recent first — the reachable history the legibility requirement mandates
+        (§3; Article II; Book II §4.8). Each is projectable via
+        `GET /wallet/overview?month=`.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The reachable months, most recent first.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReachableMonths"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    # Re-exported from the base contract so this feature doc is self-validating
+    # and the `MemberSession` requirement below resolves (a security requirement
+    # names a scheme in THIS document's components).
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: >
+        A money amount in the Member's currency, carried in integer minor units
+        (paise) — never a float. Formatting is the client's job (Book III §6.4).
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          description: >
+            The amount in minor units (paise). May be negative where the figure
+            it carries can be negative (e.g. a lean month's `stayed_this_month`).
+          example: 480000
+        currency:
+          type: string
+          enum: [INR]
+          description: ISO 4217 currency. Nia is INR-only in this slice.
+
+    MoneyStoryLine:
+      type: object
+      description: >
+        One neutral line of the money story. It carries only structural data —
+        there is deliberately NO severity, alarm, or shame field, so a deduction
+        or informal-debt repayment reads exactly like good news (§3; §5.4
+        failures are private).
+      required: [activity_id, category, direction, amount]
+      additionalProperties: false
+      properties:
+        activity_id:
+          type: string
+          description: Stable id of the underlying activity fact.
+        category:
+          type: string
+          description: >
+            Open category code (data, not policy) — e.g. 'wage', 'rent', 'curry',
+            'savings', 'remittance', 'informal_debt_repayment'. The Member-facing
+            wording is the client's i18n job.
+          example: wage
+        direction:
+          type: string
+          enum: [in, out]
+          description: Whether the money came in or went out. The sign lives here.
+        amount:
+          $ref: "#/components/schemas/Money"
+
+    MonthlyOverview:
+      type: object
+      description: >
+        The Wallet Overview for one month. `stayed_this_month` and
+        `available_balance` are DISTINCT figures and must never be presented as
+        the same number undistinguished (§3).
+      required:
+        [month, received, stayed_this_month, available_balance, story]
+      additionalProperties: false
+      properties:
+        month:
+          type: string
+          pattern: '^\d{4}-\d{2}$'
+          description: The month this overview covers, 'YYYY-MM'.
+          example: "2026-06"
+        received:
+          $ref: "#/components/schemas/Money"
+        stayed_this_month:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: >
+            What stayed his this month — the net change in his total holdings
+            (savings he kept + surplus), distinct from what he can spend now. May
+            be low or negative in a lean month; represented plainly, never as a
+            failure (§3; §5.4).
+        available_balance:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: >
+            What he can use now — the running spendable balance through the end of
+            this month (carryover included). Deliberately distinct from
+            `stayed_this_month`.
+        story:
+          type: array
+          description: The month's activities as neutral story lines, in order.
+          items:
+            $ref: "#/components/schemas/MoneyStoryLine"
+
+    ReachableMonths:
+      type: object
+      description: The reachable months in the Member's Wallet, most recent first.
+      required: [months]
+      additionalProperties: false
+      properties:
+        months:
+          type: array
+          description: Distinct months ('YYYY-MM'), most recent first.
+          items:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+          example: ["2026-06", "2026-05"]
+
+security:
+  - MemberSession: []
