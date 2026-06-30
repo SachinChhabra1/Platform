@@ -19,3 +19,7 @@ export {
   type WalletActivitySource,
   InMemoryWalletActivitySource,
 } from './source.js';
+export {
+  type WalletRouteDeps,
+  registerWalletOverviewRoutes,
+} from './http.js';
