@@ -148,9 +148,16 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    unversioned paths and only interoperated because the client dropped `/v1`. Route tests updated;
    verify green; smoke-tested (old unversioned paths now 404).
 
-   *Follow-on slices (not yet sequenced) ← **next**: point the Wallet app at the live HTTP
-   surface by config (`Api*Source` instead of the offline `Sample*Source`); add real session auth
-   (replace the bearer-as-membership-id PRE-AUTH stub, shared by both surfaces); Membership
+7. ~~**Live app configuration**~~ — **DONE (2026-06-30).** A single composition seam,
+   `MemberConfig` (`apps/member/lib/config/member_config.dart`), selects the live HTTP
+   `Api*Source` over the offline `Sample*Source` from compile-time config (`--dart-define`
+   `NIA_API_BASE_URL` + `NIA_MEMBER_TOKEN`). Empty URL ⇒ offline sample (the Product Review
+   Prototype default, unchanged); a configured URL ⇒ the app reads the live `/v1` surfaces via the
+   generated `nia_api` client. Threaded `NiaMemberApp → MemberShell → WalletPage / ProfilePage →
+   MembershipHeader`. 3 selection guard tests; verify green. **Auth still the bearer PRE-AUTH stub.**
+
+   *Follow-on slices (not yet sequenced) ← **next**: real phone-first session auth (replace the
+   bearer-as-membership-id PRE-AUTH stub, shared by both surfaces, Book VIII §1.3); Membership
    write/command surface (lifecycle transitions); PostgreSQL adapters (ADR-0006); Wallet ledger
    event store (senior review); return-after-closure (FD-6).*
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nia_i18n/nia_i18n.dart';
 
+import 'config/member_config.dart';
 import 'features/shell/member_shell.dart';
 import 'theme/nia_theme.dart';
 
@@ -9,13 +10,19 @@ import 'theme/nia_theme.dart';
 /// Product can review the *experience* while the Membership spec is still
 /// evolving.
 ///
-/// It deliberately contains no backend, no API calls, no Wallet logic, and no
-/// product behaviour; every figure is placeholder and every unresolved Founder
-/// Decision is shown as a marked placeholder, never invented. Production code
-/// still derives only from an Engineering-Locked spec (the contract chain,
-/// ADR-0009).
+/// By default it runs offline — every figure is the Founder-accepted sample and
+/// every unresolved Founder Decision is shown as a marked placeholder, never
+/// invented. When a backend is configured (`--dart-define NIA_API_BASE_URL=…`),
+/// the data-bearing screens instead read the live `/v1` HTTP surfaces through the
+/// generated `nia_api` client ([MemberConfig]); the experience is unchanged.
+/// Production code still derives only from an Engineering-Locked spec (the
+/// contract chain, ADR-0009).
 class NiaMemberApp extends StatelessWidget {
-  const NiaMemberApp({super.key});
+  const NiaMemberApp({super.key, this.config = const MemberConfig.fromEnvironment()});
+
+  /// Chooses live HTTP sources vs. the offline sample. Defaults to the
+  /// compile-time configuration; injectable in tests.
+  final MemberConfig config;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class NiaMemberApp extends StatelessWidget {
       theme: buildNiaPrototypeTheme(),
       localizationsDelegates: NiaLocalizations.localizationsDelegates,
       supportedLocales: NiaLocalizations.supportedLocales,
-      home: const MemberShell(),
+      home: MemberShell(config: config),
     );
   }
 }

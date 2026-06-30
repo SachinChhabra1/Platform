@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../config/member_config.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
@@ -17,7 +18,10 @@ import '../wallet/wallet_page.dart';
 /// each tab keeps its place. The Operator is reachable in one tap from any
 /// screen (§3.6), and the Member's profile is one tap from the header.
 class MemberShell extends StatefulWidget {
-  const MemberShell({super.key});
+  const MemberShell({super.key, this.config = const MemberConfig.fromEnvironment()});
+
+  /// Selects live HTTP vs. offline-sample sources for the data-bearing screens.
+  final MemberConfig config;
 
   @override
   State<MemberShell> createState() => _MemberShellState();
@@ -26,11 +30,13 @@ class MemberShell extends StatefulWidget {
 class _MemberShellState extends State<MemberShell> {
   int _index = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    HomePage(),
-    WalletPage(),
-    ClustersPage(),
-    RafiqiPage(),
+  // Built once from the configuration: the Wallet reads its source (live or
+  // sample) per [MemberConfig]; the other anchors carry no Member data.
+  late final List<Widget> _pages = <Widget>[
+    const HomePage(),
+    WalletPage(source: widget.config.walletSource()),
+    const ClustersPage(),
+    const RafiqiPage(),
   ];
 
   static const List<String> _titles = <String>[
@@ -53,7 +59,8 @@ class _MemberShellState extends State<MemberShell> {
             tooltip: 'Profile',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const ProfilePage(),
+                builder: (_) =>
+                    ProfilePage(membershipSource: widget.config.membershipSource()),
               ),
             ),
             icon: const Monogram(initials: 'R', size: 36),

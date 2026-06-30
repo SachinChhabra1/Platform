@@ -4,6 +4,7 @@ import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
 import '../membership/membership_header.dart';
+import '../membership/membership_source.dart';
 
 /// Profile — the Member's identity, his Operator, and his data rights.
 ///
@@ -11,7 +12,11 @@ import '../membership/membership_header.dart';
 /// and Nia is custodian (Article XV). Undecided behaviour (tenure, state
 /// visibility, consent) is shown as a marked placeholder, never invented.
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, this.membershipSource = const SampleMembershipSource()});
+
+  /// The identity header's source — live over HTTP or the offline sample,
+  /// chosen by [MemberConfig] at the shell. Defaults to the sample.
+  final MembershipSource membershipSource;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,7 @@ class ProfilePage extends StatelessWidget {
         children: <Widget>[
           // Identity header — wired to the Membership read model via nia_api
           // (name only; lifecycle state is Q2-gated, see "Your standing" below).
-          const MembershipHeader(),
+          MembershipHeader(source: membershipSource),
           const SizedBox(height: NiaTokens.s7),
 
           const SectionLabel('Your Operator'),
