@@ -92,7 +92,9 @@ current state of the repository. The repository, not any conversation, is the me
   formatting is i18n's job. Spec §14 step 3. Verify green. *Carried for Product confirmation:
   the exact arithmetic of "stayed with you this month" (driven by a data-provided
   `changesHoldings` flag; the spec mandates distinctness, not the formula).*
-- **No HTTP surface / persistence engine built yet** (read models + domain only).
+- **Read-only HTTP surfaces exist** for Wallet (`GET /v1/wallet/overview[/months]`) and
+  Membership (`GET /v1/membership/me`), both over `@nia/runtime` with a bearer PRE-AUTH stub.
+  **No persistence engine yet** (in-memory adapters); no write/command surfaces.
 
 ## Current blocker
 
@@ -124,11 +126,16 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
    renders a `MonthlyOverview`, two distinct §3 figures). See `engineering-stack.md` for the
    per-slice detail and the codegen/JDK notes. 60 tests total; verify green.
 
-   *Follow-on slices (not yet sequenced) ← **next**: the **default** Wallet data source is still
-   the offline sample (`SampleWalletOverviewSource`) — point the app at the live HTTP surface and
-   add real session auth (replace the bearer-as-membership-id PRE-AUTH STUB); Membership HTTP
-   wiring; PostgreSQL adapters (ADR-0006); Wallet ledger event store (senior review);
-   return-after-closure (FD-6) at the Onboarding boundary.*
+5. ~~**Membership HTTP surface**~~ — **DONE (2026-06-30).** Read-only `GET /v1/membership/me`
+   over `@nia/runtime` (`services/membership/src/http.ts`), contract `openapi.membership.yaml`.
+   Returns identity + canonical lifecycle state only — **no tenure** (FD-3, Q4) and no
+   operational metadata; bearer PRE-AUTH stub, default-deny → 401, no Membership → 404.
+   17 tests (13 domain + 4 HTTP); client generation deferred (no Flutter consumer yet).
+
+   *Follow-on slices (not yet sequenced) ← **next**: point the Wallet app at the live HTTP
+   surface and add real session auth (replace the bearer-as-membership-id PRE-AUTH stub, shared
+   by both surfaces); Membership write/command surface (lifecycle transitions); PostgreSQL
+   adapters (ADR-0006); Wallet ledger event store (senior review); return-after-closure (FD-6).*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).

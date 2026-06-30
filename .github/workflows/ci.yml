@@ -29,7 +29,7 @@ jobs:
           node-version-file: ".nvmrc"
       # Validate the shared OpenAPI contract (packages/types; Book VIII ch. 4).
       - name: Validate API contract
-        run: npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.base.yaml packages/types/openapi/openapi.wallet.yaml
+        run: npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.base.yaml packages/types/openapi/openapi.wallet.yaml packages/types/openapi/openapi.membership.yaml
 
   typescript:
     runs-on: ubuntu-latest

@@ -18,7 +18,8 @@ if command -v npx >/dev/null 2>&1; then
   echo "▶ api contract lint"
   npx --yes @redocly/cli@1.25.0 lint \
     packages/types/openapi/openapi.base.yaml \
-    packages/types/openapi/openapi.wallet.yaml || fail=1
+    packages/types/openapi/openapi.wallet.yaml \
+    packages/types/openapi/openapi.membership.yaml || fail=1
 else
   echo "⊘ npx not found — skipping API contract lint"
 fi

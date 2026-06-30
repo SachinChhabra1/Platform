@@ -1,0 +1,93 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Membership
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    The Membership surface (spec 0001 §3–§5, §13, §14; ADR-0007). A read-only
+    view of the Member's relationship as Membership holds it: who he is (known by
+    name, not number — §3) and the lifecycle state of the relationship
+    (prospective → member → paused → closed; §5). Member-facing labels are the
+    client's job; the state here is the canonical code (data, not presentation),
+    and no internal name leaks into the experience (FD-3).
+
+    Deliberately minimal and Member-facing: it carries NO Relationship Tenure and
+    no tenure-derived value — tenure is internal only (FD-3, Q4) — and no
+    operational pause/closure metadata. Feature surface only; it references the
+    base contract's shared components (Book VIII ch. 4; ADR-0009).
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: membership
+    description: The Member relationship and its lifecycle (Book I Art. I; §5).
+
+paths:
+  /membership/me:
+    get:
+      operationId: getMyMembership
+      tags: [membership]
+      summary: The signed-in Member's identity and lifecycle state.
+      description: >
+        Returns the Member's own Membership — resolved from the session, never a
+        path id, so a Member can only ever see his own (default-deny, Book VIII
+        §1.4). Carries no tenure (FD-3, Q4).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The Member's Membership view.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    # Re-exported from the base contract so the security requirement below
+    # resolves within this document (cf. openapi.wallet.yaml).
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    MembershipState:
+      type: string
+      description: >
+        Canonical lifecycle state (spec §5). A closed four-state machine; the
+        Member-facing label (Prospective / Member / Paused / Closed) is
+        presentation the client owns (FD-3).
+      enum: [prospective, member, paused, closed]
+
+    MembershipView:
+      type: object
+      description: >
+        The Member's relationship as Membership holds it. Minimal by design:
+        identity + lifecycle state, no tenure (FD-3, Q4), no operational metadata.
+      required: [membership_id, name, state]
+      additionalProperties: false
+      properties:
+        membership_id:
+          type: string
+          description: Stable membership id ([A6]). Not a Member-facing number (§3).
+        name:
+          type: string
+          description: The name the Member is known by (§3, "known by name, not number").
+        state:
+          $ref: "#/components/schemas/MembershipState"
+
+security:
+  - MemberSession: []

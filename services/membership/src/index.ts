@@ -21,3 +21,7 @@ export {
   type MembershipRepository,
   InMemoryMembershipRepository,
 } from './repository.js';
+export {
+  type MembershipRouteDeps,
+  registerMembershipRoutes,
+} from './http.js';
