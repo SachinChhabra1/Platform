@@ -17,7 +17,12 @@ import '../theme/nia_tokens.dart';
 /// (Founder direction) from the old full-width ribbon to an unobtrusive chip
 /// that sits in the app bar. Still unmistakable on inspection; no longer noise.
 class PrototypeChip extends StatelessWidget {
-  const PrototypeChip({super.key});
+  const PrototypeChip({super.key, this.label = 'prototype'});
+
+  /// What the chip reads. Offline (the Product Review Prototype) → 'prototype';
+  /// the Developer Preview (a live backend) → 'preview'. Either way it stays an
+  /// honest, unmistakable "not the shipped product" marker.
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +32,9 @@ class PrototypeChip extends StatelessWidget {
         border: Border.all(color: NiaTokens.hairline),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: const Text(
-        'prototype',
-        style: TextStyle(
+      child: Text(
+        label,
+        style: const TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w500,
           color: NiaTokens.inkSecondary,
@@ -88,6 +93,9 @@ class FdPlaceholder extends StatelessWidget {
 abstract final class PrototypeData {
   static const String memberName = 'Ramesh';
   static const String memberFullName = 'Ramesh Kumar';
+  // Illustrative only — the Member's phone is not yet on the Membership contract
+  // (GET /membership/me carries id, name, state). Masked as it would be shown.
+  static const String phoneMasked = '+91 98••• ••210';
   static const String homePlace = 'Ganjam, Odisha';
   static const String language = 'Odia';
   static const String emergencyContact = 'Sunita (wife) · contact on file';

@@ -30,10 +30,15 @@ class MemberShell extends StatefulWidget {
 class _MemberShellState extends State<MemberShell> {
   int _index = 0;
 
-  // Built once from the configuration: the Wallet reads its source (live or
-  // sample) per [MemberConfig]; the other anchors carry no Member data.
+  // Built once from the configuration: the Home and Wallet read their sources
+  // (live or sample) per [MemberConfig]; the other anchors carry no Member data.
+  // In Preview (a live backend) the Home surfaces the Member's standing (Q2).
   late final List<Widget> _pages = <Widget>[
-    const HomePage(),
+    HomePage(
+      walletSource: widget.config.walletSource(),
+      membershipSource: widget.config.membershipSource(),
+      previewMode: widget.config.usesLiveBackend,
+    ),
     WalletPage(source: widget.config.walletSource()),
     const ClustersPage(),
     const RafiqiPage(),
@@ -59,15 +64,17 @@ class _MemberShellState extends State<MemberShell> {
             tooltip: 'Profile',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) =>
-                    ProfilePage(membershipSource: widget.config.membershipSource()),
+                builder: (_) => ProfilePage(
+                  membershipSource: widget.config.membershipSource(),
+                  previewMode: widget.config.usesLiveBackend,
+                ),
               ),
             ),
             icon: const Monogram(initials: 'R', size: 36),
           ),
         ),
         actions: <Widget>[
-          const Center(child: PrototypeChip()),
+          Center(child: PrototypeChip(label: widget.config.usesLiveBackend ? 'preview' : 'prototype')),
           IconButton(
             tooltip: 'Call your Operator',
             onPressed: () => openOperatorSheet(context),

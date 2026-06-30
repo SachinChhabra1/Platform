@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:nia_api/api.dart';
 
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../membership/membership_source.dart';
 import '../promise/promise_page.dart';
+import '../wallet/wallet_overview_source.dart';
+import '../wallet/wallet_page.dart' show formatRupees;
 
 /// Membership Home — "the Home is the answer" (Book IV §3.1).
 ///
 /// Order is fixed by Founder decision (2026-06-29): the first question a Member
 /// asks is "how much do I have today?", so the **balance leads**. The Promise
-/// explains the relationship; the balance proves it — trust is earned by proving
-/// the Promise repeatedly, not by placing it first. Sequence:
+/// explains the relationship; the balance proves it. Sequence:
 ///   1. Available balance · 2. What changed · 3. What next · 4. The Promise ·
 ///   5. Your life with Nia.
 ///
-/// Visual shell only: every figure is placeholder, nothing is computed.
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+/// The greeting and the headline figures are **live**: the name comes from the
+/// Membership read model and the two §3 figures from the Wallet Overview read
+/// model, through the generated `nia_api` client ([MemberConfig]). With the
+/// offline sample the numbers are identical to the Founder-accepted scenario, so
+/// the prototype is unchanged; pointed at the backend (Developer Preview) the
+/// Home shows the real services.
+///
+/// `previewMode` surfaces the Member's lifecycle **state** ("Active"). In the
+/// offline prototype it stays OFF, preserving the Q2 placeholder below — whether
+/// the state is shown to the Member is still an open Product debate; the Preview
+/// lens leans toward showing it, for Founder confirmation.
+class HomePage extends StatefulWidget {
+  const HomePage({
+    super.key,
+    this.walletSource = const SampleWalletOverviewSource(),
+    this.membershipSource = const SampleMembershipSource(),
+    this.previewMode = false,
+  });
+
+  final WalletOverviewSource walletSource;
+  final MembershipSource membershipSource;
+  final bool previewMode;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final Future<MonthlyOverview> _overview = widget.walletSource.currentOverview();
+  late final Future<MembershipView> _membership =
+      widget.membershipSource.currentMembership();
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +56,82 @@ class HomePage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(
           NiaTokens.s5, NiaTokens.s6, NiaTokens.s5, NiaTokens.s8),
       children: <Widget>[
-        // Addressed by name, never a number (Book III §6.3, Truth 1.7).
-        Text('Namaste, ${PrototypeData.memberName}',
-            style: theme.textTheme.headlineMedium),
+        // Addressed by name, never a number (Book III §6.3, Truth 1.7). "Namaste"
+        // shows immediately; the name fills in from the live Membership model.
+        FutureBuilder<MembershipView>(
+          future: _membership,
+          builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
+            final String? name = snap.data?.name;
+            final String first =
+                (name != null && name.isNotEmpty) ? name.split(' ').first : '';
+            return Text(
+              first.isEmpty ? 'Namaste' : 'Namaste, $first',
+              style: theme.textTheme.headlineMedium,
+            );
+          },
+        ),
         const SizedBox(height: NiaTokens.s2),
-        Text('Tuesday, a quiet day.', style: theme.textTheme.bodyMedium),
+
+        // Lifecycle state — Preview only (Q2). A quiet, confident standing line.
+        if (widget.previewMode)
+          FutureBuilder<MembershipView>(
+            future: _membership,
+            builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
+              if (!snap.hasData) return const SizedBox(height: NiaTokens.s2);
+              final _Standing s = _standingFor(snap.data!.state);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: NiaTokens.s2),
+                child: Row(
+                  children: <Widget>[
+                    Icon(s.icon, size: 16, color: s.color),
+                    const SizedBox(width: NiaTokens.s2),
+                    Flexible(
+                      child: Text(s.phrase,
+                          style: theme.textTheme.bodyMedium?.copyWith(color: s.color)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          )
+        else
+          Text('Tuesday, a quiet day.', style: theme.textTheme.bodyMedium),
         const SizedBox(height: NiaTokens.s8),
 
-        // 1 — Available balance. The first question, answered immediately
-        // (Article II; Book II §4.8).
-        Text(PrototypeData.walletAvailable,
-            style: theme.textTheme.displaySmall),
-        const SizedBox(height: NiaTokens.s1),
-        Text('available in your Wallet', style: theme.textTheme.bodyMedium),
+        // 1 — The two §3 figures, live: what he can use now leads (the first
+        // question), then what stayed his this month. Distinct numbers, kept apart.
+        FutureBuilder<MonthlyOverview>(
+          future: _overview,
+          builder: (BuildContext context, AsyncSnapshot<MonthlyOverview> snap) {
+            if (!snap.hasData) {
+              return const SizedBox(
+                height: 96,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+            final MonthlyOverview o = snap.data!;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(formatRupees(o.availableBalance),
+                    style: theme.textTheme.displaySmall),
+                const SizedBox(height: NiaTokens.s1),
+                Text('available in your Wallet', style: theme.textTheme.bodyMedium),
+                const SizedBox(height: NiaTokens.s4),
+                Text('${formatRupees(o.stayedThisMonth)} stayed with you this month',
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(color: NiaTokens.inkSecondary)),
+              ],
+            );
+          },
+        ),
         const SizedBox(height: NiaTokens.s7),
 
         // 2 — What changed since he last looked.
@@ -114,6 +208,29 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+/// How a lifecycle state reads on the Home standing line (Preview only).
+class _Standing {
+  const _Standing(this.phrase, this.icon, this.color);
+  final String phrase;
+  final IconData icon;
+  final Color color;
+}
+
+_Standing _standingFor(MembershipState state) {
+  switch (state) {
+    case MembershipState.member:
+      return const _Standing('An active Member of Nia', Icons.check_circle, NiaTokens.green);
+    case MembershipState.paused:
+      return const _Standing('A paused Member of Nia', Icons.pause_circle_outline, NiaTokens.amber);
+    case MembershipState.prospective:
+      return const _Standing('Joining Nia', Icons.schedule, NiaTokens.inkSecondary);
+    case MembershipState.closed:
+      return const _Standing('A former Member of Nia', Icons.circle_outlined, NiaTokens.inkSecondary);
+    default:
+      return const _Standing('A Member of Nia', Icons.circle_outlined, NiaTokens.inkSecondary);
   }
 }
 

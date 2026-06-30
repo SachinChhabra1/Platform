@@ -1,0 +1,29 @@
+{
+  "name": "@nia/preview",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Developer Preview backend — composes the Wallet + Membership HTTP surfaces into ONE process on ONE port, sharing one seeded session store, so the Member app can read the real services through a single base URL. Composition only: no new domain, no product behaviour.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "tsx src/start.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nia/log": "workspace:^",
+    "@nia/membership": "workspace:^",
+    "@nia/runtime": "workspace:^",
+    "@nia/wallet": "workspace:^",
+    "fastify": "^5.9.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.22.4",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
