@@ -97,11 +97,12 @@ current state of the repository. The repository, not any conversation, is the me
 ## Current blocker
 
 **None blocking.** Membership is Engineering-Locked; the bottleneck is now **Engineering, not
-Product**. Steps 1–3 are built (Fastify runtime skeleton, Membership domain core, Wallet
-Overview read model); next is the **Wallet Overview frontend (step 4)** — wiring the prototype
-Wallet to the read model. (Carried, non-blocking: FD-2 exact Promise headline; FD-10/FD-13
-flows pending legal review; "stayed with you" arithmetic to confirm at the next Wallet Product
-Review.)
+Product**. Steps 1–4 are built (Fastify runtime skeleton, Membership domain core, Wallet
+Overview read model, and now the **Wallet Overview frontend** — contract, HTTP surface,
+generated clients, and the Flutter Wallet rendering the two distinct §3 figures). Next is the
+first follow-on slice (see below). (Carried, non-blocking: FD-2 exact Promise headline;
+FD-10/FD-13 flows pending legal review; **"stayed with you" arithmetic still to confirm at the
+next Wallet Product Review** — the read model's interpretation is unchanged.)
 
 ## Next engineering sequence (Membership is Engineering-Locked — sequence is now unblocked)
 
@@ -117,12 +118,17 @@ Review.)
    read model: `WalletActivity` → `MonthlyOverview`; `availableBalance` distinct from
    `stayedThisMonth`; shame-free money story; reachable prior months (spec §3; ADR-0008).
    No money movement, ledger engine, policy, or FD-10/FD-13. 10 tests.
-4. **Wallet Overview frontend** ← **next** — wire the prototype Wallet (`apps/member`) to the
-   read model; replace placeholder data; render the two distinct figures (§3 legibility note).
+4. ~~**Wallet Overview frontend**~~ — **DONE (2026-06-30, §14 step 4, four slices).** Contract
+   (`openapi.wallet.yaml`) → HTTP surface (`services/wallet/src/http.ts` over `@nia/runtime`) →
+   generated clients (`scripts/codegen.sh`, committed `nia_api`) → Flutter wiring (`apps/member`
+   renders a `MonthlyOverview`, two distinct §3 figures). See `engineering-stack.md` for the
+   per-slice detail and the codegen/JDK notes. 60 tests total; verify green.
 
-   *Follow-on slices (not yet sequenced): HTTP/API surface for the read model (via
-   `@nia/runtime`); Membership HTTP wiring; PostgreSQL adapters (ADR-0006); Wallet ledger
-   event store (senior review); return-after-closure (FD-6) at the Onboarding boundary.*
+   *Follow-on slices (not yet sequenced) ← **next**: the **default** Wallet data source is still
+   the offline sample (`SampleWalletOverviewSource`) — point the app at the live HTTP surface and
+   add real session auth (replace the bearer-as-membership-id PRE-AUTH STUB); Membership HTTP
+   wiring; PostgreSQL adapters (ADR-0006); Wallet ledger event store (senior review);
+   return-after-closure (FD-6) at the Onboarding boundary.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).

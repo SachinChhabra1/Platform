@@ -28,9 +28,11 @@ inline.
 
 ## Local toolchain
 
-Installed under `~/.nia-toolchain`, on `PATH` via `~/.zshenv`:
-Node 20.18.1 · pnpm 9.12.0 · Flutter 3.44.4 / Dart 3.12.2. Run `pnpm run verify` before
-every PR (see the root `README.md`).
+Provisioned by `scripts/bootstrap.sh` and put on `PATH` by `scripts/_env.sh`:
+Node 20.18.1 · pnpm 9.12.0 · Flutter 3.44.4 / Dart 3.12.2 · Temurin JDK 21 (codegen only).
+On a fresh Mac the kit installs a real `toolchain/` inside itself; the JDK is required only
+to regenerate the API clients (ADR-0007), not to verify (generated clients are committed).
+Run `pnpm run verify` before every PR (see the root `README.md`).
 
 ## Forward modeling notes (from resolved Founder Decisions)
 
@@ -66,5 +68,25 @@ The critical path, in order:
    `WalletActivity` log into a `MonthlyOverview` with two **distinct** figures —
    `availableBalance` (usable now) vs `stayedThisMonth` (what stayed his this month) — plus
    a neutral, shame-free money story and reachable prior months (spec §3; ADR-0008).
-4. Wallet Overview frontend. ← **next** — wire the prototype Wallet to this read model;
-   replace placeholder data; render the two distinct figures the spec §3 legibility note requires.
+4. **Wallet Overview frontend — DONE (2026-06-30, §14 step 4, four slices).** The prototype
+   Wallet now renders from the read model and shows the two distinct §3 figures
+   (`stayedThisMonth` vs `availableBalance`), no longer one number labelled "stayed".
+   - **Slice 1 — contract.** `packages/types/openapi/openapi.wallet.yaml`: the first feature
+     surface (`GET /v1/wallet/overview`, `…/months`), referencing the base contract's shared
+     components. snake_case wire shape, money in integer paise. The contract-lint gate
+     (verify.sh, package.json, ci.yml) validates base + feature files.
+   - **Slice 2 — HTTP surface.** `services/wallet/src/http.ts`: a read-only driving adapter
+     over the read model + `WalletActivitySource` port, composing `@nia/runtime`'s
+     `createServer`. Maps the camelCase domain model → snake_case wire. Member resolved from
+     the bearer token (PRE-AUTH STUB until phone-first sessions; default-deny → 401).
+   - **Slice 3 — codegen.** `scripts/codegen.sh` bundles the contract (`redocly bundle`) then
+     runs the pinned OpenAPI Generator **7.10.0 JAR via `java -jar`** for the Dart client and
+     `openapi-typescript` for TS. We invoke the JAR directly because the npm launcher
+     `@openapitools/openapi-generator-cli@2.39.0` crashes under Node 20 (`ERR_REQUIRE_ESM`).
+     **Generated clients are committed** (`packages/types/generated/`) so a fresh clone and the
+     verify gate need no JDK; the JDK is provisioned into the kit toolchain (Temurin 21,
+     `scripts/_env.sh` + `bootstrap.sh`) only for regeneration; CI checks drift.
+   - **Slice 4 — Flutter wiring.** `apps/member` depends on the generated `nia_api`; the Wallet
+     renders a `MonthlyOverview` via a `WalletOverviewSource` port — `SampleWalletOverviewSource`
+     (offline prototype default) and `ApiWalletOverviewSource` (real client). Tests assert the
+     two distinct figures, a shame-free lean month, and client↔server wire conformance.
