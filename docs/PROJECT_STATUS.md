@@ -5,11 +5,19 @@ current state of the repository. The repository, not any conversation, is the me
 
 ## Current milestone
 
-**Membership specification Engineering-Locked (2026-06-29).** Implementation may begin.
+**Milestone M1 — COMPLETE (2026-06-30).** The first end-to-end vertical slice is built and
+validated: the Wallet Overview (read model → OpenAPI contract → HTTP surface → generated Dart
+client → Flutter screen rendering the two distinct §3 figures) plus a read-only Membership HTTP
+surface. Validated from a clean bundle restore: offline reinstall, full verify green, both HTTP
+services launched, and the Wallet screen rendered from data fetched over HTTP through the generated
+client (available ₹3,480 ≠ stayed ₹4,800), with no PrototypeData supplying those values. See the
+M1 evidence in SESSION-HANDOVER.md.
+
+Previous milestone: Membership specification Engineering-Locked (2026-06-29).
 
 ## Current tag
 
-`v0.1-foundation`
+`v0.2-m1` (M1 complete) · `v0.1-foundation` (foundation)
 
 ## Current product status
 
