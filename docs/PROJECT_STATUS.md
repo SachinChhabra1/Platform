@@ -224,6 +224,14 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
     spec (Book VIII §1.3). App-only polish available: Wallet money-story treatment; Paused→resume.
     Not blocked: Membership write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger.*
 
+15. ~~**Icon-first bottom navigation**~~ — **DONE (2026-07-01).** UI-only (no backend/contract/codegen).
+    `NiaBottomNav`: icon-first tabs — selected = solid icon + short label in near-black ink,
+    unselected = quiet grey line icon (Book III monochrome; built-in Material icons, no new packages).
+    The bar is now **Home · Wallet · Family · Profile** — Family and Profile promoted from pushed
+    routes to tabs; Clusters/RafiQi (prototype-only) dropped from the bar (still four anchors, §3.2).
+    `MyFamilyPage`/`ProfilePage` made body-only under the shell app bar; all live wiring preserved.
+    `bottom_nav_test` added; member suite 37; verify + render green.
+
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
 
