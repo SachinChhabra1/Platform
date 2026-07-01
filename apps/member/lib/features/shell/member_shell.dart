@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../config/member_config.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/nia_bottom_nav.dart';
-import '../family/my_family_page.dart';
 import '../niabook/niabook_page.dart';
-import '../placeholder/tab_placeholder.dart';
+import '../pillars/family_page.dart';
+import '../pillars/living_page.dart';
+import '../pillars/store_page.dart';
+import '../pillars/work_page.dart';
 
 /// The Member App shell — five anchors, icon-first (Book IV §3.2). **NiaBook is
 /// the first screen** and owns its own header (title, language, identity, SOS),
@@ -24,15 +26,14 @@ class MemberShell extends StatefulWidget {
 class _MemberShellState extends State<MemberShell> {
   int _index = 0;
 
-  // Only Family reads a data source in this slice; NiaBook is self-contained.
-  late final _wallet = widget.config.walletSource();
-
-  late final List<Widget> _pages = <Widget>[
-    const NiaBookPage(),
-    const TabPlaceholder(title: 'Work', icon: Icons.work_outline),
-    const TabPlaceholder(title: 'Living', icon: Icons.home_outlined),
-    const TabPlaceholder(title: 'Store', icon: Icons.shopping_bag_outlined),
-    MyFamilyPage(walletSource: _wallet),
+  // All five screens are self-contained Founder-accepted scenarios in this slice
+  // (the money-movement backend is paused in the Product Polish Phase).
+  static const List<Widget> _pages = <Widget>[
+    NiaBookPage(),
+    WorkPage(),
+    LivingPage(),
+    StorePage(),
+    FamilyPage(),
   ];
 
   static const List<NiaNavItem> _navItems = <NiaNavItem>[

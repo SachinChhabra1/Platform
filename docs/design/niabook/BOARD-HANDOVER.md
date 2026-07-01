@@ -71,9 +71,33 @@ Ladder to hold: member truth → product truth (cost of migration) → business 
 
 ---
 
-## The screen
+## The operating system — five screens
 
-![NiaBook — approved two-column design](../../../apps/member/test/goldens/niabook.png)
+NiaBook proves; the four pillars earn, save, keep, and send. All are the real app
+(regenerate with `flutter test test/niabook_golden_test.dart --update-goldens`).
+
+**NiaBook — the home ledger**
+
+![NiaBook](../../../apps/member/test/goldens/niabook.png)
+
+**Work · Earn more**
+
+![Work](../../../apps/member/test/goldens/work.png)
+
+**Living · Spend less**
+
+![Living](../../../apps/member/test/goldens/living.png)
+
+**Store · Keep more**
+
+![Store](../../../apps/member/test/goldens/store.png)
+
+**Family · Send more home**
+
+![Family](../../../apps/member/test/goldens/family.png)
+
+Canonical references (start every future session here): [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md)
+and [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md).
 
 ---
 

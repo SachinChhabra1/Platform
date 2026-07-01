@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/niabook/niabook_page.dart';
+import 'package:member/features/pillars/family_page.dart';
+import 'package:member/features/pillars/living_page.dart';
+import 'package:member/features/pillars/store_page.dart';
+import 'package:member/features/pillars/work_page.dart';
 
-/// Screenshot harness for the board demo. Renders the approved two-column
-/// NiaBook to `goldens/niabook.png` with real fonts + icons, so the capture is
-/// legible. Regenerate with:
+/// Screenshot harness for the board demo. Renders the five approved screens
+/// (NiaBook + the four pillars) to `goldens/*.png` with real fonts + icons.
+/// Regenerate with:
 ///   flutter test test/niabook_golden_test.dart --update-goldens
-/// A demo artefact, not an assertion.
+/// Demo artefacts, not assertions.
 
 Future<void> _loadFromFirst(String family, List<String> candidates) async {
   for (final path in candidates) {
@@ -36,30 +40,34 @@ Future<void> _loadFonts() async {
   ]);
 }
 
+Future<void> _shoot(WidgetTester tester, Widget page, String name) async {
+  // Logical 390 x 1600 (a real phone width) at 3x for a crisp capture.
+  tester.view.physicalSize = const Size(1170, 4800);
+  tester.view.devicePixelRatio = 3.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
+  await tester.pumpWidget(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'AppFont'),
+      home: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        body: SafeArea(child: page),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  await expectLater(find.byType(page.runtimeType),
+      matchesGoldenFile('goldens/$name.png'));
+}
+
 void main() {
   setUpAll(_loadFonts);
 
-  testWidgets('NiaBook — approved two-column design', (WidgetTester tester) async {
-    // Logical 390 x 1400 (a real phone width) at 3x for a crisp capture.
-    tester.view.physicalSize = const Size(1170, 4200);
-    tester.view.devicePixelRatio = 3.0;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-
-    await tester.pumpWidget(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'AppFont'),
-        home: const Scaffold(
-          backgroundColor: Color(0xFFFFFFFF),
-          body: SafeArea(child: NiaBookPage()),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byType(NiaBookPage),
-      matchesGoldenFile('goldens/niabook.png'),
-    );
-  });
+  testWidgets('NiaBook', (t) => _shoot(t, const NiaBookPage(), 'niabook'));
+  testWidgets('Work', (t) => _shoot(t, const WorkPage(), 'work'));
+  testWidgets('Living', (t) => _shoot(t, const LivingPage(), 'living'));
+  testWidgets('Store', (t) => _shoot(t, const StorePage(), 'store'));
+  testWidgets('Family', (t) => _shoot(t, const FamilyPage(), 'family'));
 }
