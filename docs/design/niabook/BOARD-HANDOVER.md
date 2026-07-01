@@ -9,9 +9,9 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `bee3175` — "NiaBook to production: the approved two-column design" |
+| Commit | `32398ec` — "SOS as abstract Nia Emergency; scan-first column widths" (on the two-column prod build) |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-niabook-two-column-prod-20260701-144610.bundle` (verified) |
+| Recovery bundle | `nia-niabook-sos-scan-20260701-145141.bundle` (verified) |
 | Verification | `nia verify` **green** · 39 tests pass · `flutter analyze` clean · no codegen drift |
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
