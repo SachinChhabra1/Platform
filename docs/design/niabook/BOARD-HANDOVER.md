@@ -9,23 +9,33 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `ba6b60d` — "Store to App-Store quality: harden the flywheel, not the shop" |
+| Commit | `0301825` — "Family to App-Store quality: the emotional centre — care, not remittance" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-store-flywheel-appstore-quality-20260701-161613.bundle` (verified) |
+| Recovery bundle | `nia-family-care-appstore-quality-20260701-163123.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
 
-**Production hardening (screen-by-screen).** Architecture is locked; each screen is now
-being taken to App-Store quality one at a time, against its approved screenshot. A
-reusable component set (`features/pillars/nia_components.dart` — InfoCard,
-OpportunityCard, SummaryCard, SectionHeader, ListRow, NiaReveal) is the shared surface.
-**Living: DONE.** **Work: DONE** — one promise (Earn more); the +₹2,500/month role is the
-RafiQi-found hero; the close states the economic chain (certification → +₹2,000 wages →
-+₹500 Sukh voucher → more savings → NiaBook). **Store: DONE** — money kept, not commerce.
-The screen *is* the flywheel, felt top-to-bottom: voucher (fuel) → basket (every SKU
-answers "how much did I keep?", the kept amount louder than the price) → smart swaps →
-savings compounding (Today ₹63 → month ₹185 → **year ₹2,460**) → literal close ("₹185
-moved into your NiaBook"). **Next: Family** — the last pillar, then integrate.
+**Production hardening — all five screens DONE.** Architecture is locked; every screen has
+been taken to App-Store quality on the reusable component set
+(`features/pillars/nia_components.dart` — InfoCard, OpportunityCard, SummaryCard,
+SectionHeader, ListRow, NiaReveal). Each pillar now ends on its own **emotion**, not just
+information (new product law in `PRODUCT_ARCHITECTURE.md`): **Work → Hope · Living → Relief
+· Store → Satisfaction · Family → Purpose · NiaBook → Truth.**
+
+- **Work** — one promise (Earn more); the +₹2,500/month role is the RafiQi-found hero; the
+  close states the economic chain (certification → +₹2,000 wages → +₹500 Sukh voucher →
+  more savings → NiaBook).
+- **Store** — money kept, not commerce. The screen *is* the flywheel: voucher (fuel) →
+  basket (every SKU answers "how much did I keep?") → smart swaps → savings compounding
+  (Today ₹63 → month ₹185 → **year ₹2,460**) → "₹185 moved into your NiaBook".
+- **Family** — the emotional centre. Promise reframed **Send more home → Take better care
+  of home** (nav still reads Family). People first (Amma, Appa, Ravi — each well), money
+  second, a school-fee goal covered cross-pillar by Work and Store, protection that
+  reassures. Closes on **purpose**, not finance: "The people you left home for are doing
+  better." Only pillar whose flywheel closes emotionally.
+
+**Next: integration** (wire the five into the shell; the craftsmanship backlog in
+`niabook-next-iteration.md`).
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
@@ -105,7 +115,7 @@ NiaBook proves; the four pillars earn, save, keep, and send. All are the real ap
 
 ![Store](../../../apps/member/test/goldens/store.png)
 
-**Family · Send more home**
+**Family · Take better care of home**
 
 ![Family](../../../apps/member/test/goldens/family.png)
 
