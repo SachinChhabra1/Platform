@@ -8,10 +8,15 @@ Prepared 2026-07-01 for the board meeting. One place, everything you need.
 
 | | |
 |---|---|
-| Commit | `765da35` — "NiaBook copy pass: report-card, family first, verdict close" (on `c3ed8f3`, the wiring) |
+| Commit | `a0f75f3` — "build for members: flywheel as page logic, coaching close" (latest) |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-niabook-board-copy-20260701-105615.bundle` (verified) |
-| Verification | `nia verify` **green** · 47 tests pass · `flutter analyze` clean · no codegen drift |
+| Recovery bundle | `nia-niabook-member-flywheel-20260701-112711.bundle` (verified) |
+| Verification | `nia verify` **green** · 48 tests pass · `flutter analyze` clean · no codegen drift |
+
+The live page is now the **member-first, compounding** version: it speaks to the Member,
+draws the flywheel loop, and closes with coaching. The screenshots below are current;
+the copy quoted in the walk has evolved to that voice (rationale:
+`niabook-next-iteration.md`).
 | See it live | `nia preview` (opens on NiaBook) |
 
 ---

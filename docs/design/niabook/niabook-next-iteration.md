@@ -1,8 +1,10 @@
-# NiaBook — the next iteration (do not change before the board)
+# NiaBook — build for members (the compounding version)
 
-Board-quality is reached. This note is the direction *after* tomorrow. No code
-changes now. The theme of the whole note: move NiaBook from **recording** to
-**compounding** — from a statement that ends to a flywheel that points forward.
+**Status: BUILT and live** (commit `a0f75f3`). The Founder reoriented from board-demo
+polish to member value — "build for members, the board can live with that" — so this
+direction is now the live NiaBook page, not a future track. The theme: move NiaBook from
+**recording** to **compounding** — from a statement that ends to a flywheel that points
+forward. This note is the rationale; the app implements it.
 
 ## 1 · The core gap — recording vs compounding
 
