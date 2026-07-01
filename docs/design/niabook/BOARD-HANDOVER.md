@@ -9,10 +9,11 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `32398ec` — "SOS as abstract Nia Emergency; scan-first column widths" (on the two-column prod build) |
+| Commit | `39899f4` — "Pillars to production: Work · Living · Store · Family + design lock" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-niabook-sos-scan-20260701-145141.bundle` (verified) |
-| Verification | `nia verify` **green** · 39 tests pass · `flutter analyze` clean · no codegen drift |
+| Recovery bundle | `nia-niabook-pillars-prod-20260701-153203.bundle` (verified) |
+| Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
+| Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
