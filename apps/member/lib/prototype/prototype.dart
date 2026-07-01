@@ -100,6 +100,12 @@ abstract final class PrototypeData {
   static const String language = 'Odia';
   static const String emergencyContact = 'Sunita (wife) · contact on file';
 
+  // "My Family" is a Member-only VIEW (spec 0001 [A4], Q3 resolved) — the people
+  // the Member's work is for. Illustrative; a real family record is a later slice.
+  static const String familyMemberName = 'Sunita';
+  static const String familyMemberRelation = 'Wife';
+  static const String familyMemberPlace = 'Ganjam, Odisha';
+
   static const String operatorName = 'Suresh';
   static const String operatorStudio = 'Peenya Studio, Bengaluru';
 

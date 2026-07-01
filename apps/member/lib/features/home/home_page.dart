@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../family/my_family_page.dart';
 import '../membership/member_standing.dart';
 import '../membership/membership_source.dart';
 import '../promise/promise_page.dart';
@@ -179,11 +180,17 @@ class _HomePageState extends State<HomePage> {
           title: 'What you need',
           detail: 'Meals, phone, the daily things',
         ),
-        const _LifeRow(
+        // Q3 resolved (2026-06-30): My Family is a Member-only view; the marker
+        // is retired and the row opens it.
+        _LifeRow(
           icon: Icons.favorite_border,
           title: 'Your family',
           detail: 'Sunita, back home in Ganjam',
-          marker: 'Q3',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => MyFamilyPage(walletSource: widget.walletSource),
+            ),
+          ),
         ),
         const SizedBox(height: NiaTokens.s5),
         // FD-3 resolved: tenure begins on the first Saturday (internal — one
@@ -264,18 +271,20 @@ class _LifeRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.detail,
-    this.marker,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String detail;
-  final String? marker;
+
+  /// When set, the row is tappable (opens its life area) and shows a chevron.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
+    final Widget row = Padding(
       padding: const EdgeInsets.symmetric(vertical: NiaTokens.s4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,17 +301,12 @@ class _LifeRow extends StatelessWidget {
               ],
             ),
           ),
-          if (marker != null)
-            Padding(
-              padding: const EdgeInsets.only(top: NiaTokens.s1),
-              child: Text(marker!,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: NiaTokens.amber)),
-            ),
+          if (onTap != null)
+            const Icon(Icons.chevron_right, color: NiaTokens.inkSecondary),
         ],
       ),
     );
+    if (onTap == null) return row;
+    return InkWell(onTap: onTap, child: row);
   }
 }
