@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:member/config/member_config.dart';
 import 'package:member/features/family/my_family_page.dart';
-import 'package:member/features/home/home_page.dart';
-import 'package:member/features/membership/membership_source.dart';
+import 'package:member/features/shell/member_shell.dart';
 import 'package:member/features/wallet/wallet_overview_source.dart';
 import 'package:nia_api/api.dart';
 
@@ -47,12 +47,14 @@ void main() {
       (WidgetTester tester) async {
     tall(tester);
     await tester.pumpWidget(MaterialApp(
-      home: MyFamilyPage(
-        walletSource: _Wallet(_overview(<MoneyStoryLine>[
-          _line('a2', 'rent', 240000),
-          _line('a5', 'remittance', 500000),
-          _line('a6', 'remittance', 100000),
-        ])),
+      home: Scaffold(
+        body: MyFamilyPage(
+          walletSource: _Wallet(_overview(<MoneyStoryLine>[
+            _line('a2', 'rent', 240000),
+            _line('a5', 'remittance', 500000),
+            _line('a6', 'remittance', 100000),
+          ])),
+        ),
       ),
     ));
     await tester.pumpAndSettle();
@@ -70,25 +72,21 @@ void main() {
       (WidgetTester tester) async {
     tall(tester);
     await tester.pumpWidget(MaterialApp(
-      home: MyFamilyPage(
-        walletSource: _Wallet(_overview(<MoneyStoryLine>[_line('a2', 'rent', 240000)])),
+      home: Scaffold(
+        body: MyFamilyPage(
+          walletSource: _Wallet(_overview(<MoneyStoryLine>[_line('a2', 'rent', 240000)])),
+        ),
       ),
     ));
     await tester.pumpAndSettle();
     expect(find.text('Nothing sent home yet this month.'), findsOneWidget);
   });
 
-  testWidgets('the Home "Your family" row opens My Family (Q3 marker retired)',
+  testWidgets('the Home "Your family" row switches to the Family tab (Q3 retired)',
       (WidgetTester tester) async {
     tall(tester);
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: HomePage(
-          walletSource: _Wallet(_overview(<MoneyStoryLine>[_line('a5', 'remittance', 500000)])),
-          membershipSource: const SampleMembershipSource(),
-        ),
-      ),
-    ));
+    // Through the shell (offline sample) so the row's tab-switch is exercised.
+    await tester.pumpWidget(const MaterialApp(home: MemberShell(config: MemberConfig())));
     await tester.pumpAndSettle();
 
     // No open-question marker on the family row any more.

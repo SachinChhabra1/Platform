@@ -4,7 +4,6 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import '../family/my_family_page.dart';
 import '../membership/member_standing.dart';
 import '../membership/membership_source.dart';
 import '../promise/promise_page.dart';
@@ -34,10 +33,15 @@ class HomePage extends StatefulWidget {
     super.key,
     this.walletSource = const SampleWalletOverviewSource(),
     this.membershipSource = const SampleMembershipSource(),
+    this.onOpenFamily,
   });
 
   final WalletOverviewSource walletSource;
   final MembershipSource membershipSource;
+
+  /// Opens the Family tab (the shell switches to it). Null ⇒ the row is inert
+  /// (e.g. Home rendered outside the shell in a test).
+  final VoidCallback? onOpenFamily;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -181,16 +185,12 @@ class _HomePageState extends State<HomePage> {
           detail: 'Meals, phone, the daily things',
         ),
         // Q3 resolved (2026-06-30): My Family is a Member-only view; the marker
-        // is retired and the row opens it.
+        // is retired and the row opens the Family tab.
         _LifeRow(
           icon: Icons.favorite_border,
           title: 'Your family',
           detail: 'Sunita, back home in Ganjam',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => MyFamilyPage(walletSource: widget.walletSource),
-            ),
-          ),
+          onTap: widget.onOpenFamily,
         ),
         const SizedBox(height: NiaTokens.s5),
         // FD-3 resolved: tenure begins on the first Saturday (internal — one

@@ -18,6 +18,9 @@ import '../wallet/wallet_page.dart' show formatRupees;
 /// current Wallet Overview are summed through the generated client, so "what
 /// reaches them" is the real figure, not invented. Names/relationships are
 /// illustrative until a family record exists (a later slice).
+///
+/// A body-only widget: it renders as a tab under the shell's app bar (the shell
+/// supplies the "My Family" title + global chrome).
 class MyFamilyPage extends StatefulWidget {
   const MyFamilyPage({super.key, this.walletSource = const SampleWalletOverviewSource()});
 
@@ -33,12 +36,10 @@ class _MyFamilyPageState extends State<MyFamilyPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Family')),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-            NiaTokens.s5, NiaTokens.s6, NiaTokens.s5, NiaTokens.s8),
-        children: <Widget>[
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+          NiaTokens.s5, NiaTokens.s6, NiaTokens.s5, NiaTokens.s8),
+      children: <Widget>[
           Text('The people your work is for.',
               style: theme.textTheme.headlineMedium?.copyWith(height: 1.2)),
           const SizedBox(height: NiaTokens.s7),
@@ -133,7 +134,6 @@ class _MyFamilyPageState extends State<MyFamilyPage> {
             style: theme.textTheme.bodyMedium,
           ),
         ],
-      ),
     );
   }
 

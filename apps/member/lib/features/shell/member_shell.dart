@@ -4,19 +4,20 @@ import '../../config/member_config.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import '../clusters/clusters_page.dart';
+import '../../widgets/nia_bottom_nav.dart';
+import '../family/my_family_page.dart';
 import '../home/home_page.dart';
 import '../profile/profile_page.dart';
-import '../rafiqi/rafiqi_page.dart';
 import '../wallet/wallet_page.dart';
 
-/// The Member App shell — the four anchors that persist across the app
-/// (Book IV §3.2): Home · Wallet · Living·Work·Essentials · RafiQi. Four fit
-/// the thumb; a fifth would break the model.
+/// The Member App shell — four anchors that persist across the app, icon-first
+/// (Book IV §3.2: four fit the thumb). The Developer Preview centres the live,
+/// Member-facing surfaces: **Home · Wallet · Family · Profile**. Navigation is
+/// icons, not words — the selected tab shows a solid icon + a short label; the
+/// rest are quiet grey line icons ([NiaBottomNav]).
 ///
-/// The Home has no back (§3.3); the anchors switch via an [IndexedStack] so
-/// each tab keeps its place. The Operator is reachable in one tap from any
-/// screen (§3.6), and the Member's profile is one tap from the header.
+/// The anchors switch via an [IndexedStack] so each tab keeps its place; the
+/// Operator is one tap from any screen (§3.6, the app-bar action).
 class MemberShell extends StatefulWidget {
   const MemberShell({super.key, this.config = const MemberConfig.fromEnvironment()});
 
@@ -30,24 +31,36 @@ class MemberShell extends StatefulWidget {
 class _MemberShellState extends State<MemberShell> {
   int _index = 0;
 
-  // Built once from the configuration: the Home and Wallet read their sources
-  // (live or sample) per [MemberConfig]; the other anchors carry no Member data.
-  // In Preview (a live backend) the Home surfaces the Member's standing (Q2).
+  // Sources built once from the configuration (live or sample) and shared by the
+  // screens that read them.
+  late final _wallet = widget.config.walletSource();
+  late final _membership = widget.config.membershipSource();
+
   late final List<Widget> _pages = <Widget>[
     HomePage(
-      walletSource: widget.config.walletSource(),
-      membershipSource: widget.config.membershipSource(),
+      walletSource: _wallet,
+      membershipSource: _membership,
+      onOpenFamily: () => setState(() => _index = 2),
     ),
-    WalletPage(source: widget.config.walletSource()),
-    const ClustersPage(),
-    const RafiqiPage(),
+    WalletPage(source: _wallet),
+    MyFamilyPage(walletSource: _wallet),
+    ProfilePage(
+      membershipSource: _membership,
+      previewMode: widget.config.usesLiveBackend,
+    ),
   ];
 
-  static const List<String> _titles = <String>[
-    '', // Home leads with a greeting in-body, not an app-bar title.
-    'My Wallet',
-    'Living · Work · Essentials',
-    'RafiQi',
+  // Home greets in-body, so its app-bar title is empty.
+  static const List<String> _titles = <String>['', 'My Wallet', 'My Family', 'Profile'];
+
+  static const List<NiaNavItem> _navItems = <NiaNavItem>[
+    NiaNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
+    NiaNavItem(
+        icon: Icons.account_balance_wallet_outlined,
+        selectedIcon: Icons.account_balance_wallet,
+        label: 'Wallet'),
+    NiaNavItem(icon: Icons.people_outline, selectedIcon: Icons.people, label: 'Family'),
+    NiaNavItem(icon: Icons.person_outline, selectedIcon: Icons.person, label: 'Profile'),
   ];
 
   @override
@@ -56,22 +69,6 @@ class _MemberShellState extends State<MemberShell> {
       appBar: AppBar(
         titleSpacing: NiaTokens.s5,
         title: Text(_titles[_index]),
-        leadingWidth: 64,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: NiaTokens.s4),
-          child: IconButton(
-            tooltip: 'Profile',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => ProfilePage(
-                  membershipSource: widget.config.membershipSource(),
-                  previewMode: widget.config.usesLiveBackend,
-                ),
-              ),
-            ),
-            icon: const Monogram(initials: 'R', size: 36),
-          ),
-        ),
         actions: <Widget>[
           Center(child: PrototypeChip(label: widget.config.usesLiveBackend ? 'preview' : 'prototype')),
           IconButton(
@@ -83,31 +80,10 @@ class _MemberShellState extends State<MemberShell> {
         ],
       ),
       body: IndexedStack(index: _index, children: _pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (int i) => setState(() => _index = i),
-        destinations: const <NavigationDestination>[
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            selectedIcon: Icon(Icons.account_balance_wallet),
-            label: 'Wallet',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.grid_view_outlined),
-            selectedIcon: Icon(Icons.grid_view),
-            label: 'Clusters',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.auto_awesome_outlined),
-            selectedIcon: Icon(Icons.auto_awesome),
-            label: 'RafiQi',
-          ),
-        ],
+      bottomNavigationBar: NiaBottomNav(
+        index: _index,
+        items: _navItems,
+        onSelect: (int i) => setState(() => _index = i),
       ),
     );
   }

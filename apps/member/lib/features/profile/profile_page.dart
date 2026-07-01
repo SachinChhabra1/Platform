@@ -44,18 +44,12 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: <Widget>[
-          Center(child: PrototypeChip(label: widget.previewMode ? 'preview' : 'prototype')),
-          const SizedBox(width: NiaTokens.s4),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-            NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s8),
-        children: <Widget>[
+    // Body-only: renders as a tab under the shell's app bar (which supplies the
+    // "Profile" title, the prototype/preview chip, and one-tap Operator access).
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+          NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s8),
+      children: <Widget>[
           // Identity header — wired to the Membership read model via nia_api.
           MembershipHeader(source: widget.membershipSource),
           const SizedBox(height: NiaTokens.s7),
@@ -160,7 +154,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
-      ),
     );
   }
 

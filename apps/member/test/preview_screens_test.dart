@@ -98,9 +98,11 @@ void main() {
         (WidgetTester tester) async {
       tall(tester);
       await tester.pumpWidget(MaterialApp(
-        home: ProfilePage(
-          membershipSource: _Member(_member(MembershipState.member)),
-          previewMode: true,
+        home: Scaffold(
+          body: ProfilePage(
+            membershipSource: _Member(_member(MembershipState.member)),
+            previewMode: true,
+          ),
         ),
       ));
       await tester.pumpAndSettle();
