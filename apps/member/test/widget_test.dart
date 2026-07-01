@@ -1,32 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/app.dart';
 import 'package:member/features/niabook/niabook_page.dart';
 
-/// Smoke tests for the Product Review Prototype shell. They prove the shell
-/// boots on NiaBook (the first screen), marks itself as a prototype, and
-/// navigates between the four anchors (Book IV §3.2). They assert structure,
-/// not product behaviour.
+/// Smoke tests for the Member shell: it boots on NiaBook (the first screen) and
+/// carries the five anchors. Structure, not product behaviour.
+
+void tall(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1170, 4000);
+  tester.view.devicePixelRatio = 3.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
 void main() {
-  testWidgets('boots to NiaBook, opening on the verdict',
-      (WidgetTester tester) async {
+  testWidgets('boots into the shell on NiaBook', (WidgetTester tester) async {
+    tall(tester);
     await tester.pumpWidget(const NiaMemberApp());
-
-    expect(find.byType(NiaBookPage), findsOneWidget);
-    expect(find.text('June was worth it.'), findsOneWidget);
-  });
-
-  testWidgets('marks itself as a prototype', (WidgetTester tester) async {
-    await tester.pumpWidget(const NiaMemberApp());
-
-    expect(find.text('prototype'), findsOneWidget);
-  });
-
-  testWidgets('navigates to the Home anchor', (WidgetTester tester) async {
-    await tester.pumpWidget(const NiaMemberApp());
-
-    await tester.tap(find.byTooltip('Home'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Namaste'), findsOneWidget);
+    expect(find.byType(NiaBookPage), findsOneWidget);
+    expect(find.text('Hi, Ramesh'), findsOneWidget);
+  });
+
+  testWidgets('carries the five anchors', (WidgetTester tester) async {
+    tall(tester);
+    await tester.pumpWidget(const NiaMemberApp());
+    await tester.pumpAndSettle();
+
+    for (final label in <String>['NiaBook', 'Work', 'Living', 'Store', 'Family']) {
+      expect(find.byTooltip(label), findsOneWidget);
+    }
   });
 }

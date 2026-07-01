@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:member/config/member_config.dart';
 import 'package:member/features/family/my_family_page.dart';
-import 'package:member/features/shell/member_shell.dart';
 import 'package:member/features/wallet/wallet_overview_source.dart';
 import 'package:nia_api/api.dart';
 
@@ -82,22 +80,23 @@ void main() {
     expect(find.text('Nothing sent home yet this month.'), findsOneWidget);
   });
 
-  testWidgets('the Home "Your family" row switches to the Family tab (Q3 retired)',
+  testWidgets('the family view is a private Member-only view (Q3 retired)',
       (WidgetTester tester) async {
     tall(tester);
-    // Through the shell (offline sample) so the row's tab-switch is exercised.
-    await tester.pumpWidget(const MaterialApp(home: MemberShell(config: MemberConfig())));
+    // Family is its own tab now; pump the view directly (no Home life-row).
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: MyFamilyPage(
+          walletSource: _Wallet(_overview(<MoneyStoryLine>[
+            _line('a1', 'remittance', 500000),
+          ])),
+        ),
+      ),
+    ));
     await tester.pumpAndSettle();
 
-    // The app opens on NiaBook now; the "Your family" row lives on Home.
-    await tester.tap(find.byTooltip('Home'));
-    await tester.pumpAndSettle();
-
-    // No open-question marker on the family row any more.
-    expect(find.text('Q3'), findsNothing);
-
-    await tester.tap(find.text('Your family'));
-    await tester.pumpAndSettle();
     expect(find.text('The people your work is for.'), findsOneWidget);
+    // No open-question marker on the family view any more.
+    expect(find.text('Q3'), findsNothing);
   });
 }

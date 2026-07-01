@@ -1,203 +1,159 @@
-/// NiaBook demo scenarios — the Founder-accepted "Book of Months" story, held
-/// in the app layer.
+/// NiaBook — the approved two-column model, held in the app layer.
 ///
-/// NiaBook answers one question — "was leaving home worthwhile this month?" — and
-/// carries data the Wallet Overview contract does not (Sukh Store savings, the
-/// work voucher, the month-over-month comparison). The backend is frozen in the
-/// Product Polish Phase, so these live here as demo data, in the same spirit as
-/// `SampleWalletOverviewSource`: a Founder-accepted scenario, not a ledger. When
-/// the read model grows to carry the Nia-value lines, this is where the source
-/// port slots in.
+/// The page proves progress and points at more:
+///   • Left = **What became true** — money the Member gained this month, closed.
+///     NiaBook proves it.
+///   • Right = **More you can keep** — opportunities still waiting. RafiQi finds
+///     them. Every month moves a line from right to left.
 ///
-/// The product thesis this screen makes visible: **Nia does not create salary —
-/// Nia reduces the cost of migration.** Every rupee Nia saves moves from "the
-/// cost of being here" into "money that stays with you."
+/// The backend is frozen in the Product Polish Phase, so this is a Founder-
+/// accepted scenario, not a ledger — the same spirit as the earlier sample
+/// sources. Amounts are integer paise, formatted by [formatPaise].
 library;
 
-/// How the "what Nia made smaller" band reads for a given month — the five
-/// states the demo must show.
-enum NiaBandState {
-  /// Saved at Sukh Store this month, and a voucher is still waiting.
-  savingAndVoucher,
+import 'package:flutter/material.dart';
 
-  /// No saving yet; a ₹500 voucher is waiting, unused (grey — desire).
-  voucherWaiting,
-
-  /// The ₹500 voucher was used at Sukh Store — the money stayed in his pocket.
-  voucherRedeemed,
-
-  /// No shopping savings yet; an invitation to save at Sukh Store.
-  noSavingsInvite,
-
-  /// He did not get work through Nia this month, so no voucher — the pull.
-  noNiaWork,
+/// One line in the left column — a gain that became true this month.
+class BecameTrueRow {
+  const BecameTrueRow(this.amountPaise, this.label, this.icon);
+  final int amountPaise;
+  final String label;
+  final IconData icon;
 }
 
-/// One month's page in the Book of Months. Amounts are integer paise, formatted
-/// by [formatPaise]; the verdict and story are already in the Member's language.
-class NiaBookMonth {
-  const NiaBookMonth({
-    required this.demoLabel,
-    required this.monthLabel,
-    required this.verdict,
-    required this.salaryPaise,
-    required this.reachedHomePaise,
-    required this.stayedWithYouPaise,
-    required this.savedPortionPaise,
-    required this.inHandNowPaise,
-    required this.costOfBeingHerePaise,
-    required this.sukhSavingPaise,
-    required this.voucherPaise,
-    required this.band,
-    this.closingHeadline,
-    this.closingDetail,
-    this.closingNudge,
-    this.loopSteps,
-    this.coachingLine,
+/// One Sukh Store member-price offer.
+class SukhOffer {
+  const SukhOffer(this.name, this.wasPaise, this.nowPaise);
+  final String name;
+  final int wasPaise;
+  final int nowPaise;
+}
+
+/// The state of a right-column opportunity — sets its quiet status colour.
+enum OppStatus { inProgress, ready, locked }
+
+/// One right-column opportunity RafiQi has found.
+class Opportunity {
+  const Opportunity({
+    this.badge,
+    required this.gain,
+    required this.title,
+    this.detail,
+    this.chain,
+    required this.statusText,
+    required this.status,
+    this.hero = false,
   });
 
-  /// Short label for the demo state switcher.
-  final String demoLabel;
+  /// Small caps label above the hero, e.g. 'BEST GAIN'.
+  final String? badge;
 
-  /// The page header, e.g. "June 2026".
+  /// The gain, already formatted, e.g. '+₹2,500/mo' or '+₹500'.
+  final String gain;
+  final String title;
+
+  /// A one-line explanation (non-hero cards), e.g. "Six months on the floor".
+  final String? detail;
+
+  /// The hero's chain of steps, shown with down-arrows between them.
+  final List<String>? chain;
+
+  final String statusText;
+  final OppStatus status;
+  final bool hero;
+}
+
+/// One month's NiaBook page.
+class NiaBookMonth {
+  const NiaBookMonth({
+    required this.monthLabel,
+    required this.memberName,
+    required this.studio,
+    required this.summaryDeltaPaise,
+    required this.unlockedCount,
+    required this.waitingCount,
+    required this.becameTrue,
+    required this.progressHeadline,
+    required this.progressSub,
+    required this.sukhSubcopy,
+    required this.sukhOffers,
+    required this.opportunities,
+    required this.totalOpportunities,
+  });
+
   final String monthLabel;
+  final String memberName;
+  final String studio;
 
-  /// The verdict that opens the page — the answer, before any number. Never
-  /// shame, even in a lean month.
-  final String verdict;
+  /// How much more stayed with the Member than last month (drives the summary
+  /// line "₹300 more stayed with you than in May.").
+  final int summaryDeltaPaise;
+  final int unlockedCount;
+  final int waitingCount;
 
-  final int salaryPaise;
-  final int reachedHomePaise;
-  final int stayedWithYouPaise;
-  final int savedPortionPaise;
-  final int inHandNowPaise;
-  final int costOfBeingHerePaise;
+  final List<BecameTrueRow> becameTrue;
+  final String progressHeadline;
+  final String progressSub;
 
-  /// What Nia kept in his pocket at Sukh Store this month (0 when none).
-  final int sukhSavingPaise;
+  final String sukhSubcopy;
+  final List<SukhOffer> sukhOffers;
 
-  /// The face value of the Sukh Store work voucher.
-  final int voucherPaise;
+  final List<Opportunity> opportunities;
+  final int totalOpportunities;
 
-  /// Which "what Nia made smaller" band this month shows.
-  final NiaBandState band;
-
-  /// The closing verdict — the page ends with a report-card, not a stop. The
-  /// headline is the verdict ("June was better than May."), the detail is the
-  /// proof ("You kept ₹300 more."), the nudge is the forward word ("Keep
-  /// going."). Null on a first page with nothing to compare.
-  final String? closingHeadline;
-  final String? closingDetail;
-  final String? closingNudge;
-
-  /// The flywheel drawn plainly — "how your month came together" — or null when
-  /// the Member has not completed the loop this month. Recording becomes
-  /// compounding: the page shows the loop that makes next month's page better.
-  final List<String>? loopSteps;
-
-  /// The one forward nudge that closes the page — the thing that will make next
-  /// month's NiaBook better. NiaBook coaches, it does not only report.
-  final String? coachingLine;
-
-  // The shared June scenario. Every rupee is accounted for: salary 14,000 =
-  // home 5,000 + here 4,200 (room + food) + stayed 4,800. "In hand now" (3,480)
-  // spans months (it carries ₹680 from May), so it is a sub-line of "stayed",
-  // never a fourth figure.
-  static const int _salary = 1400000;
-  static const int _home = 500000;
-  static const int _stayed = 480000;
-  static const int _saved = 200000;
-  static const int _inHand = 348000;
-  static const int _here = 420000;
-  static const int _voucher = 50000;
-  static const int _sukh = 18500;
-
-  static const NiaBookMonth _base = NiaBookMonth(
-    demoLabel: 'Sukh Store savings',
-    monthLabel: 'June 2026',
-    verdict: 'June was worth it.',
-    salaryPaise: _salary,
-    reachedHomePaise: _home,
-    stayedWithYouPaise: _stayed,
-    savedPortionPaise: _saved,
-    inHandNowPaise: _inHand,
-    costOfBeingHerePaise: _here,
-    sukhSavingPaise: _sukh,
-    voucherPaise: _voucher,
-    band: NiaBandState.savingAndVoucher,
-    closingHeadline: 'June was better than May.',
-    closingDetail: 'You kept ₹300 more.',
-    closingNudge: 'Keep going.',
-    loopSteps: <String>[
-      'You worked through Nia',
-      'You unlocked ₹500',
-      'You shopped at Sukh Store',
-      '₹185 stayed with you',
-      'June was better than May',
-      'Keep using Nia',
+  /// The Founder-accepted June scenario (the approved design).
+  static const NiaBookMonth sample = NiaBookMonth(
+    monthLabel: 'June 2025',
+    memberName: 'Ramesh',
+    studio: 'Umapathi Studio, Wellington Theatre',
+    summaryDeltaPaise: 30000, // ₹300
+    unlockedCount: 4,
+    waitingCount: 9,
+    becameTrue: <BecameTrueRow>[
+      BecameTrueRow(500000, 'Reached your family', Icons.groups_outlined),
+      BecameTrueRow(480000, 'Yours.', Icons.savings_outlined),
+      BecameTrueRow(18500, 'Saved at Sukh Store', Icons.shopping_bag_outlined),
+      BecameTrueRow(240000, 'Living cost', Icons.home_outlined),
     ],
-    coachingLine: 'Use your ₹500 Sukh Store voucher.',
+    progressHeadline: 'You are ₹300 ahead of May.',
+    progressSub: 'Your best month yet.',
+    sukhSubcopy: 'Member prices · Umapathi Studio',
+    sukhOffers: <SukhOffer>[
+      SukhOffer('Atta · 5kg', 18000, 17000),
+      SukhOffer('Cooking oil · 1L', 19000, 18000),
+      SukhOffer('Rice · 2kg', 8400, 7600),
+    ],
+    opportunities: <Opportunity>[
+      Opportunity(
+        badge: 'BEST GAIN',
+        gain: '+₹2,500/mo',
+        title: 'Machine Operator',
+        chain: <String>[
+          'Complete certification',
+          '+₹2,000 higher wages\n+₹500 Sukh voucher',
+          'More stays with you',
+        ],
+        statusText: 'In progress · 20 min training left',
+        status: OppStatus.inProgress,
+        hero: true,
+      ),
+      Opportunity(
+        gain: '+₹500',
+        title: 'Monthly Sukh voucher',
+        detail: "Complete this month's Skill Lesson",
+        statusText: 'Ready now',
+        status: OppStatus.ready,
+      ),
+      Opportunity(
+        gain: '+₹6,000/mo',
+        title: 'Supervisor',
+        detail: 'Six months on the floor',
+        statusText: 'Locked · 6 months experience',
+        status: OppStatus.locked,
+      ),
+    ],
+    totalOpportunities: 9,
   );
-
-  NiaBookMonth _copyWith({
-    String? demoLabel,
-    int? sukhSavingPaise,
-    NiaBandState? band,
-    bool dropLoop = false,
-    String? coachingLine,
-  }) =>
-      NiaBookMonth(
-        demoLabel: demoLabel ?? this.demoLabel,
-        monthLabel: monthLabel,
-        verdict: verdict,
-        salaryPaise: salaryPaise,
-        reachedHomePaise: reachedHomePaise,
-        stayedWithYouPaise: stayedWithYouPaise,
-        savedPortionPaise: savedPortionPaise,
-        inHandNowPaise: inHandNowPaise,
-        costOfBeingHerePaise: costOfBeingHerePaise,
-        sukhSavingPaise: sukhSavingPaise ?? this.sukhSavingPaise,
-        voucherPaise: voucherPaise,
-        band: band ?? this.band,
-        closingHeadline: closingHeadline,
-        closingDetail: closingDetail,
-        closingNudge: closingNudge,
-        loopSteps: dropLoop ? null : loopSteps,
-        coachingLine: coachingLine ?? this.coachingLine,
-      );
-
-  /// The default June page first, then the five states the demo must show. The
-  /// earned / sent / kept story is identical across all of them — only the
-  /// "what Nia made smaller" band changes, which is the point: the salary is his,
-  /// and Nia's value is the extra it kept in his pocket.
-  static final List<NiaBookMonth> demoStates = <NiaBookMonth>[
-    _base,
-    _base._copyWith(
-      demoLabel: 'Unused ₹500 voucher',
-      sukhSavingPaise: 0,
-      band: NiaBandState.voucherWaiting,
-      dropLoop: true,
-    ),
-    _base._copyWith(
-      demoLabel: 'Redeemed voucher',
-      band: NiaBandState.voucherRedeemed,
-      coachingLine: 'Keep shopping at Sukh Store to save more.',
-    ),
-    _base._copyWith(
-      demoLabel: 'No shopping savings',
-      sukhSavingPaise: 0,
-      band: NiaBandState.noSavingsInvite,
-      dropLoop: true,
-      coachingLine: 'Use your ₹500 voucher at Sukh Store.',
-    ),
-    _base._copyWith(
-      demoLabel: 'No work through Nia',
-      sukhSavingPaise: 0,
-      band: NiaBandState.noNiaWork,
-      dropLoop: true,
-      coachingLine: 'Get your next job through Nia to unlock ₹500.',
-    ),
-  ];
 }
 
 /// Formats integer paise as Indian-grouped rupees, e.g. ₹3,480 / ₹1,00,000.

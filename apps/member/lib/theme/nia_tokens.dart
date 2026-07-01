@@ -16,6 +16,12 @@ abstract final class NiaTokens {
   static const Color inkSecondary = Color(0xFF6B6B6B); // mid-grey secondary ink
   static const Color hairline = Color(0xFFE6E6E3); // quiet separators
 
+  // Restrained blue — the NiaBook accent (Nia Design System v2.1 --nia-blue).
+  // Used for headings, money accents, links, selected nav; never as a fill wash.
+  static const Color blue = Color(0xFF2C5880);
+  static const Color blueTint = Color(0xFFEAF0F5); // faint blue chip / hero tint
+  static const Color surfaceGrey = Color(0xFFF3F4F5); // soft grey card fill
+
   // The four reserved meaning-colours (Book III §2.1). Meaning only.
   static const Color navy = Color(0xFF1B2A4A); // Nia at scale / institutional
   static const Color green = Color(0xFF1E8E5A); // savings growth, remittance success

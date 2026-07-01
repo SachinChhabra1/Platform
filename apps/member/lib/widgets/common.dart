@@ -52,15 +52,17 @@ Future<void> openOperatorSheet(BuildContext context) {
               children: <Widget>[
                 const _Avatar(initials: 'S', size: 56),
                 const SizedBox(width: NiaTokens.s4),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(PrototypeData.operatorName,
-                        style: theme.textTheme.titleLarge),
-                    const SizedBox(height: NiaTokens.s1),
-                    Text(PrototypeData.operatorStudio,
-                        style: theme.textTheme.bodySmall),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(PrototypeData.operatorName,
+                          style: theme.textTheme.titleLarge),
+                      const SizedBox(height: NiaTokens.s1),
+                      Text(PrototypeData.operatorStudio,
+                          style: theme.textTheme.bodySmall),
+                    ],
+                  ),
                 ),
               ],
             ),

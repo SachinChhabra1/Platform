@@ -71,7 +71,7 @@ class _Tab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = selected ? NiaTokens.ink : NiaTokens.inkSecondary;
+    final Color color = selected ? NiaTokens.blue : NiaTokens.inkSecondary;
     return Semantics(
       button: true,
       selected: selected,
@@ -96,7 +96,7 @@ class _Tab extends StatelessWidget {
                           fontSize: 11,
                           height: 1.0,
                           fontWeight: FontWeight.w600,
-                          color: NiaTokens.ink,
+                          color: NiaTokens.blue,
                         ))
                     : null,
               ),

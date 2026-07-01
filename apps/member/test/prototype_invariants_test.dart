@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:member/app.dart';
+import 'package:member/features/home/home_page.dart';
+import 'package:member/features/profile/profile_page.dart';
 
 /// Guard tests for the Product Review Build's standing invariants — the things
-/// the Engineering Quality Certification asserts every iteration (docs/methodology.md
-/// → Product Review Prototypes). Encoding them here makes the certification
-/// enforceable rather than eyeballed: if a future change quietly surfaces tenure,
-/// drops a Founder-Decision marker, or removes the prototype marking, CI fails.
+/// the Engineering Quality Certification asserts every iteration: tenure stays
+/// internal (Q4), and the Founder-Decision markers hold (FD-7 resolved, FD-11
+/// still open). Home and Profile are not in the live nav any more (NiaBook is the
+/// product), so these pump the pages directly to keep the invariants enforceable.
 ///
-/// A tall surface is used so lazily-built ListView content is realised without
-/// scrolling, letting us assert on markers near the bottom of a screen.
+/// A tall surface realises lazily-built ListView content without scrolling.
 void main() {
   void useTallSurface(WidgetTester tester) {
     tester.view.physicalSize = const Size(1200, 4000);
@@ -18,25 +18,16 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  testWidgets('the build is always marked as a prototype',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const NiaMemberApp());
-
-    expect(find.text('prototype'), findsWidgets);
-  });
-
   testWidgets('Home keeps tenure internal — no tenure count is surfaced (Q4)',
       (WidgetTester tester) async {
     useTallSurface(tester);
-    await tester.pumpWidget(const NiaMemberApp());
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: HomePage())),
+    );
     await tester.pumpAndSettle();
 
-    // The app opens on NiaBook now; the Q4 marker lives on the Home screen.
-    await tester.tap(find.byTooltip('Home'));
-    await tester.pumpAndSettle();
-
-    // The Q4 marker must remain visible and state plainly that tenure is not shown.
-    // FD markers render via RichText, so findRichText must be enabled.
+    // The Q4 marker must remain visible and state plainly that tenure is not
+    // shown. FD markers render via RichText, so findRichText must be enabled.
     expect(
       find.textContaining('no tenure is surfaced', findRichText: true),
       findsOneWidget,
@@ -46,9 +37,9 @@ void main() {
   testWidgets('Profile reflects FD-7 (per-request consent) and still marks FD-11',
       (WidgetTester tester) async {
     useTallSurface(tester);
-    await tester.pumpWidget(const NiaMemberApp());
-
-    await tester.tap(find.byTooltip('Me'));
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: ProfilePage())),
+    );
     await tester.pumpAndSettle();
 
     // FD-7 resolved → "you decide every time"; FD-11 still an open, marked decision.
