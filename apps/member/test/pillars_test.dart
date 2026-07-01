@@ -77,10 +77,22 @@ void main() {
   testWidgets('Store · keep more', (WidgetTester tester) async {
     await pump(tester, const StorePage());
     expect(find.text('Keep more'), findsOneWidget);
-    expect(find.text("TODAY'S SAVINGS"), findsOneWidget);
-    expect(find.text('SUKH VOUCHER'), findsOneWidget);
-    expect(find.text('Essentials you buy'), findsOneWidget);
-    expect(find.text('This adds to your NiaBook'), findsOneWidget);
+    // The hero is money, found by RafiQi — the voucher, the flywheel's fuel.
+    expect(find.text('Sukh voucher'), findsOneWidget);
+    expect(find.textContaining('Sukh voucher · found by RafiQi'), findsOneWidget);
+    // Every SKU answers "how much did I keep?" — the kept amount leads.
+    expect(find.text("TODAY'S BASKET"), findsOneWidget);
+    expect(find.text('YOU KEPT'), findsOneWidget);
+    expect(find.text('Rice (5kg)'), findsOneWidget);
+    expect(find.text('You kept ₹63 on today’s basket'), findsOneWidget);
+    // Compounding — the thing only Store has.
+    expect(find.text('SAVINGS, COMPOUNDING'), findsOneWidget);
+    expect(find.text('This year'), findsOneWidget);
+    expect(find.text('₹2,460'), findsOneWidget);
+    // The close is literal money moving into NiaBook.
+    expect(find.text('This month, ₹185 moved into your NiaBook'), findsOneWidget);
+    // Not commerce: no "essentials you buy" shopping framing.
+    expect(find.text('Essentials you buy'), findsNothing);
   });
 
   testWidgets('Family · send more home', (WidgetTester tester) async {
