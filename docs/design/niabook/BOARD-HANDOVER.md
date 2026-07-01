@@ -9,9 +9,9 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `<pending>` — "Final integration: five hardened screens wired into the shell, verified" |
+| Commit | `375f7ae` — "Final integration: five hardened screens wired into the shell, verified" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-final-integration-*.bundle` (verified) |
+| Recovery bundle | `nia-final-integration-20260701-164454.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
 
