@@ -47,6 +47,7 @@ pnpm exec redocly join \
   openapi/openapi.base.yaml \
   openapi/openapi.wallet.yaml \
   openapi/openapi.membership.yaml \
+  openapi/openapi.sessions.yaml \
   -o "$out/nia.combined.yaml" >/dev/null
 
 echo "▶ Dart client → $out/dart"

@@ -68,6 +68,7 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *MembershipApi* | [**getMyMembership**](doc//MembershipApi.md#getmymembership) | **GET** /membership/me | The signed-in Member's identity and lifecycle state.
 *OpsApi* | [**getHealth**](doc//OpsApi.md#gethealth) | **GET** /health | Liveness and readiness probe. Operational; not Member-facing.
+*SessionsApi* | [**issueSession**](doc//SessionsApi.md#issuesession) | **POST** /sessions | Issue a session for a Member (phone-first re-proof).
 *WalletApi* | [**getWalletOverview**](doc//WalletApi.md#getwalletoverview) | **GET** /wallet/overview | The Member's money story for one month.
 *WalletApi* | [**getWalletOverviewMonths**](doc//WalletApi.md#getwalletoverviewmonths) | **GET** /wallet/overview/months | The reachable months in the Member's Wallet.
 
@@ -84,6 +85,9 @@ Class | Method | HTTP request | Description
  - [MonthlyOverview](doc//MonthlyOverview.md)
  - [PageInfo](doc//PageInfo.md)
  - [ReachableMonths](doc//ReachableMonths.md)
+ - [SessionIssued](doc//SessionIssued.md)
+ - [SessionRequest](doc//SessionRequest.md)
+ - [SessionScope](doc//SessionScope.md)
 
 
 ## Documentation For Authorization

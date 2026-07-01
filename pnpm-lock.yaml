@@ -70,6 +70,25 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@26.0.1)
 
+  services/sessions:
+    dependencies:
+      '@nia/runtime':
+        specifier: workspace:^
+        version: link:../../packages/runtime
+      fastify:
+        specifier: ^5.9.0
+        version: 5.9.0
+    devDependencies:
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@26.0.1)
+
   services/preview:
     dependencies:
       '@nia/log':
@@ -81,6 +100,9 @@ importers:
       '@nia/runtime':
         specifier: workspace:^
         version: link:../../packages/runtime
+      '@nia/sessions':
+        specifier: workspace:^
+        version: link:../sessions
       '@nia/wallet':
         specifier: workspace:^
         version: link:../wallet

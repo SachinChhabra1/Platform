@@ -33,6 +33,11 @@ import {
   registerMembershipRoutes,
   type MembershipRepository,
 } from '@nia/membership';
+import {
+  InMemoryMemberDirectory,
+  registerSessionRoutes,
+  type MemberDirectory,
+} from '@nia/sessions';
 
 /** The primary Member the preview is seeded for, and his opaque session token.
  *  The token is NOT the membership id (that was the retired stub); it is resolved
@@ -40,6 +45,12 @@ import {
 export const DEMO_MEMBER = 'm-001';
 export const DEMO_SESSION = 'sess-ramesh-001';
 export const DEMO_DEVICE = 'dev-ramesh-phone';
+
+/** Demo phones for `POST /v1/sessions` (phone-first re-proof). The app prefills
+ *  the primary one so the "Phone → Session" journey runs out of the box. */
+export const DEMO_PHONE = '+919800000001';
+export const DEMO_PAUSED_PHONE = '+919800000002';
+export const DEMO_CLOSED_PHONE = '+919800000003';
 
 /** Extra demo Members so the Preview can show every standing (Q2): a paused and
  *  a closed Member, each behind their own session token. Switch `nia preview`'s
@@ -72,6 +83,8 @@ export interface PreviewDeps {
   readonly source: WalletActivitySource;
   readonly repository: MembershipRepository;
   readonly sessions: SessionStore;
+  /** Phone → Member, for the issuance surface (`POST /v1/sessions`). */
+  readonly directory: MemberDirectory;
   readonly logger?: Logger;
   /** Clock for "current month" + the server-time header. Injectable for tests. */
   readonly now?: () => Date;
@@ -94,6 +107,14 @@ export function createPreviewServer(deps: PreviewDeps): FastifyInstance {
   void app.register(async (membership) => {
     registerMembershipRoutes(membership, { repository: deps.repository, ...routeDeps });
   });
+  void app.register(async (sessions) => {
+    const nowOpt = deps.now ? { now: deps.now } : {};
+    registerSessionRoutes(sessions, {
+      directory: deps.directory,
+      sessions: deps.sessions,
+      ...nowOpt,
+    });
+  });
   return app;
 }
 
@@ -101,9 +122,15 @@ export function createPreviewServer(deps: PreviewDeps): FastifyInstance {
  *  demo Member, and one `member`-scope session (`sess-ramesh-001`). One source of
  *  truth for both `start.ts` and the tests. Returns the app plus the seeded deps
  *  (the repository needs an async `save`, done here). */
+/** The Founder Wallet scenario is June data. The preview is a fixed demo, not a
+ *  live ledger, so its "current month" is pinned to the scenario month — else the
+ *  story is invisible outside June (e.g. it reads as zeros in July). */
+const PREVIEW_ASOF = '2026-06-20T00:00:00.000Z';
+
 export async function seededPreviewServer(
   options: { logger?: Logger; now?: () => Date } = {},
 ): Promise<FastifyInstance> {
+  const now = options.now ?? (() => new Date(PREVIEW_ASOF));
   const born = new Date('2026-01-04T00:00:00.000Z');
   const repository = new InMemoryMembershipRepository();
   // Activated on the demo birthday so the lifecycle state reads `member`.
@@ -136,8 +163,14 @@ export async function seededPreviewServer(
       [DEMO_PAUSED_SESSION]: { membershipId: DEMO_PAUSED_MEMBER, deviceId: 'dev-sunita', scope: 'member' },
       [DEMO_CLOSED_SESSION]: { membershipId: DEMO_CLOSED_MEMBER, deviceId: 'dev-imran', scope: 'member' },
     }),
+    // Phone-first re-proof directory: the three demo Members' phones.
+    directory: new InMemoryMemberDirectory({
+      [DEMO_PHONE]: DEMO_MEMBER,
+      [DEMO_PAUSED_PHONE]: DEMO_PAUSED_MEMBER,
+      [DEMO_CLOSED_PHONE]: DEMO_CLOSED_MEMBER,
+    }),
+    now,
     ...(options.logger ? { logger: options.logger } : {}),
-    ...(options.now ? { now: options.now } : {}),
   };
   return createPreviewServer(deps);
 }

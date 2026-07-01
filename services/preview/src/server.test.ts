@@ -11,6 +11,7 @@ import {
   createProspective,
   InMemoryMembershipRepository,
 } from '@nia/membership';
+import { InMemoryMemberDirectory } from '@nia/sessions';
 import {
   createPreviewServer,
   seededPreviewServer,
@@ -18,6 +19,7 @@ import {
   DEMO_SESSION,
   DEMO_PAUSED_SESSION,
   DEMO_CLOSED_SESSION,
+  DEMO_PHONE,
 } from './server.js';
 
 const BEARER = { authorization: `Bearer ${DEMO_SESSION}` };
@@ -64,6 +66,32 @@ describe('Developer Preview backend — both surfaces on one origin', () => {
     expect(closed.json().state).toBe('closed');
   });
 
+  it('runs the whole journey on one origin: POST /v1/sessions → read Wallet + Membership', async () => {
+    server = await seededPreviewServer({ now: () => new Date('2026-06-20T00:00:00.000Z') });
+    // Phone → session issued.
+    const issued = await server.inject({
+      method: 'POST',
+      url: '/v1/sessions',
+      headers: { 'idempotency-key': 'k1', 'content-type': 'application/json' },
+      payload: { phone: DEMO_PHONE, device_id: 'dev-web' },
+    });
+    expect(issued.statusCode).toBe(201);
+    const token = issued.json().token as string;
+    expect(token).not.toBe(DEMO_MEMBER);
+    // The issued token reads the real surfaces.
+    const auth = { authorization: `Bearer ${token}` };
+    const me = await server.inject({ method: 'GET', url: '/v1/membership/me', headers: auth });
+    expect(me.json()).toMatchObject({ name: 'Ramesh Kumar', state: 'member' });
+    const wallet = await server.inject({ method: 'GET', url: '/v1/wallet/overview', headers: auth });
+    expect(wallet.json().available_balance.minor).toBe(348_000);
+    // Issuing revoked the seeded token for that Member (one active device, FD-S3).
+    const oldTokenNow = await server.inject({
+      method: 'GET', url: '/v1/membership/me',
+      headers: { authorization: `Bearer ${DEMO_SESSION}` },
+    });
+    expect(oldTokenNow.statusCode).toBe(401);
+  });
+
   it('answers the health probe (one process is up for both surfaces)', async () => {
     server = await seededPreviewServer();
     const res = await server.inject({ method: 'GET', url: '/v1/health' });
@@ -95,6 +123,7 @@ describe('Developer Preview backend — both surfaces on one origin', () => {
       sessions: new InMemorySessionStore({
         'sess-pros': { membershipId: DEMO_MEMBER, deviceId: 'dev-x', scope: 'pre_membership' },
       }),
+      directory: new InMemoryMemberDirectory({}),
     });
     for (const url of ['/v1/wallet/overview', '/v1/membership/me']) {
       const res = await server.inject({

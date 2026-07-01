@@ -81,6 +81,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Issue a session for a Member (phone-first re-proof).
+         * @description Issues a fresh, opaque, device-bound session token for the Member who proves the phone. Default-deny: an unrecognised phone is never issued a session (the number alone is necessary, not sufficient — spec 0002 security boundary 2). Issuing revokes the Member's prior device (FD-S3). Mutating, so `Idempotency-Key` is required (Book VIII §1.7): a retry with the same key returns the same token, never a second session.
+         */
+        post: operations["issueSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -182,6 +202,35 @@ export interface components {
             /** @description The name the Member is known by (§3, "known by name, not number"). */
             name: string;
             state: components["schemas"]["MembershipState"];
+        };
+        /**
+         * @description What a session may reach (spec 0002 FD-S8): a full `member` session, or a `pre_membership` (Prospective, onboarding-status only) session.
+         * @enum {string}
+         */
+        SessionScope: "pre_membership" | "member";
+        /** @description Phone-first re-proof — the Member's phone and the device to bind. */
+        SessionRequest: {
+            /**
+             * @description The Member's phone, in E.164 (e.g. +919800000001). The proof for this slice; verification strength (one-time code, etc.) is a later slice.
+             * @example +919800000001
+             */
+            phone: string;
+            /**
+             * @description The device to bind the session to (spec 0002 D2 — client-supplied for the prototype; cryptographic attestation is FE-S1).
+             * @example dev-ramesh-phone
+             */
+            device_id: string;
+        };
+        /** @description The issued session — the opaque token the client then presents. */
+        SessionIssued: {
+            /** @description The opaque bearer session token (never the membership id). */
+            token: string;
+            scope: components["schemas"]["SessionScope"];
+            /**
+             * Format: date-time
+             * @description Server time of issuance (Book VIII §1.5).
+             */
+            server_time: string;
         };
     };
     responses: {
@@ -383,6 +432,40 @@ export interface operations {
             };
             401: components["responses"]["Unauthorized"];
             404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    issueSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Required on every mutating request (Book VIII §1.7, §4.1). A retry with the same key produces the same outcome — no duplicate wage, remittance, or enrolment. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description The Member's language (Book VIII §4.1 — every endpoint returns content in the Member's language). BCP-47 tag; falls back to English. */
+                "Accept-Language"?: components["parameters"]["AcceptLanguage"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionRequest"];
+            };
+        };
+        responses: {
+            /** @description A session was issued. */
+            201: {
+                headers: {
+                    "X-Nia-Server-Time": components["headers"]["ServerTime"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionIssued"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalError"];
         };

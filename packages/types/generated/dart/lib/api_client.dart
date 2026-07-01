@@ -202,6 +202,12 @@ class ApiClient {
           return PageInfo.fromJson(value);
         case 'ReachableMonths':
           return ReachableMonths.fromJson(value);
+        case 'SessionIssued':
+          return SessionIssued.fromJson(value);
+        case 'SessionRequest':
+          return SessionRequest.fromJson(value);
+        case 'SessionScope':
+          return SessionScopeTypeTransformer().decode(value);
         default:
           dynamic match;
           if (value is List && (match = _regList.firstMatch(targetType)?.group(1)) != null) {

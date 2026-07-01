@@ -18,11 +18,20 @@ import 'theme/nia_theme.dart';
 /// Production code still derives only from an Engineering-Locked spec (the
 /// contract chain, ADR-0009).
 class NiaMemberApp extends StatelessWidget {
-  const NiaMemberApp({super.key, this.config = const MemberConfig.fromEnvironment()});
+  const NiaMemberApp({
+    super.key,
+    this.config = const MemberConfig.fromEnvironment(),
+    this.home,
+  });
 
   /// Chooses live HTTP sources vs. the offline sample. Defaults to the
   /// compile-time configuration; injectable in tests.
   final MemberConfig config;
+
+  /// Optional first screen. Defaults to the [MemberShell]. The Developer Preview
+  /// passes a phone sign-in screen so the app opens on "Phone → Session → app";
+  /// the screen then navigates into the shell with the issued session.
+  final Widget? home;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,7 @@ class NiaMemberApp extends StatelessWidget {
       theme: buildNiaPrototypeTheme(),
       localizationsDelegates: NiaLocalizations.localizationsDelegates,
       supportedLocales: NiaLocalizations.supportedLocales,
-      home: MemberShell(config: config),
+      home: home ?? MemberShell(config: config),
     );
   }
 }

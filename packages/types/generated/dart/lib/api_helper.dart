@@ -58,6 +58,9 @@ String parameterToString(dynamic value) {
   if (value is MembershipState) {
     return MembershipStateTypeTransformer().encode(value).toString();
   }
+  if (value is SessionScope) {
+    return SessionScopeTypeTransformer().encode(value).toString();
+  }
   return value.toString();
 }
 

@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
-import 'config/member_config.dart';
+import 'features/auth/phone_sign_in_page.dart';
 
-/// Developer Preview entrypoint — launches the Member app straight into the
-/// **live** experience, reading the real services through the composed preview
-/// backend (`services/preview`, one origin for Wallet + Membership).
+/// Developer Preview entrypoint — opens on the **whole journey**: Phone → Session
+/// issued → the app (Home → Wallet → Membership → Family), all against the
+/// composed preview backend (`services/preview`, one origin).
 ///
 /// Run it (the `nia preview` launcher does this for you):
 ///   flutter run -t lib/main_preview.dart -d chrome \
-///     --dart-define=NIA_API_BASE_URL=http://127.0.0.1:8080 \
-///     --dart-define=NIA_MEMBER_TOKEN=sess-ramesh-001
+///     --dart-define=NIA_API_BASE_URL=http://127.0.0.1:8080
 ///
-/// The defaults below mean it "just works" with the launcher: an empty
-/// `--dart-define` falls back to the local preview backend and the seeded demo
-/// session. The offline Product Review Prototype is unchanged — that is still
-/// `main.dart` (empty base URL ⇒ the Sample*Source default).
+/// The phone field is prefilled with the demo Member's number, so "Continue"
+/// issues a real session and enters the app. Other demo numbers walk the paused
+/// / closed standings (see `nia preview` output). The offline Product Review
+/// Prototype is unchanged — that is still `main.dart`.
 void main() {
   const String baseUrl = String.fromEnvironment(
     'NIA_API_BASE_URL',
     defaultValue: 'http://127.0.0.1:8080',
   );
-  const String token = String.fromEnvironment(
-    'NIA_MEMBER_TOKEN',
-    defaultValue: 'sess-ramesh-001',
+  const String defaultPhone = String.fromEnvironment(
+    'NIA_DEMO_PHONE',
+    defaultValue: '+919800000001',
   );
-  runApp(const NiaMemberApp(
-    config: MemberConfig(apiBaseUrl: baseUrl, memberToken: token),
+  runApp(NiaMemberApp(
+    home: const PhoneSignInPage(baseUrl: baseUrl, defaultPhone: defaultPhone),
   ));
 }

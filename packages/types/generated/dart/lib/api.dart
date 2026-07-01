@@ -30,6 +30,7 @@ part 'auth/http_bearer_auth.dart';
 
 part 'api/membership_api.dart';
 part 'api/ops_api.dart';
+part 'api/sessions_api.dart';
 part 'api/wallet_api.dart';
 
 part 'model/error.dart';
@@ -42,6 +43,9 @@ part 'model/money_story_line.dart';
 part 'model/monthly_overview.dart';
 part 'model/page_info.dart';
 part 'model/reachable_months.dart';
+part 'model/session_issued.dart';
+part 'model/session_request.dart';
+part 'model/session_scope.dart';
 
 
 /// An [ApiClient] instance that uses the default values obtained from

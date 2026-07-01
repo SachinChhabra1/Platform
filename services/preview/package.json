@@ -18,6 +18,7 @@
     "@nia/log": "workspace:^",
     "@nia/membership": "workspace:^",
     "@nia/runtime": "workspace:^",
+    "@nia/sessions": "workspace:^",
     "@nia/wallet": "workspace:^",
     "fastify": "^5.9.0"
   },

@@ -7,6 +7,7 @@ git_push.sh
 lib/api.dart
 lib/api/membership_api.dart
 lib/api/ops_api.dart
+lib/api/sessions_api.dart
 lib/api/wallet_api.dart
 lib/api_client.dart
 lib/api_exception.dart
@@ -26,4 +27,7 @@ lib/model/money_story_line.dart
 lib/model/monthly_overview.dart
 lib/model/page_info.dart
 lib/model/reachable_months.dart
+lib/model/session_issued.dart
+lib/model/session_request.dart
+lib/model/session_scope.dart
 pubspec.yaml

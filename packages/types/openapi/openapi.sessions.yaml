@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Sessions
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    Session issuance (spec 0002, plan §5 Slice B; ADR-0007). How a Member OBTAINS
+    a session — the front of the chain the session boundary (@nia/runtime) already
+    validates. This slice builds the **phone-first re-proof** path (FD-S1): an
+    existing Member re-proves on his phone and is issued a fresh, opaque,
+    device-bound token. Issuing for a Member revokes his prior device — one active
+    bound device (FD-S3).
+
+    Scope note: the STRENGTH of phone verification (one-time codes, etc., Book VIII
+    §1.3) is not yet Engineering-Locked; this surface takes the Member's phone as
+    the proof (matched server-side) so the mechanism is real and runnable. The
+    operator-assisted first session and human-mediated recovery are later slices
+    (D). Feature surface only; references the base contract's shared components.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: sessions
+    description: Issuing and ending a Member's session (spec 0002).
+
+paths:
+  /sessions:
+    post:
+      operationId: issueSession
+      tags: [sessions]
+      summary: Issue a session for a Member (phone-first re-proof).
+      description: >
+        Issues a fresh, opaque, device-bound session token for the Member who
+        proves the phone. Default-deny: an unrecognised phone is never issued a
+        session (the number alone is necessary, not sufficient — spec 0002
+        security boundary 2). Issuing revokes the Member's prior device (FD-S3).
+        Mutating, so `Idempotency-Key` is required (Book VIII §1.7): a retry with
+        the same key returns the same token, never a second session.
+      security: []
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/IdempotencyKey"
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionRequest"
+      responses:
+        "201":
+          description: A session was issued.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionIssued"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  schemas:
+    SessionScope:
+      type: string
+      description: >
+        What a session may reach (spec 0002 FD-S8): a full `member` session, or a
+        `pre_membership` (Prospective, onboarding-status only) session.
+      enum: [pre_membership, member]
+
+    SessionRequest:
+      type: object
+      description: Phone-first re-proof — the Member's phone and the device to bind.
+      required: [phone, device_id]
+      additionalProperties: false
+      properties:
+        phone:
+          type: string
+          description: >
+            The Member's phone, in E.164 (e.g. +919800000001). The proof for this
+            slice; verification strength (one-time code, etc.) is a later slice.
+          example: "+919800000001"
+        device_id:
+          type: string
+          description: >
+            The device to bind the session to (spec 0002 D2 — client-supplied for
+            the prototype; cryptographic attestation is FE-S1).
+          example: dev-ramesh-phone
+
+    SessionIssued:
+      type: object
+      description: The issued session — the opaque token the client then presents.
+      required: [token, scope, server_time]
+      additionalProperties: false
+      properties:
+        token:
+          type: string
+          description: The opaque bearer session token (never the membership id).
+        scope:
+          $ref: "#/components/schemas/SessionScope"
+        server_time:
+          type: string
+          format: date-time
+          description: Server time of issuance (Book VIII §1.5).
