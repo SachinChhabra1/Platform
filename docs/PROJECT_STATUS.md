@@ -201,12 +201,19 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
     `sess-closed`). Founder also kept **Phone** as preview copy (not on the contract) and **Recovery**
     as a copy mock — so app-only, no codegen. Member suite 28; preview backend 6; verify green.
 
-    *Next: either (a) more product-first, visible-in-Preview work — a returning (Paused→resume) flow,
-    Wallet money-story polish, or **Family** (⑤; a Q3 placeholder today), or (b) **Slice B** —
-    issuance `POST /v1/sessions` (re-proof; `Idempotency-Key`; `device_id`; drives
-    `SessionStore.issue` → revokes the prior device), then C (sign-out) → D (operator recovery
-    rebind, needs an ops credential) → E (Closed force-end) → F (app wiring). Not blocked: Membership
-    write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
+13. ~~**My Family view (Q3 resolved)**~~ — **DONE (2026-07-01).** Founder priority ⑤. Q3 resolved:
+    My Family is a **Member-only view the Member controls** ([A4]) — family is part of the Member
+    ([A1]); a family-facing surface is FE-2 (deferred). `MyFamilyPage` shows the family member and
+    the money reaching them **summed live from the Wallet remittance lines**, with a "yours alone"
+    note; Home's "Your family" row opens it and the Q3 marker is retired. App-only, no codegen.
+    Member suite 31; verify green.
+
+    *Next: either (a) **Slice B** — issuance `POST /v1/sessions` (re-proof; `Idempotency-Key`;
+    `device_id`; drives `SessionStore.issue` → revokes the prior device), then C (sign-out, wires the
+    Profile button) → D (operator recovery rebind, needs an ops credential; wires the Recovery
+    screen) → E (Closed force-end) → F (app wiring); or (b) more app-only product polish — the Wallet
+    money-story treatment or a returning (Paused→resume) flow. Not blocked: Membership write/command
+    surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
