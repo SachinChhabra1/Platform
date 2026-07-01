@@ -9,9 +9,9 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `6ff1fe8` — "Living to App-Store quality: reusable components + benefit copy + motion" |
+| Commit | `d636110` — "Work to App-Store quality: shared components + benefit copy + economic chain" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-living-appstore-quality-20260701-155731.bundle` (verified) |
+| Recovery bundle | `nia-work-appstore-quality-20260701-160917.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
 
@@ -19,8 +19,10 @@ everything you need.
 being taken to App-Store quality one at a time, against its approved screenshot. A
 reusable component set (`features/pillars/nia_components.dart` — InfoCard,
 OpportunityCard, SummaryCard, SectionHeader, ListRow, NiaReveal) is the shared surface.
-**Living: DONE** (benefit-led copy, tappable rows, a11y, motion). **Next: Work → Store →
-Family**, each migrating onto the components as it is hardened.
+**Living: DONE.** **Work: DONE** — one promise (Earn more); the +₹2,500/month role is the
+RafiQi-found hero; benefit-led tappable job rows; the close states the economic chain
+(certification → +₹2,000 wages → +₹500 Sukh voucher → more savings → NiaBook). **Next:
+Store → Family**, each migrating onto the components as it is hardened.
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
