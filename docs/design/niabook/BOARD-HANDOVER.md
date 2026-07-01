@@ -9,11 +9,28 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `0301825` — "Family to App-Store quality: the emotional centre — care, not remittance" |
+| Commit | `<pending>` — "Final integration: five hardened screens wired into the shell, verified" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-family-care-appstore-quality-20260701-163123.bundle` (verified) |
+| Recovery bundle | `nia-final-integration-*.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
+
+**Integrated and frozen for the board.** The five hardened screens are wired into the shell
+(`features/shell/member_shell.dart`) and every integration invariant is confirmed:
+
+- **NiaBook opens first** — the shell defaults to index 0; `NiaMemberApp.home` is the shell.
+- **Bottom nav order** — NiaBook · Work · Living · Store · Family (asserted in
+  `bottom_nav_test`/`widget_test`); selection restrained blue, the rest quiet grey line
+  icons; full-bleed, each screen owns its header.
+- **Shared components** — the four pillars are built on `nia_components.dart`; NiaBook is
+  the ledger and shares the same tokens and design language.
+- **Everything closes into NiaBook** — each pillar ends on a `SummaryCard` that names the
+  NiaBook contribution; NiaBook is the destination it proves.
+- **No wallet language** anywhere in the integrated surface (five screens + shell). The
+  legacy `features/wallet/*` is unwired — it is not part of the operating system.
+- **Consistent chrome** — SOS (abstract Nia Emergency, never red) on every screen; NiaBook
+  carries the month dropdown, language toggle, member identity and Studio context.
+- **All five screenshots regenerate byte-identical** — the screens are frozen.
 
 **Production hardening — all five screens DONE.** Architecture is locked; every screen has
 been taken to App-Store quality on the reusable component set
@@ -34,8 +51,9 @@ information (new product law in `PRODUCT_ARCHITECTURE.md`): **Work → Hope · L
   reassures. Closes on **purpose**, not finance: "The people you left home for are doing
   better." Only pillar whose flywheel closes emotionally.
 
-**Next: integration** (wire the five into the shell; the craftsmanship backlog in
-`niabook-next-iteration.md`).
+**Integration: DONE** (see the invariant checklist above). The operating system is frozen
+for the board. The craftsmanship backlog (`niabook-next-iteration.md`) is deferred until
+after the board meeting.
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
