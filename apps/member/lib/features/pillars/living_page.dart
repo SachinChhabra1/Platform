@@ -4,7 +4,7 @@ import '../../theme/nia_tokens.dart';
 import 'pillar_kit.dart';
 
 /// Living · Spend less. Promise: spend less. Reality: the studio and this
-/// month's cost. Supporting: room, meals, community, safety, services.
+/// month's cost. Supporting: nest, meals, community, safety, services.
 /// Opportunity: a cheaper path found by RafiQi. Contribution: lower, predictable
 /// costs that fund next month. Built on the shared [PillarScaffold].
 class LivingPage extends StatelessWidget {
@@ -44,7 +44,7 @@ class LivingPage extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: NiaTokens.ink)),
-                  const Text('Room 204',
+                  const Text('Nest 204',
                       style: TextStyle(
                           fontSize: 12, color: NiaTokens.inkSecondary)),
                 ],
@@ -98,7 +98,7 @@ class LivingPage extends StatelessWidget {
 
   Widget _services(BuildContext context) => Column(
         children: <Widget>[
-          niaListRow(Icons.bed_outlined, 'Your room', 'Clean, comfortable, yours',
+          niaListRow(Icons.bed_outlined, 'Your nest', 'Clean, comfortable, yours',
               chevron: true),
           niaHairline(),
           niaListRow(Icons.restaurant_outlined, 'Meals',

@@ -116,7 +116,7 @@ class _MoneyStory extends StatelessWidget {
   static String _restFor(String category) {
     switch (category) {
       case 'rent':
-        return ' paid for your room.';
+        return ' paid for your nest.';
       case 'curry':
         return ' went to your meals.';
       case 'savings':

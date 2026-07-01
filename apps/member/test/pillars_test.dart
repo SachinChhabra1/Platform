@@ -52,6 +52,11 @@ void main() {
     expect(find.text("THIS MONTH'S COST"), findsOneWidget);
     expect(find.text('Community'), findsOneWidget);
     expect(find.text('This month you kept ₹550 by living here'), findsOneWidget);
+    // Terminology: it is a Nest, never a "room" (Nest → Coach → Studio → Theatre).
+    expect(find.text('Nest 204'), findsOneWidget);
+    expect(find.text('Your nest'), findsOneWidget);
+    expect(find.textContaining('room'), findsNothing);
+    expect(find.textContaining('Room'), findsNothing);
   });
 
   testWidgets('Store · keep more', (WidgetTester tester) async {

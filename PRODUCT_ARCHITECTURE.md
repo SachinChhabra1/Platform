@@ -46,12 +46,26 @@ Identity → Economic promise → Reality → Opportunity → Supporting → Imp
 | Pillar | Reality | Opportunity | Supporting | Contribution |
 |---|---|---|---|---|
 | Work | Current job, pay, attendance | Higher-paying certified role | Better jobs, skill progress | Higher wages · voucher · savings · home |
-| Living | Studio, this month's cost | A cheaper path | Room, meals, community, safety, services | Lower, predictable cost |
+| Living | Studio, this month's cost | A cheaper path | Nest, meals, community, safety, services | Lower, predictable cost |
 | Store | Savings today, month, year | Voucher, smart swaps | Essentials at member prices | Higher savings |
 | Family | What reached home | Ways to meet an upcoming goal | Family status, benefits, protection | More reached home |
 
 The labels change; the scaffold never does. When a Member learns one pillar, they
 understand the others.
+
+## Vocabulary (canonical — never substitute)
+
+The words are part of the product. Get them right everywhere, member-facing and in code.
+
+**The place hierarchy:** a **Nest** is a Member's own space. Nests make a **Coach**;
+Coaches make a **Studio**; Studios make a **Theatre**.
+
+```
+Nest  →  Coach  →  Studio  →  Theatre
+```
+
+Also: **Member** (never tenant) · **Nest** (never room or bed) · **Membership fee**
+(never rent) · **Studio** (never PG or hostel) · **NiaBook** (never wallet).
 
 ## The product laws
 

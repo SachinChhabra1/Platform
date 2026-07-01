@@ -110,7 +110,7 @@ The architecture is signed off; the remaining work is craftsmanship, not inventi
 The founder review ("does it feel like one product, and does each screen deliver its
 *emotional* promise?") surfaced four things to refine — none are deck mismatches:
 
-1. **Living reads like a facilities menu.** The six service rows (room, meals,
+1. **Living reads like a facilities menu.** The six service rows (nest, meals,
    community, safety, services, requests) inform more than they say "my cost fell."
    The "spend less" emotion only lands at the top (₹2,400, everything included) and
    bottom (kept ₹550). Make the middle carry the cost-reduction feeling.

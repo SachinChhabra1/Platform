@@ -84,6 +84,10 @@ weights (400 / 600 / 700). Sentence case everywhere (caps labels excepted).
 Money first, explanation second. Human language, never banking. **No "wallet". No
 "was leaving home worth it". No judgement.** Sentence case. Reserved glyphs: ₹ → · ○ ✓.
 
+**Vocabulary (canonical):** Member (not tenant) · **Nest** (not room or bed) ·
+Membership fee (not rent) · Studio (not PG/hostel) · NiaBook (not wallet). Place
+hierarchy: **Nest → Coach → Studio → Theatre**.
+
 ## Layout law
 
 **Optimise for scanning, not symmetry.** Understand any screen in under five seconds;
