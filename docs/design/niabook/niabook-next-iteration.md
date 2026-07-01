@@ -1,23 +1,87 @@
 # NiaBook — the next iteration (do not change before the board)
 
-Board-quality is reached. This note is the direction *after* tomorrow, plus the
-product principle that should outlast the UI. No code changes now.
+Board-quality is reached. This note is the direction *after* tomorrow. No code
+changes now. The theme of the whole note: move NiaBook from **recording** to
+**compounding** — from a statement that ends to a flywheel that points forward.
 
-## The tonal shift — from "what happened" to "how your life improved"
+## 1 · The core gap — recording vs compounding
 
-Today the page still reads like a record: *here's what happened.* The next version
-should read like a conversation: *here's how your life improved.* The evidence stays;
-the tone becomes personal — the page speaks **to** the Member, not **about** the
-system.
+Today the page tells the Member what happened this month. It does not tell them why
+to use more Nia next month. That is the difference between a statement and a flywheel.
+
+What the Member sees today is linear, and it ends:
+
+```
+Worked → Got salary → Sent money home → Saved ₹185.
+```
+
+The business actually works as a loop:
+
+```
+Work through Nia → ₹500 Sukh Store voucher → Buy at Sukh Store → Spend less →
+More money stays with you → NiaBook proves it → I trust Nia more →
+I use more Nia services → Next month even more value appears.
+```
+
+That loop is invisible today. **The missing sentence the Member should leave with:**
+*"If I use Nia more next month, this page will get better."*
+
+## 2 · The flywheel is the logic of the page, not a section
+
+Right now the flywheel is a section ("What Nia made smaller"). It should be the logic
+of the *whole* page. Every section should answer one question:
+
+> How did this make next month's NiaBook better?
+
+Each section points **forward**, not backward:
+
+- **Work** — you got your job through Nia → you unlocked your ₹500 voucher.
+- **Sukh Store** — you used the voucher → ₹185 stayed with you.
+- **Living** — because you stayed in a Nia Studio → your living costs were lower.
+- **Health** — because you used Nia Health → you avoided an unexpected expense.
+
+Everything points forward. Recording says "here is what happened." Compounding says
+"here is what this set up for next month."
+
+## 3 · Draw the loop — a simple journey, not a marketing graphic
+
+Near the bottom of the page, draw the loop plainly so the page explains itself:
+
+```
+You worked through Nia
+        ↓
+You unlocked ₹500
+        ↓
+You shopped at Sukh Store
+        ↓
+₹185 stayed with you
+        ↓
+June was better than May
+        ↓
+Keep using Nia
+```
+
+## 4 · End with coaching, not just a verdict
+
+Every month should close with one forward line:
+
+> Here's one thing that will make July even better.
+
+Examples: *Use your ₹500 Sukh Store voucher · Send money home through Nia · Complete
+your health check · Start saving ₹20 a day · Finish your learning module.* Now NiaBook
+is not just reporting — it is coaching, and every recommendation feeds the flywheel.
+
+## 5 · The tonal shift (from the previous note)
+
+Alongside the forward logic, the voice becomes personal — speaking *to* the Member,
+not *about* the system.
 
 | Today (describes the system) | Next (speaks to the Member) |
 |---|---|
 | Living here cost ₹4,200. Every month, Nia works to make this smaller. | You spent ₹4,200 to live here. Next month we'll help you keep more. |
 | You kept ₹185 that would have gone to market prices. | Because you shopped with Nia, ₹185 stayed with you. |
 
-## The long-term shape — a monthly conversation, not a financial report
-
-NiaBook should become something a Member looks forward to reading. Opening July:
+Long term, opening July should read like a conversation:
 
 > July was even better.
 > Your family received every transfer on time.
@@ -25,31 +89,21 @@ NiaBook should become something a Member looks forward to reading. Opening July:
 > You used every benefit available to you.
 > You're moving forward.
 
-That is a monthly report card on life away from home — a verdict and a conversation,
-never a statement.
+## 6 · The product principle — evolved
 
-## The product principle (this is the one that lasts)
+The principle grows one step, from evidence to compounding:
 
-**Every Nia service has to earn its place by making the next page of NiaBook better.**
+- Necessary but not sufficient: *Every service must leave evidence in NiaBook.*
+- **The real principle: every service must either improve this month's NiaBook or make
+  next month's NiaBook better.**
 
-The test for any future feature is one question:
-
-> Will this improve next month's NiaBook?
-
-If not, don't build it. Every service maps to a line the Member will feel:
-
-- **Living** lowers the cost of being here.
-- **Sukh Store** keeps more money in your pocket.
-- **Health** prevents unexpected costs.
-- **Family** ensures money reaches home.
-- **Learning** increases future earnings.
-- **Insurance** protects what you've built.
-
-Simple enough for the team to make decisions with; broad enough to guide the product
-for years.
+One is recording; the other is compounding. The compounding version creates
+anticipation, not just reflection — the book isn't only recording progress, it is
+helping shape the next page. The build test stands: **will this improve next month's
+NiaBook?** If not, don't build it.
 
 ## The board takeaway
 
 If the board leaves with one thing: **Nia is no longer building features. It is
-building a monthly record of progress for migrant workers.** A far more durable vision
-than "we redesigned the wallet."
+building a monthly record of progress for migrant workers** — a record that compounds.
+A far more durable vision than "we redesigned the wallet."
