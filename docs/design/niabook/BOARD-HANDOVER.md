@@ -9,11 +9,18 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `39899f4` — "Pillars to production: Work · Living · Store · Family + design lock" |
+| Commit | `6ff1fe8` — "Living to App-Store quality: reusable components + benefit copy + motion" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-niabook-pillars-prod-20260701-153203.bundle` (verified) |
+| Recovery bundle | `nia-living-appstore-quality-20260701-155731.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
+
+**Production hardening (screen-by-screen).** Architecture is locked; each screen is now
+being taken to App-Store quality one at a time, against its approved screenshot. A
+reusable component set (`features/pillars/nia_components.dart` — InfoCard,
+OpportunityCard, SummaryCard, SectionHeader, ListRow, NiaReveal) is the shared surface.
+**Living: DONE** (benefit-led copy, tappable rows, a11y, motion). **Next: Work → Store →
+Family**, each migrating onto the components as it is hardened.
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
