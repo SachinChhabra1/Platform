@@ -105,12 +105,12 @@ class _NiaBookPageState extends State<NiaBookPage> {
               style: const TextStyle(
                   fontSize: 15, height: 1.4, color: NiaTokens.ink),
               children: <InlineSpan>[
-                const TextSpan(text: 'Living here cost '),
+                const TextSpan(text: 'You spent '),
                 TextSpan(
                     text: formatPaise(m.costOfBeingHerePaise),
                     style: const TextStyle(fontWeight: FontWeight.w600)),
                 const TextSpan(
-                    text: '. Every month, Nia works to make this smaller.'),
+                    text: ' to live here. Next month we’ll help you keep more.'),
               ],
             ),
           ),
@@ -121,6 +121,14 @@ class _NiaBookPageState extends State<NiaBookPage> {
         // What Nia made smaller — the thesis on the page. State-dependent band.
         const SectionLabel('What Nia made smaller'),
         ..._niaBand(m),
+
+        // The flywheel drawn plainly — how the month came together, so the page
+        // explains its own logic. Shown when the Member completed the loop.
+        if (m.loopSteps != null) ...<Widget>[
+          _divider(),
+          const SectionLabel('How your month came together'),
+          ..._loop(m.loopSteps!),
+        ],
 
         _divider(),
 
@@ -154,7 +162,32 @@ class _NiaBookPageState extends State<NiaBookPage> {
                   style: const TextStyle(fontSize: 15, color: NiaTokens.ink)),
             ),
         ],
-        const SizedBox(height: NiaTokens.s3),
+
+        // Coaching — one forward thing that will make next month's page better.
+        // NiaBook coaches, it does not only report.
+        if (m.coachingLine != null) ...<Widget>[
+          const SizedBox(height: NiaTokens.s5),
+          Row(
+            children: <Widget>[
+              const Icon(Icons.arrow_forward, size: 18, color: NiaTokens.green),
+              const SizedBox(width: NiaTokens.s2),
+              Expanded(
+                child: Text('One thing that will make July even better',
+                    style: const TextStyle(
+                        fontSize: 13, color: NiaTokens.inkSecondary)),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: NiaTokens.s2, left: 26),
+            child: Text(m.coachingLine!,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: NiaTokens.ink)),
+          ),
+        ],
+        const SizedBox(height: NiaTokens.s5),
         InkWell(
           onTap: () => prototypeNoOp(context, 'See earlier months'),
           child: const Padding(
@@ -201,20 +234,15 @@ class _NiaBookPageState extends State<NiaBookPage> {
                   style: const TextStyle(
                       fontSize: 15, height: 1.4, color: NiaTokens.ink),
                   children: <InlineSpan>[
-                    const TextSpan(text: 'You kept '),
+                    const TextSpan(text: 'Because you shopped with Nia, '),
                     TextSpan(
                         text: formatPaise(m.sukhSavingPaise),
                         style: const TextStyle(
                             color: NiaTokens.green, fontWeight: FontWeight.w600)),
-                    const TextSpan(
-                        text: ' that would have gone to market prices.'),
+                    const TextSpan(text: ' stayed with you.'),
                   ],
                 ),
               ),
-              const SizedBox(height: 2),
-              const Text('Your Sukh Store saving this month.',
-                  style:
-                      TextStyle(fontSize: 13, color: NiaTokens.inkSecondary)),
             ],
           ),
         ));
@@ -253,6 +281,34 @@ class _NiaBookPageState extends State<NiaBookPage> {
         break;
     }
     return lines;
+  }
+
+  // The loop, drawn plainly: a step, a quiet down-chevron, the next step. The
+  // money that stayed and the better-than-last-month step carry weight; the rest
+  // is quiet ink. Not a marketing graphic — a simple journey.
+  List<Widget> _loop(List<String> steps) {
+    final List<Widget> out = <Widget>[];
+    for (int i = 0; i < steps.length; i++) {
+      final bool stayed = steps[i].contains('stayed with you');
+      final bool better = steps[i].contains('better than');
+      out.add(Text(
+        steps[i],
+        style: TextStyle(
+          fontSize: 14,
+          height: 1.3,
+          color: stayed ? NiaTokens.green : NiaTokens.ink,
+          fontWeight: (stayed || better) ? FontWeight.w600 : FontWeight.w400,
+        ),
+      ));
+      if (i < steps.length - 1) {
+        out.add(const Padding(
+          padding: EdgeInsets.only(left: 2, top: 1, bottom: 1),
+          child: Icon(Icons.keyboard_arrow_down,
+              size: 16, color: NiaTokens.inkSecondary),
+        ));
+      }
+    }
+    return out;
   }
 
   Widget _voucherWaiting(NiaBookMonth m) => _niaLine(

@@ -41,7 +41,7 @@ Future<void> _loadFonts() async {
 }
 
 Future<void> _shoot(WidgetTester tester, int stateIndex, String name) async {
-  tester.view.physicalSize = const Size(400, 2800);
+  tester.view.physicalSize = const Size(400, 4200);
   tester.view.devicePixelRatio = 2.0;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);

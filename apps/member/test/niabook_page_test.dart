@@ -47,11 +47,11 @@ void main() {
       (WidgetTester tester) async {
     await pump(tester);
     expect(
-      find.textContaining('Living here cost', findRichText: true),
+      find.textContaining('to live here', findRichText: true),
       findsOneWidget,
     );
     expect(
-      find.textContaining('Nia works to make this smaller', findRichText: true),
+      find.textContaining('help you keep more', findRichText: true),
       findsOneWidget,
     );
   });
@@ -61,14 +61,26 @@ void main() {
     await pump(tester);
     expect(find.text('What Nia made smaller'), findsOneWidget);
     expect(
-      find.textContaining('that would have gone to market prices',
-          findRichText: true),
+      find.textContaining('Because you shopped with Nia', findRichText: true),
       findsOneWidget,
     );
     expect(
       find.textContaining('voucher waiting for you'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('draws the flywheel loop and closes with coaching',
+      (WidgetTester tester) async {
+    await pump(tester);
+    expect(find.text('How your month came together'), findsOneWidget);
+    expect(find.text('You worked through Nia'), findsOneWidget);
+    expect(find.text('Keep using Nia'), findsOneWidget);
+    expect(
+      find.text('One thing that will make July even better'),
+      findsOneWidget,
+    );
+    expect(find.text('Use your ₹500 Sukh Store voucher.'), findsOneWidget);
   });
 
   testWidgets('the five states switch the Nia band', (WidgetTester tester) async {
@@ -94,6 +106,10 @@ void main() {
       find.textContaining('Work through Nia to unlock'),
       findsOneWidget,
     );
+    // Coaching adapts to the state; the loop is absent when not completed.
+    expect(find.text('Get your next job through Nia to unlock ₹500.'),
+        findsOneWidget);
+    expect(find.text('How your month came together'), findsNothing);
 
     // Through all states the verdict and hero hold — the salary is his.
     expect(find.text('June was worth it.'), findsOneWidget);

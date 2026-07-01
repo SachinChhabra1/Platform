@@ -52,6 +52,8 @@ class NiaBookMonth {
     this.closingHeadline,
     this.closingDetail,
     this.closingNudge,
+    this.loopSteps,
+    this.coachingLine,
   });
 
   /// Short label for the demo state switcher.
@@ -88,6 +90,15 @@ class NiaBookMonth {
   final String? closingDetail;
   final String? closingNudge;
 
+  /// The flywheel drawn plainly — "how your month came together" — or null when
+  /// the Member has not completed the loop this month. Recording becomes
+  /// compounding: the page shows the loop that makes next month's page better.
+  final List<String>? loopSteps;
+
+  /// The one forward nudge that closes the page — the thing that will make next
+  /// month's NiaBook better. NiaBook coaches, it does not only report.
+  final String? coachingLine;
+
   // The shared June scenario. Every rupee is accounted for: salary 14,000 =
   // home 5,000 + here 4,200 (room + food) + stayed 4,800. "In hand now" (3,480)
   // spans months (it carries ₹680 from May), so it is a sub-line of "stayed",
@@ -117,12 +128,23 @@ class NiaBookMonth {
     closingHeadline: 'June was better than May.',
     closingDetail: 'You kept ₹300 more.',
     closingNudge: 'Keep going.',
+    loopSteps: <String>[
+      'You worked through Nia',
+      'You unlocked ₹500',
+      'You shopped at Sukh Store',
+      '₹185 stayed with you',
+      'June was better than May',
+      'Keep using Nia',
+    ],
+    coachingLine: 'Use your ₹500 Sukh Store voucher.',
   );
 
   NiaBookMonth _copyWith({
     String? demoLabel,
     int? sukhSavingPaise,
     NiaBandState? band,
+    bool dropLoop = false,
+    String? coachingLine,
   }) =>
       NiaBookMonth(
         demoLabel: demoLabel ?? this.demoLabel,
@@ -140,6 +162,8 @@ class NiaBookMonth {
         closingHeadline: closingHeadline,
         closingDetail: closingDetail,
         closingNudge: closingNudge,
+        loopSteps: dropLoop ? null : loopSteps,
+        coachingLine: coachingLine ?? this.coachingLine,
       );
 
   /// The default June page first, then the five states the demo must show. The
@@ -152,20 +176,26 @@ class NiaBookMonth {
       demoLabel: 'Unused ₹500 voucher',
       sukhSavingPaise: 0,
       band: NiaBandState.voucherWaiting,
+      dropLoop: true,
     ),
     _base._copyWith(
       demoLabel: 'Redeemed voucher',
       band: NiaBandState.voucherRedeemed,
+      coachingLine: 'Keep shopping at Sukh Store to save more.',
     ),
     _base._copyWith(
       demoLabel: 'No shopping savings',
       sukhSavingPaise: 0,
       band: NiaBandState.noSavingsInvite,
+      dropLoop: true,
+      coachingLine: 'Use your ₹500 voucher at Sukh Store.',
     ),
     _base._copyWith(
       demoLabel: 'No work through Nia',
       sukhSavingPaise: 0,
       band: NiaBandState.noNiaWork,
+      dropLoop: true,
+      coachingLine: 'Get your next job through Nia to unlock ₹500.',
     ),
   ];
 }
