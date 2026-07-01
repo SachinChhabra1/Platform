@@ -50,17 +50,19 @@ class _MemberShellState extends State<MemberShell> {
     ),
   ];
 
-  // Home greets in-body, so its app-bar title is empty.
-  static const List<String> _titles = <String>['', 'My Wallet', 'My Family', 'Profile'];
+  // Home greets in-body, so its app-bar title is empty. The Wallet tab is now
+  // named NiaBook and Profile is Me (labels only; the NiaBook redesign is a
+  // later Product-Polish slice — the screens are unchanged here).
+  static const List<String> _titles = <String>['', 'NiaBook', 'My Family', 'Me'];
 
   static const List<NiaNavItem> _navItems = <NiaNavItem>[
     NiaNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
     NiaNavItem(
         icon: Icons.account_balance_wallet_outlined,
         selectedIcon: Icons.account_balance_wallet,
-        label: 'Wallet'),
+        label: 'NiaBook'),
     NiaNavItem(icon: Icons.people_outline, selectedIcon: Icons.people, label: 'Family'),
-    NiaNavItem(icon: Icons.person_outline, selectedIcon: Icons.person, label: 'Profile'),
+    NiaNavItem(icon: Icons.person_outline, selectedIcon: Icons.person, label: 'Me'),
   ];
 
   @override

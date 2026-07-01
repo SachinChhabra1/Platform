@@ -44,7 +44,7 @@ void main() {
     useTallSurface(tester);
     await tester.pumpWidget(const NiaMemberApp());
 
-    await tester.tap(find.byTooltip('Profile'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
 
     // FD-7 resolved → "you decide every time"; FD-11 still an open, marked decision.

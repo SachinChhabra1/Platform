@@ -21,10 +21,10 @@ Future<void> pumpShell(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('renders four icon tabs: Home, Wallet, Family, Profile',
+  testWidgets('renders four icon tabs: Home, NiaBook, Family, Me',
       (WidgetTester tester) async {
     await pumpShell(tester);
-    for (final label in <String>['Home', 'Wallet', 'Family', 'Profile']) {
+    for (final label in <String>['Home', 'NiaBook', 'Family', 'Me']) {
       expect(find.byTooltip(label), findsOneWidget);
     }
   });
@@ -43,7 +43,7 @@ void main() {
   testWidgets('tapping each tab opens the right screen', (WidgetTester tester) async {
     await pumpShell(tester);
 
-    await tester.tap(find.byTooltip('Wallet'));
+    await tester.tap(find.byTooltip('NiaBook'));
     await tester.pumpAndSettle();
     expect(find.text('This month'), findsOneWidget);
 
@@ -51,7 +51,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('The people your work is for.'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Profile'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
     expect(find.text('You decide every time.'), findsOneWidget);
 
@@ -66,10 +66,10 @@ void main() {
     expect(find.byIcon(Icons.home), findsOneWidget);
     expect(find.byIcon(Icons.account_balance_wallet), findsNothing);
 
-    await tester.tap(find.byTooltip('Wallet'));
+    await tester.tap(find.byTooltip('NiaBook'));
     await tester.pumpAndSettle();
 
-    // Now Wallet is solid + labelled, and Home has gone quiet.
+    // Now NiaBook is solid + labelled, and Home has gone quiet.
     expect(find.byIcon(Icons.account_balance_wallet), findsOneWidget);
     expect(find.byIcon(Icons.home_outlined), findsOneWidget);
     expect(find.byIcon(Icons.home), findsNothing);
