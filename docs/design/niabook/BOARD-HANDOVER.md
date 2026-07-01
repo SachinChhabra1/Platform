@@ -9,9 +9,9 @@ everything you need.
 
 | | |
 |---|---|
-| Commit | `d636110` — "Work to App-Store quality: shared components + benefit copy + economic chain" |
+| Commit | `ba6b60d` — "Store to App-Store quality: harden the flywheel, not the shop" |
 | Branch | `pr/membership-product-review-build` |
-| Recovery bundle | `nia-work-appstore-quality-20260701-160917.bundle` (verified) |
+| Recovery bundle | `nia-store-flywheel-appstore-quality-20260701-161613.bundle` (verified) |
 | Verification | `nia verify` **green** · 49 tests pass · `flutter analyze` clean · no codegen drift |
 | Canonical docs | [`PRODUCT_ARCHITECTURE.md`](../../../PRODUCT_ARCHITECTURE.md) · [`DESIGN_SYSTEM_LOCK.md`](../../../DESIGN_SYSTEM_LOCK.md) |
 
@@ -20,9 +20,12 @@ being taken to App-Store quality one at a time, against its approved screenshot.
 reusable component set (`features/pillars/nia_components.dart` — InfoCard,
 OpportunityCard, SummaryCard, SectionHeader, ListRow, NiaReveal) is the shared surface.
 **Living: DONE.** **Work: DONE** — one promise (Earn more); the +₹2,500/month role is the
-RafiQi-found hero; benefit-led tappable job rows; the close states the economic chain
-(certification → +₹2,000 wages → +₹500 Sukh voucher → more savings → NiaBook). **Next:
-Store → Family**, each migrating onto the components as it is hardened.
+RafiQi-found hero; the close states the economic chain (certification → +₹2,000 wages →
++₹500 Sukh voucher → more savings → NiaBook). **Store: DONE** — money kept, not commerce.
+The screen *is* the flywheel, felt top-to-bottom: voucher (fuel) → basket (every SKU
+answers "how much did I keep?", the kept amount louder than the price) → smart swaps →
+savings compounding (Today ₹63 → month ₹185 → **year ₹2,460**) → literal close ("₹185
+moved into your NiaBook"). **Next: Family** — the last pillar, then integrate.
 | See it live | `nia preview` (opens on NiaBook) |
 | Screenshot | `apps/member/test/goldens/niabook.png`, mirrored to `~/Desktop/niabook-states/` |
 
