@@ -41,7 +41,17 @@ void main() {
     expect(find.text('CURRENT JOB'), findsOneWidget);
     expect(find.text('Machine Operator'), findsOneWidget);
     expect(find.text('Better jobs waiting'), findsOneWidget);
-    expect(find.text('This improves your NiaBook'), findsOneWidget);
+    // The hero is the +₹2,500/month opportunity, found by RafiQi.
+    expect(find.textContaining('Higher-paying role · found by RafiQi'),
+        findsOneWidget);
+    expect(find.text('Certify to unlock — 20 minutes left'), findsOneWidget);
+    // Benefit-led supporting rows (the gain leads, not the job title alone).
+    expect(find.text('After your certification'), findsOneWidget);
+    // The close is the economic chain that lands in NiaBook, not a bare label.
+    expect(find.text('Certify, and you keep ₹2,500 more every month'),
+        findsOneWidget);
+    expect(find.textContaining('+₹500 Sukh voucher'), findsOneWidget);
+    expect(find.textContaining('your NiaBook'), findsOneWidget);
     expect(find.text('SOS'), findsOneWidget);
   });
 
