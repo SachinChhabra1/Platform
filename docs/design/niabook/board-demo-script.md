@@ -33,21 +33,23 @@ Lead with what the Member feels; reach the mechanism and the business case only 
    NiaBook is the centre.)
 2. **The verdict.** "June was worth it." The answer before any number. (Every month
    proves whether leaving home was worthwhile.)
-3. **The hero.** "₹5,000 reached home. ₹4,800 stayed with you." Two destinations, no
-   arithmetic. The full sum sits quiet beneath. (Member truth — lead here, message 1.)
-4. **Where the salary went.** Reached home, stayed with you, and the cost of being
-   here — shown honestly, framed as the toll Nia works to lower.
-5. **What Nia made smaller.** "₹185 kept in your pocket at Sukh Store — money that
-   would have gone to the market." (The mechanism — message 3, said after the member
-   truth, never before.)
+3. **The hero.** "₹5,000 reached home. Your family received it on time. ₹4,800 stayed
+   with you." The family is named — the answer is the people waiting, not a number.
+   (Member truth — lead here, message 1.)
+4. **This month's story.** Reached home, stayed with you, and the cost of being here:
+   "Living here cost ₹4,200. Every month, Nia works to make this smaller."
+5. **What Nia made smaller.** "You kept ₹185 that would have gone to market prices."
+   Evidence, not a promotion. (The mechanism — message 3, said after the member truth,
+   never before.)
 6. **The five states** (tap the chips at the foot of the page): savings, an unused
    ₹500 voucher waiting, a redeemed voucher, no savings yet, and a Member who did not
    get work through Nia. The verdict and the earned-money story hold through all of
    them — only Nia's added value changes. This is the flywheel: work through Nia →
    voucher → shop at Sukh Store → save → see it here → want more Nia.
-7. **Progress.** "You kept ₹300 more than in May." NiaBook is a book of months; it
-   fills as the Member stays. (Message 4 — every service feeds NiaBook — then the
-   business truth: retention, lifetime value, attachment, a defensible platform.)
+7. **The closing verdict.** The page ends like a report-card, not a stop: "June was
+   better than May. You kept ₹300 more. Keep going." A book of months; it fills as the
+   Member stays. (Message 4 — every service feeds NiaBook — then the business truth:
+   retention, lifetime value, attachment, a defensible platform.)
 
 ## Screenshots
 
