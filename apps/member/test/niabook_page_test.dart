@@ -29,18 +29,29 @@ void main() {
     expect(find.text('June was worth it.'), findsOneWidget);
     expect(find.text('₹5,000 reached home.'), findsOneWidget);
     expect(find.text('₹4,800 stayed with you.'), findsOneWidget);
-    // The sum is present but quiet, not the hero.
-    expect(
-      find.textContaining('became yours and your family’s'),
-      findsOneWidget,
-    );
+    // The family is named between the two hero lines — the biggest beat.
+    expect(find.text('Your family received it on time.'), findsOneWidget);
+    // The old explanatory sum line is gone; the two statements say it already.
+    expect(find.textContaining('became yours and your family'), findsNothing);
+  });
+
+  testWidgets('ends with a closing verdict, not a stop',
+      (WidgetTester tester) async {
+    await pump(tester);
+    expect(find.text('June was better than May.'), findsOneWidget);
+    expect(find.text('You kept ₹300 more.'), findsOneWidget);
+    expect(find.text('Keep going.'), findsOneWidget);
   });
 
   testWidgets('stays honest — shows the cost of being here',
       (WidgetTester tester) async {
     await pump(tester);
     expect(
-      find.textContaining('cost of being here', findRichText: true),
+      find.textContaining('Living here cost', findRichText: true),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Nia works to make this smaller', findRichText: true),
       findsOneWidget,
     );
   });
@@ -50,7 +61,7 @@ void main() {
     await pump(tester);
     expect(find.text('What Nia made smaller'), findsOneWidget);
     expect(
-      find.textContaining('kept in your pocket at Sukh Store',
+      find.textContaining('that would have gone to market prices',
           findRichText: true),
       findsOneWidget,
     );
@@ -72,7 +83,7 @@ void main() {
     await tester.tap(find.widgetWithText(ChoiceChip, 'No shopping savings'));
     await tester.pumpAndSettle();
     expect(
-      find.textContaining('Shop at Sukh Store and Nia keeps more'),
+      find.text('No Sukh Store savings yet this month.'),
       findsOneWidget,
     );
 

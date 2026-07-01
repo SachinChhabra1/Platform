@@ -52,20 +52,19 @@ class _NiaBookPageState extends State<NiaBookPage> {
                 fontSize: 20, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
         const SizedBox(height: NiaTokens.s4),
 
-        // The hero — money that reached home, and money that stayed his. Two
-        // concrete lines, no arithmetic; the sum sits quiet beneath.
+        // The hero — money that reached home and the people waiting for it, then
+        // money that stayed his. Two concrete lines, no arithmetic; the family
+        // is named, because that is what leaving home was for.
         Text('${formatPaise(m.reachedHomePaise)} reached home.',
             style: const TextStyle(
                 fontSize: 24, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
+        const SizedBox(height: NiaTokens.s1),
+        const Text('Your family received it on time.',
+            style: TextStyle(fontSize: 15, color: NiaTokens.ink)),
+        const SizedBox(height: NiaTokens.s3),
         Text('${formatPaise(m.stayedWithYouPaise)} stayed with you.',
             style: const TextStyle(
                 fontSize: 24, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
-        const SizedBox(height: NiaTokens.s2),
-        Text(
-          '${formatPaise(m.reachedHomePaise + m.stayedWithYouPaise)} of your '
-          '${formatPaise(m.salaryPaise)} became yours and your family’s.',
-          style: const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
-        ),
 
         _divider(),
 
@@ -80,7 +79,7 @@ class _NiaBookPageState extends State<NiaBookPage> {
         // Where the salary went — the three-pockets lens as ONE section, home
         // and kept first, the cost of being here last and framed as the toll Nia
         // works to lower.
-        const SectionLabel('Where your salary went'),
+        const SectionLabel('This month’s story'),
         _storyLine(
           amount: formatPaise(m.reachedHomePaise),
           amountColor: NiaTokens.green,
@@ -99,11 +98,22 @@ class _NiaBookPageState extends State<NiaBookPage> {
             style: const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
           ),
         ),
-        _storyLine(
-          amount: formatPaise(m.costOfBeingHerePaise),
-          amountColor: NiaTokens.inkSecondary,
-          rest: ' was the cost of being here — the room and food Nia works '
-              'to lower.',
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
+          child: Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                  fontSize: 15, height: 1.4, color: NiaTokens.ink),
+              children: <InlineSpan>[
+                const TextSpan(text: 'Living here cost '),
+                TextSpan(
+                    text: formatPaise(m.costOfBeingHerePaise),
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                const TextSpan(
+                    text: '. Every month, Nia works to make this smaller.'),
+              ],
+            ),
+          ),
         ),
 
         _divider(),
@@ -114,19 +124,36 @@ class _NiaBookPageState extends State<NiaBookPage> {
 
         _divider(),
 
-        // Progress — the point of a Book of Months.
-        if (m.progressLine != null)
+        // The closing verdict — the page ends with a report-card, not a stop:
+        // the verdict, the proof, and the forward word.
+        if (m.closingHeadline != null) ...<Widget>[
           Row(
             children: <Widget>[
               const Icon(Icons.trending_up, size: 18, color: NiaTokens.green),
               const SizedBox(width: NiaTokens.s2),
               Expanded(
-                child: Text(m.progressLine!,
+                child: Text(m.closingHeadline!,
                     style: const TextStyle(
-                        fontSize: 14, color: NiaTokens.inkSecondary)),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: NiaTokens.ink)),
               ),
             ],
           ),
+          if (m.closingDetail != null)
+            Padding(
+              padding: const EdgeInsets.only(top: NiaTokens.s2),
+              child: Text(m.closingDetail!,
+                  style: const TextStyle(
+                      fontSize: 15, color: NiaTokens.inkSecondary)),
+            ),
+          if (m.closingNudge != null)
+            Padding(
+              padding: const EdgeInsets.only(top: NiaTokens.s1),
+              child: Text(m.closingNudge!,
+                  style: const TextStyle(fontSize: 15, color: NiaTokens.ink)),
+            ),
+        ],
         const SizedBox(height: NiaTokens.s3),
         InkWell(
           onTap: () => prototypeNoOp(context, 'See earlier months'),
@@ -166,11 +193,29 @@ class _NiaBookPageState extends State<NiaBookPage> {
         lines.add(_niaLine(
           icon: Icons.trending_down,
           iconColor: NiaTokens.green,
-          child: _storyLine(
-            amount: formatPaise(m.sukhSavingPaise),
-            amountColor: NiaTokens.green,
-            rest: ' kept in your pocket at Sukh Store — money that would '
-                'have gone to the market.',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text.rich(
+                TextSpan(
+                  style: const TextStyle(
+                      fontSize: 15, height: 1.4, color: NiaTokens.ink),
+                  children: <InlineSpan>[
+                    const TextSpan(text: 'You kept '),
+                    TextSpan(
+                        text: formatPaise(m.sukhSavingPaise),
+                        style: const TextStyle(
+                            color: NiaTokens.green, fontWeight: FontWeight.w600)),
+                    const TextSpan(
+                        text: ' that would have gone to market prices.'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text('Your Sukh Store saving this month.',
+                  style:
+                      TextStyle(fontSize: 13, color: NiaTokens.inkSecondary)),
+            ],
           ),
         ));
         lines.add(_voucherWaiting(m));
@@ -190,11 +235,11 @@ class _NiaBookPageState extends State<NiaBookPage> {
         ));
         break;
       case NiaBandState.noSavingsInvite:
-        lines.add(Padding(
-          padding: const EdgeInsets.only(bottom: NiaTokens.s3),
+        lines.add(const Padding(
+          padding: EdgeInsets.only(bottom: NiaTokens.s3),
           child: Text(
-            'Shop at Sukh Store and Nia keeps more in your pocket.',
-            style: const TextStyle(fontSize: 15, color: NiaTokens.inkSecondary),
+            'No Sukh Store savings yet this month.',
+            style: TextStyle(fontSize: 15, color: NiaTokens.inkSecondary),
           ),
         ));
         lines.add(_voucherWaiting(m));

@@ -49,7 +49,9 @@ class NiaBookMonth {
     required this.sukhSavingPaise,
     required this.voucherPaise,
     required this.band,
-    this.progressLine,
+    this.closingHeadline,
+    this.closingDetail,
+    this.closingNudge,
   });
 
   /// Short label for the demo state switcher.
@@ -78,8 +80,13 @@ class NiaBookMonth {
   /// Which "what Nia made smaller" band this month shows.
   final NiaBandState band;
 
-  /// The one progress line, or null on a first page with nothing to compare.
-  final String? progressLine;
+  /// The closing verdict — the page ends with a report-card, not a stop. The
+  /// headline is the verdict ("June was better than May."), the detail is the
+  /// proof ("You kept ₹300 more."), the nudge is the forward word ("Keep
+  /// going."). Null on a first page with nothing to compare.
+  final String? closingHeadline;
+  final String? closingDetail;
+  final String? closingNudge;
 
   // The shared June scenario. Every rupee is accounted for: salary 14,000 =
   // home 5,000 + here 4,200 (room + food) + stayed 4,800. "In hand now" (3,480)
@@ -107,7 +114,9 @@ class NiaBookMonth {
     sukhSavingPaise: _sukh,
     voucherPaise: _voucher,
     band: NiaBandState.savingAndVoucher,
-    progressLine: 'You kept ₹300 more than in May.',
+    closingHeadline: 'June was better than May.',
+    closingDetail: 'You kept ₹300 more.',
+    closingNudge: 'Keep going.',
   );
 
   NiaBookMonth _copyWith({
@@ -128,7 +137,9 @@ class NiaBookMonth {
         sukhSavingPaise: sukhSavingPaise ?? this.sukhSavingPaise,
         voucherPaise: voucherPaise,
         band: band ?? this.band,
-        progressLine: progressLine,
+        closingHeadline: closingHeadline,
+        closingDetail: closingDetail,
+        closingNudge: closingNudge,
       );
 
   /// The default June page first, then the five states the demo must show. The
