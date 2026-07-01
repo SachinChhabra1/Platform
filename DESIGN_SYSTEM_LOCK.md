@@ -97,6 +97,13 @@ readability (e.g. NiaBook columns are 45/55, not 50/50).
 3. Money first; no judgement; no wallet language.
 4. Every service must improve this month's NiaBook or make next month's better.
 5. RafiQi finds; the Member decides. SOS routing stays abstract.
+6. **The emotional contract — every screen leaves the Member more hopeful than when
+   they opened it.** Not merely informed. A screen that only informs has failed, even
+   if it matches the spec.
+
+Intake test for any feature: (1) which of the four promises does it strengthen?
+(2) how will NiaBook prove it? If it can't answer both, it doesn't belong.
+**Everything improves NiaBook — this is sacred.**
 
 ---
 

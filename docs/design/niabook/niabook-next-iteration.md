@@ -104,6 +104,25 @@ anticipation, not just reflection — the book isn't only recording progress, it
 helping shape the next page. The build test stands: **will this improve next month's
 NiaBook?** If not, don't build it.
 
+## Founder review — the craftsmanship backlog (post architecture sign-off)
+
+The architecture is signed off; the remaining work is craftsmanship, not invention.
+The founder review ("does it feel like one product, and does each screen deliver its
+*emotional* promise?") surfaced four things to refine — none are deck mismatches:
+
+1. **Living reads like a facilities menu.** The six service rows (room, meals,
+   community, safety, services, requests) inform more than they say "my cost fell."
+   The "spend less" emotion only lands at the top (₹2,400, everything included) and
+   bottom (kept ₹550). Make the middle carry the cost-reduction feeling.
+2. **NiaBook doesn't show the ○→✓ motion.** The core idea — a line moving from waiting
+   to true — is narrated in the deck but only implied on screen ("4 unlocked · 9
+   waiting"). Make the movement visible; it is the most distinctive idea in the product.
+3. **Consistency is flattening emotional register.** One shared visual language nails
+   "one product" but Family doesn't yet *feel* warmer than Work — the difference is
+   carried only by copy. Find a tonal shift per promise without breaking the system.
+4. **Uneven daily-return pull.** NiaBook and Store earn a daily open; Living earns it
+   least. Give every pillar a reason to come back.
+
 ## The board takeaway
 
 If the board leaves with one thing: **Nia is no longer building features. It is

@@ -65,6 +65,26 @@ understand the others.
    don't build it. (Recording → compounding.)
 5. **RafiQi finds; the Member decides.** SOS reaches help through an abstract route
    (Nia Emergency), never permanently a single destination.
+6. **The emotional contract — every screen leaves the Member more hopeful than when
+   they opened it.** Not informed. Not educated. More hopeful. This is not UX; it is
+   the promise of the company. Per pillar: Work → hope of higher income · Living →
+   hope of lower costs · Store → hope of higher savings · Family → hope that people
+   back home are doing better · NiaBook → hope because progress is visible. A screen
+   that leaves the Member merely *informed* has failed this law, even if it matches
+   the spec.
+
+## The intake test for every future feature
+
+Before anything is built, it must answer two questions. If it cannot, it does not
+belong in Nia — no exceptions, no special cases, no one-offs.
+
+1. **Which of the four promises does this strengthen?** (Earn more · spend less ·
+   keep more · send more home.)
+2. **How will NiaBook prove it?**
+
+**Everything improves NiaBook. This is sacred.** The standing temptation as the team
+grows is to add exceptions that quietly turn one operating system back into five apps.
+These two questions are how you refuse.
 
 The one line to remember: **Nia is not building features. It is building a monthly
 record of progress for migrant workers — a record that compounds.**
