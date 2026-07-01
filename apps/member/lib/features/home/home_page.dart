@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                 Text(formatRupees(o.availableBalance),
                     style: theme.textTheme.displaySmall),
                 const SizedBox(height: NiaTokens.s1),
-                Text('available in your Wallet', style: theme.textTheme.bodyMedium),
+                Text('in your hand right now', style: theme.textTheme.bodyMedium),
                 const SizedBox(height: NiaTokens.s4),
                 Text('${formatRupees(o.stayedThisMonth)} stayed with you this month',
                     style: theme.textTheme.titleMedium

@@ -89,6 +89,10 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: MemberShell(config: MemberConfig())));
     await tester.pumpAndSettle();
 
+    // The app opens on NiaBook now; the "Your family" row lives on Home.
+    await tester.tap(find.byTooltip('Home'));
+    await tester.pumpAndSettle();
+
     // No open-question marker on the family row any more.
     expect(find.text('Q3'), findsNothing);
 

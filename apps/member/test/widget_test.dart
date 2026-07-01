@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/app.dart';
-import 'package:member/features/wallet/wallet_page.dart';
+import 'package:member/features/niabook/niabook_page.dart';
 
 /// Smoke tests for the Product Review Prototype shell. They prove the shell
-/// boots, marks itself as a prototype, and navigates between the four anchors
-/// (Book IV §3.2). They assert structure, not product behaviour.
+/// boots on NiaBook (the first screen), marks itself as a prototype, and
+/// navigates between the four anchors (Book IV §3.2). They assert structure,
+/// not product behaviour.
 void main() {
-  testWidgets('boots to the Home, greeting the Member by name',
+  testWidgets('boots to NiaBook, opening on the verdict',
       (WidgetTester tester) async {
     await tester.pumpWidget(const NiaMemberApp());
 
-    expect(find.textContaining('Namaste'), findsOneWidget);
+    expect(find.byType(NiaBookPage), findsOneWidget);
+    expect(find.text('June was worth it.'), findsOneWidget);
   });
 
   testWidgets('marks itself as a prototype', (WidgetTester tester) async {
@@ -20,13 +21,12 @@ void main() {
     expect(find.text('prototype'), findsOneWidget);
   });
 
-  testWidgets('navigates to the Wallet anchor', (WidgetTester tester) async {
+  testWidgets('navigates to the Home anchor', (WidgetTester tester) async {
     await tester.pumpWidget(const NiaMemberApp());
 
-    await tester.tap(find.byIcon(Icons.account_balance_wallet_outlined));
+    await tester.tap(find.byTooltip('Home'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(WalletPage), findsOneWidget);
-    expect(find.text('This month'), findsOneWidget);
+    expect(find.textContaining('Namaste'), findsOneWidget);
   });
 }

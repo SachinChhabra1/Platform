@@ -7,14 +7,15 @@ import '../../widgets/common.dart';
 import '../../widgets/nia_bottom_nav.dart';
 import '../family/my_family_page.dart';
 import '../home/home_page.dart';
+import '../niabook/niabook_page.dart';
 import '../profile/profile_page.dart';
-import '../wallet/wallet_page.dart';
 
 /// The Member App shell — four anchors that persist across the app, icon-first
-/// (Book IV §3.2: four fit the thumb). The Developer Preview centres the live,
-/// Member-facing surfaces: **Home · Wallet · Family · Profile**. Navigation is
-/// icons, not words — the selected tab shows a solid icon + a short label; the
-/// rest are quiet grey line icons ([NiaBottomNav]).
+/// (Book IV §3.2: four fit the thumb). **NiaBook is the first screen** — the app
+/// opens on it, and the old Wallet concept is gone. The anchors are **NiaBook ·
+/// Home · Family · Me**. Navigation is icons, not words — the selected tab shows
+/// a solid icon + a short label; the rest are quiet grey line icons
+/// ([NiaBottomNav]).
 ///
 /// The anchors switch via an [IndexedStack] so each tab keeps its place; the
 /// Operator is one tap from any screen (§3.6, the app-bar action).
@@ -37,12 +38,12 @@ class _MemberShellState extends State<MemberShell> {
   late final _membership = widget.config.membershipSource();
 
   late final List<Widget> _pages = <Widget>[
+    const NiaBookPage(),
     HomePage(
       walletSource: _wallet,
       membershipSource: _membership,
       onOpenFamily: () => setState(() => _index = 2),
     ),
-    WalletPage(source: _wallet),
     MyFamilyPage(walletSource: _wallet),
     ProfilePage(
       membershipSource: _membership,
@@ -50,17 +51,16 @@ class _MemberShellState extends State<MemberShell> {
     ),
   ];
 
-  // Home greets in-body, so its app-bar title is empty. The Wallet tab is now
-  // named NiaBook and Profile is Me (labels only; the NiaBook redesign is a
-  // later Product-Polish slice — the screens are unchanged here).
-  static const List<String> _titles = <String>['', 'NiaBook', 'My Family', 'Me'];
+  // NiaBook leads and carries the app-bar name of the artefact; Home greets
+  // in-body so its title is empty; Profile is Me.
+  static const List<String> _titles = <String>['NiaBook', '', 'My Family', 'Me'];
 
   static const List<NiaNavItem> _navItems = <NiaNavItem>[
-    NiaNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
     NiaNavItem(
-        icon: Icons.account_balance_wallet_outlined,
-        selectedIcon: Icons.account_balance_wallet,
+        icon: Icons.menu_book_outlined,
+        selectedIcon: Icons.menu_book,
         label: 'NiaBook'),
+    NiaNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home'),
     NiaNavItem(icon: Icons.people_outline, selectedIcon: Icons.people, label: 'Family'),
     NiaNavItem(icon: Icons.person_outline, selectedIcon: Icons.person, label: 'Me'),
   ];

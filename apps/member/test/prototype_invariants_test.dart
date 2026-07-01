@@ -31,6 +31,10 @@ void main() {
     await tester.pumpWidget(const NiaMemberApp());
     await tester.pumpAndSettle();
 
+    // The app opens on NiaBook now; the Q4 marker lives on the Home screen.
+    await tester.tap(find.byTooltip('Home'));
+    await tester.pumpAndSettle();
+
     // The Q4 marker must remain visible and state plainly that tenure is not shown.
     // FD markers render via RichText, so findRichText must be enabled.
     expect(
