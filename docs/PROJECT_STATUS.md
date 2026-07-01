@@ -227,10 +227,19 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
 15. ~~**Icon-first bottom navigation**~~ — **DONE (2026-07-01).** UI-only (no backend/contract/codegen).
     `NiaBottomNav`: icon-first tabs — selected = solid icon + short label in near-black ink,
     unselected = quiet grey line icon (Book III monochrome; built-in Material icons, no new packages).
-    The bar is now **Home · Wallet · Family · Profile** — Family and Profile promoted from pushed
-    routes to tabs; Clusters/RafiQi (prototype-only) dropped from the bar (still four anchors, §3.2).
+    The bar is now **Home · NiaBook · Family · Me** — Family and Me promoted from pushed routes to
+    tabs; Clusters/RafiQi (prototype-only) dropped from the bar (still four anchors, §3.2).
     `MyFamilyPage`/`ProfilePage` made body-only under the shell app bar; all live wiring preserved.
-    `bottom_nav_test` added; member suite 37; verify + render green.
+    `bottom_nav_test` added; member suite 37; verify + render green. (Tab labels finished at
+    `11d577c`: Wallet→NiaBook, Profile→Me — labels only; screens unchanged.)
+
+    **▶ PRODUCT POLISH PHASE (Founder, 2026-07-01): backend + infrastructure PAUSED.** Next task is
+    the **NiaBook redesign — DESIGN-ONLY** (no code): turn the Wallet into NiaBook, which answers "was
+    leaving home worth it this month?" (not a wallet/ledger). Deliver IA, wireframe, hi-fi mockup,
+    full copy, rationale, and five state cases (Sukh Store savings; unused ₹500 work voucher; redeemed
+    voucher; zero savings; Member who didn't get work through Nia). The Sukh Store savings + Work
+    voucher are first-class (the Nia flywheel). Await Founder approval before Flutter. Session-issuance
+    plan 0002 (Slice C sign-out → D recovery → E → F) is paused until platform work resumes.
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
