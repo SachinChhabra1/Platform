@@ -1,35 +1,50 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
+import '../../widgets/common.dart';
+import 'nia_components.dart';
 import 'pillar_kit.dart';
 
 /// Living · Spend less. Promise: spend less. Reality: the studio and this
-/// month's cost. Supporting: nest, meals, community, safety, services.
-/// Opportunity: a cheaper path found by RafiQi. Contribution: lower, predictable
-/// costs that fund next month. Built on the shared [PillarScaffold].
+/// month's cost. Supporting: nest, meals, community, safety, services — each
+/// framed as what it does for the Member, not a facility. Opportunity: a cheaper
+/// path found by RafiQi. Contribution: lower cost and hours back that feed
+/// NiaBook. Product-locked; built to the approved screen on shared components.
 class LivingPage extends StatelessWidget {
   const LivingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return PillarScaffold(
-      pillar: 'Living',
-      promise: 'Spend less',
-      promiseSub: 'Lower, predictable living costs.',
-      body: <PillarBlock>[
-        PillarBlock(PillarSection.reality, _studio()),
-        PillarBlock(PillarSection.reality, _cost()),
-        PillarBlock(PillarSection.supporting, _services(context)),
-        PillarBlock(PillarSection.opportunity, _cheaperPath()),
-      ],
-      contribution: niaBookStrip('This month you kept ₹550 by living here',
-          'Lower, predictable costs · Adds to your NiaBook'),
+    return NiaReveal(
+      child: PillarScaffold(
+        pillar: 'Living',
+        promise: 'Spend less',
+        promiseSub: 'Lower, predictable living costs.',
+        body: <PillarBlock>[
+          PillarBlock(PillarSection.reality, _studio()),
+          PillarBlock(PillarSection.reality, _cost()),
+          PillarBlock(PillarSection.supporting, _services(context)),
+          const PillarBlock(
+            PillarSection.opportunity,
+            OpportunityCard(
+              foundLabel: 'More you can keep',
+              icon: Icons.local_laundry_service_outlined,
+              title: "Laundry's included — skip the wash",
+              subtitle: 'Log a Sunday overtime shift instead',
+              gain: '+₹800',
+              tag: 'Work',
+            ),
+          ),
+        ],
+        contribution: const SummaryCard(
+          title: 'This month you kept ₹550 by living here',
+          subtitle: 'Plus ~14 hours back — time to earn · Feeds your NiaBook',
+        ),
+      ),
     );
   }
 
-  // (RafiQi opportunity phrasing is shared in pillar_kit: foundByRafiqi.)
-
-  Widget _studio() => niaCard(
+  Widget _studio() => InfoCard(
         child: Row(
           children: <Widget>[
             niaIconChip(Icons.apartment),
@@ -68,7 +83,7 @@ class LivingPage extends StatelessWidget {
         ),
       );
 
-  Widget _cost() => niaCard(
+  Widget _cost() => InfoCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -84,83 +99,76 @@ class LivingPage extends StatelessWidget {
             const SizedBox(height: NiaTokens.s4),
             Row(
               children: <Widget>[
-                Expanded(child: iconTile(Icons.bolt_outlined, 'Electricity', 'Included')),
-                Expanded(child: iconTile(Icons.water_drop_outlined, 'Water', 'Included')),
-                Expanded(child: iconTile(Icons.wifi, 'Wi-Fi', '≈₹250')),
                 Expanded(
-                    child: iconTile(
-                        Icons.local_laundry_service_outlined, 'Laundry', '≈₹300')),
+                    child: iconTile(Icons.bolt_outlined, 'Electricity', 'Included',
+                        statusColor: NiaTokens.blue)),
+                Expanded(
+                    child: iconTile(Icons.water_drop_outlined, 'Water', 'Included',
+                        statusColor: NiaTokens.blue)),
+                Expanded(
+                    child: iconTile(Icons.wifi, 'Wi-Fi', '≈₹250',
+                        statusColor: NiaTokens.blue)),
+                Expanded(
+                    child: iconTile(Icons.local_laundry_service_outlined,
+                        'Laundry', '≈₹300',
+                        statusColor: NiaTokens.blue)),
               ],
             ),
           ],
         ),
       );
 
-  Widget _services(BuildContext context) => Column(
-        children: <Widget>[
-          niaListRow(Icons.bed_outlined, 'Your nest', 'Clean, comfortable, yours',
-              chevron: true),
-          niaHairline(),
-          niaListRow(Icons.restaurant_outlined, 'Meals',
-              'Nutritious meals, every day',
-              chevron: true),
-          niaHairline(),
-          niaListRow(Icons.groups_outlined, 'Community',
-              'People. Friends. Support.',
-              chevron: true),
-          niaHairline(),
-          niaListRow(Icons.shield_outlined, 'Safety & security',
-              '24x7 safety. We care.',
-              chevron: true),
-          niaHairline(),
-          niaListRow(Icons.build_outlined, 'Services',
-              'Housekeeping, maintenance',
-              chevron: true),
-          niaHairline(),
-          niaListRow(Icons.chat_bubble_outline, 'Service requests',
-              'Resolved quickly',
-              trailing: '0', trailingColor: NiaTokens.inkSecondary, chevron: true),
-        ],
-      );
-
-  Widget _cheaperPath() => niaCard(
+  Widget _services(BuildContext context) => InfoCard(
+        padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            foundByRafiqi('More you can keep'),
-            const SizedBox(height: NiaTokens.s2),
-            Row(
-              children: <Widget>[
-                niaIconChip(Icons.local_laundry_service_outlined),
-                const SizedBox(width: NiaTokens.s3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const <Widget>[
-                      Text("Laundry's included — skip the wash",
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: NiaTokens.ink)),
-                      Text('Log a Sunday overtime shift instead',
-                          style: TextStyle(
-                              fontSize: 12, color: NiaTokens.inkSecondary)),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    const Text('+₹800',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: NiaTokens.blue)),
-                    const SizedBox(height: 2),
-                    pillarTag('Work'),
-                  ],
-                ),
-              ],
+            ListRow(
+              icon: Icons.bed_outlined,
+              title: 'Your Nest',
+              subtitle: 'Rest well. Work better tomorrow.',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Your Nest'),
+            ),
+            niaHairline(),
+            ListRow(
+              icon: Icons.restaurant_outlined,
+              title: 'Meals',
+              subtitle: 'No cooking. More time and energy.',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Meals'),
+            ),
+            niaHairline(),
+            ListRow(
+              icon: Icons.groups_outlined,
+              title: 'Community',
+              subtitle: 'Meet workers. Hear of better jobs.',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Community'),
+            ),
+            niaHairline(),
+            ListRow(
+              icon: Icons.shield_outlined,
+              title: 'Safety & security',
+              subtitle: 'Family worries less. Stay focused.',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Safety & security'),
+            ),
+            niaHairline(),
+            ListRow(
+              icon: Icons.build_outlined,
+              title: 'Services',
+              subtitle: 'Clean Nest after every shift. Recover faster.',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Services'),
+            ),
+            niaHairline(),
+            ListRow(
+              icon: Icons.chat_bubble_outline,
+              title: 'Service requests',
+              subtitle: 'Resolved fast. Back to work.',
+              trailing: '0',
+              showChevron: true,
+              onTap: () => prototypeNoOp(context, 'Service requests'),
             ),
           ],
         ),

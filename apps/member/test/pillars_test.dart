@@ -51,10 +51,15 @@ void main() {
     expect(find.text('Umapathi Studio'), findsOneWidget);
     expect(find.text("THIS MONTH'S COST"), findsOneWidget);
     expect(find.text('Community'), findsOneWidget);
+    // Benefit-led copy (Living helps the Member earn/keep, not a facilities menu).
+    expect(find.text('Rest well. Work better tomorrow.'), findsOneWidget);
+    expect(find.text('Meet workers. Hear of better jobs.'), findsOneWidget);
+    // The outcome feeds NiaBook and returns time.
     expect(find.text('This month you kept ₹550 by living here'), findsOneWidget);
+    expect(find.textContaining('~14 hours back'), findsOneWidget);
     // Terminology: it is a Nest, never a "room" (Nest → Coach → Studio → Theatre).
     expect(find.text('Nest 204'), findsOneWidget);
-    expect(find.text('Your nest'), findsOneWidget);
+    expect(find.text('Your Nest'), findsOneWidget);
     expect(find.textContaining('room'), findsNothing);
     expect(find.textContaining('Room'), findsNothing);
   });

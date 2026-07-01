@@ -291,8 +291,11 @@ Widget statCard(String label, String value, String sub) => Container(
       ),
     );
 
-/// An icon tile (icon over label over status) — the 4-across grids.
-Widget iconTile(IconData icon, String label, String status) => Column(
+/// An icon tile (icon over label over status) — the 4-across grids. [statusColor]
+/// tints the status line (e.g. blue for "Included" on Living's utilities).
+Widget iconTile(IconData icon, String label, String status,
+        {Color statusColor = NiaTokens.inkSecondary}) =>
+    Column(
       children: <Widget>[
         Icon(icon, size: 20, color: NiaTokens.blue),
         const SizedBox(height: NiaTokens.s1),
@@ -302,7 +305,7 @@ Widget iconTile(IconData icon, String label, String status) => Column(
                 fontSize: 12, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
         Text(status,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: NiaTokens.inkSecondary)),
+            style: TextStyle(fontSize: 11, color: statusColor)),
       ],
     );
 
