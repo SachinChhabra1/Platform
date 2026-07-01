@@ -11,8 +11,12 @@ import 'niabook_scenario.dart';
 ///     RafiQi. Every month moves a line from right to left.
 ///
 /// Money first, explanation second; no judgement; restrained blue accent over
-/// soft greys (approved two-column design). The Member reaches a human in one tap
-/// via the SOS action (Book IV §3.6).
+/// soft greys (approved two-column design). The Member reaches help in one tap
+/// via the SOS action (Nia Emergency, Book IV §3.6).
+///
+/// Optimise for scanning, not symmetry: the Member should understand the page in
+/// under five seconds, so hierarchy beats visual balance. The two-column model is
+/// frozen, but the pixels are negotiable — column widths flex for readability.
 class NiaBookPage extends StatelessWidget {
   const NiaBookPage({super.key, this.month = NiaBookMonth.sample});
 
@@ -36,14 +40,17 @@ class NiaBookPage extends StatelessWidget {
         const SizedBox(height: NiaTokens.s4),
         const Divider(height: 1, thickness: 1, color: NiaTokens.hairline),
         const SizedBox(height: NiaTokens.s4),
+        // Optimise for scanning, not symmetry. The right column carries longer
+        // titles and the opportunity chain, so it takes more width (45/55).
+        // Hierarchy beats visual balance.
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Expanded(child: _leftColumn(context)),
+              Expanded(flex: 45, child: _leftColumn(context)),
               const VerticalDivider(
                   width: NiaTokens.s5, thickness: 1, color: NiaTokens.hairline),
-              Expanded(child: _rightColumn(context)),
+              Expanded(flex: 55, child: _rightColumn(context)),
             ],
           ),
         ),
@@ -113,10 +120,11 @@ class NiaBookPage extends StatelessWidget {
         ],
       );
 
-  // SOS — visible but not alarming: a quiet blue outline pill, one tap to a
-  // human (the Operator sheet), never red.
+  // SOS — visible but not alarming: a quiet blue outline pill. It opens Nia
+  // Emergency, an abstract route that today reaches a human (the Operator) but is
+  // not permanently the Operator (see openNiaEmergency). Never red.
   Widget _sosButton(BuildContext context) => InkWell(
-        onTap: () => openOperatorSheet(context),
+        onTap: () => openNiaEmergency(context),
         borderRadius: BorderRadius.circular(999),
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -305,24 +313,27 @@ class NiaBookPage extends StatelessWidget {
         ),
       );
 
-  Widget _sukhOfferRow(SukhOffer o) => Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(o.name,
-                style: const TextStyle(fontSize: 13, color: NiaTokens.ink)),
-          ),
-          Text(formatPaise(o.wasPaise),
-              style: const TextStyle(
-                  fontSize: 12,
-                  color: NiaTokens.inkSecondary,
-                  decoration: TextDecoration.lineThrough)),
-          const SizedBox(width: NiaTokens.s2),
-          Text(formatPaise(o.nowPaise),
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: NiaTokens.ink)),
-        ],
+  // One flowing line per offer so the item name never breaks mid-word in the
+  // narrow column: "Atta · 5kg  ₹180 → ₹170" (was struck, now bold).
+  Widget _sukhOfferRow(SukhOffer o) => Text.rich(
+        TextSpan(
+          style:
+              const TextStyle(fontSize: 13, height: 1.4, color: NiaTokens.ink),
+          children: <InlineSpan>[
+            TextSpan(text: '${o.name}  '),
+            TextSpan(
+                text: formatPaise(o.wasPaise),
+                style: const TextStyle(
+                    fontSize: 12,
+                    color: NiaTokens.inkSecondary,
+                    decoration: TextDecoration.lineThrough)),
+            const TextSpan(
+                text: ' → ', style: TextStyle(color: NiaTokens.inkSecondary)),
+            TextSpan(
+                text: formatPaise(o.nowPaise),
+                style: const TextStyle(fontWeight: FontWeight.w700)),
+          ],
+        ),
       );
 
   // ── Right column — more you can keep ────────────────────────────────────

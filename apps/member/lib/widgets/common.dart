@@ -147,3 +147,15 @@ void _proto(BuildContext context, String action) {
 /// Exposed so screens can use the same honest no-op.
 void prototypeNoOp(BuildContext context, String action) =>
     _proto(context, action);
+
+/// Nia Emergency — the Member's one-tap way to reach help from the SOS action.
+///
+/// The routing is deliberately ABSTRACT. Emergencies differ — medical, safety,
+/// harassment, fire, accommodation, a family emergency — so tomorrow this can
+/// route intelligently to a warden, security, an ambulance, factory HR, or the
+/// Operator without changing the SOS button. Today it reaches the Operator (a
+/// known human) as the fallback route. SOS is NOT permanently the Operator; do
+/// not couple the UI to that.
+Future<void> openNiaEmergency(BuildContext context) {
+  return openOperatorSheet(context);
+}
