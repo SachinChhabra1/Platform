@@ -207,10 +207,20 @@ class OpportunityCard extends StatelessWidget {
 /// The flywheel summary that closes a pillar: a blue-tint card, "trending up",
 /// a bold blue headline and a quiet subline — how this feeds NiaBook.
 class SummaryCard extends StatelessWidget {
-  const SummaryCard({super.key, required this.title, required this.subtitle});
+  const SummaryCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    this.icon = Icons.trending_up,
+  });
 
   final String title;
   final String subtitle;
+
+  /// The leading glyph. Defaults to `trending_up` (the flywheel). Family closes
+  /// on care, not finance, so it passes a heart — the one pillar whose flywheel
+  /// closes emotionally.
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +234,7 @@ class SummaryCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Icon(Icons.trending_up, size: 18, color: NiaTokens.blue),
+          Icon(icon, size: 18, color: NiaTokens.blue),
           const SizedBox(width: NiaTokens.s2),
           Expanded(
             child: Column(

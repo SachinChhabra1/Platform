@@ -26,7 +26,7 @@ The five screens of the operating system. Real app renders (regenerate with
 
 **Store · Keep more** — ![Store](apps/member/test/goldens/store.png)
 
-**Family · Send more home** — ![Family](apps/member/test/goldens/family.png)
+**Family · Take better care of home** — ![Family](apps/member/test/goldens/family.png)
 
 ---
 

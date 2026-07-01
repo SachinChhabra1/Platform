@@ -1,147 +1,143 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
+import '../../widgets/common.dart';
+import 'nia_components.dart';
 import 'pillar_kit.dart';
 
-/// Family · Send more home. Promise: send more home. Reality: what reached home
-/// this month. Supporting: family status, benefits and protection. Opportunity:
-/// ways to meet an upcoming goal, found by RafiQi across pillars. Contribution:
-/// more reaches home, family stays secure. Built on the shared [PillarScaffold].
-/// This is the reason every other pillar exists.
+/// Family · the emotional centre of the operating system. Not a remittance
+/// screen, not payments, not insurance — care. Every block answers one question:
+/// how are the people I left home for? The promise is "Take better care of home"
+/// (the nav still reads Family). People come first, money second; goals are the
+/// cross-pillar flywheel felt without explanation (Work · Store · Living cover a
+/// school fee); protection reassures rather than sells. The close lands on
+/// purpose, not finance — the only pillar whose flywheel closes emotionally.
+/// Product-locked; built to the approved screen on shared components.
 class FamilyPage extends StatelessWidget {
   const FamilyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return PillarScaffold(
-      pillar: 'Family',
-      promise: 'Send more home',
-      promiseSub: 'Because they matter most.',
-      body: <PillarBlock>[
-        PillarBlock(PillarSection.reality, _reachedHome()),
-        PillarBlock(PillarSection.supporting, _myFamily(context)),
-        PillarBlock(PillarSection.supporting, _benefits()),
-        PillarBlock(PillarSection.opportunity, _upcoming()),
-      ],
-      contribution: niaBookStrip('This adds to your NiaBook',
-          'More reaches home. Family stays secure.'),
+    return NiaReveal(
+      child: PillarScaffold(
+        pillar: 'Family',
+        promise: 'Take better care of home',
+        promiseSub: 'How are the people you left home for?',
+        body: <PillarBlock>[
+          PillarBlock(PillarSection.reality, _people(context)),
+          PillarBlock(PillarSection.reality, _reachedHome()),
+          PillarBlock(PillarSection.opportunity, _goal()),
+          PillarBlock(PillarSection.supporting, _protection()),
+        ],
+        contribution: const SummaryCard(
+          icon: Icons.favorite,
+          title: 'The people you left home for are doing better',
+          subtitle: 'Your NiaBook remembers every month you showed up',
+        ),
+      ),
     );
   }
 
-  Widget _reachedHome() => niaCard(
-        hero: true,
+  /// The hero: people, not money. The first thing a Member sees is that the ones
+  /// they left home for are well. Warm monograms, each row tappable and labelled.
+  Widget _people(BuildContext context) => InfoCard(
+        padding: const EdgeInsets.symmetric(
+            horizontal: NiaTokens.s4, vertical: NiaTokens.s2),
+        child: Column(
+          children: <Widget>[
+            _person(context, 'A', 'Mother', 'Amma', 'Healthy'),
+            niaHairline(),
+            _person(context, 'A', 'Father', 'Appa', 'Healthy'),
+            niaHairline(),
+            _person(context, 'R', 'Ravi', 'Son · Class 6', 'Fees paid'),
+          ],
+        ),
+      );
+
+  Widget _person(BuildContext context, String initials, String name,
+          String detail, String status) =>
+      Semantics(
+        button: true,
+        label: '$name, $detail. $status.',
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: () => prototypeNoOp(context, name),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 56),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
+              child: Row(
+                children: <Widget>[
+                  Monogram(initials: initials, size: 40),
+                  const SizedBox(width: NiaTokens.s3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(name,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: NiaTokens.ink)),
+                        Text(detail,
+                            style: const TextStyle(
+                                fontSize: 12, color: NiaTokens.inkSecondary)),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
+                  const SizedBox(width: 4),
+                  Text(status,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: NiaTokens.ink)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+  /// Money — only after people. One calm confirmation: it reached home, on time.
+  Widget _reachedHome() => InfoCard(
         child: Row(
           children: <Widget>[
-            niaIconChip(Icons.favorite, filled: true),
+            niaIconChip(Icons.volunteer_activism, filled: true),
             const SizedBox(width: NiaTokens.s3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  capsLabel('THIS MONTH', color: NiaTokens.inkSecondary),
                   const Text('₹5,000',
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: NiaTokens.ink)),
-                  const Text('reached home',
+                  const Text('reached home this month',
                       style: TextStyle(
                           fontSize: 12, color: NiaTokens.inkSecondary)),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: const <Widget>[
-                Icon(Icons.check_circle, size: 22, color: NiaTokens.blue),
-                SizedBox(height: 2),
-                Text('On time',
-                    style: TextStyle(fontSize: 11, color: NiaTokens.inkSecondary)),
-              ],
-            ),
-          ],
-        ),
-      );
-
-  Widget _myFamily(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          sectionTitle('My family', trailing: niaLink(context, 'See all')),
-          const SizedBox(height: NiaTokens.s3),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(child: _member('Mother', 'Healthy')),
-                const SizedBox(width: NiaTokens.s3),
-                Expanded(child: _member('Father', 'Healthy')),
-                const SizedBox(width: NiaTokens.s3),
-                Expanded(child: _member('Son', 'School fees paid')),
-              ],
-            ),
-          ),
-        ],
-      );
-
-  Widget _member(String name, String status) => Container(
-        padding: const EdgeInsets.symmetric(
-            vertical: NiaTokens.s3, horizontal: NiaTokens.s2),
-        decoration: BoxDecoration(
-          color: NiaTokens.surfaceGrey,
-          borderRadius: BorderRadius.circular(NiaTokens.radius),
-        ),
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: 34,
-              height: 34,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                  color: NiaTokens.ground, shape: BoxShape.circle),
-              child: const Icon(Icons.person_outline,
-                  size: 18, color: NiaTokens.inkSecondary),
-            ),
-            const SizedBox(height: NiaTokens.s2),
-            Text(name,
-                style: const TextStyle(
+            const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
+            const SizedBox(width: 4),
+            const Text('On time',
+                style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: NiaTokens.ink)),
-            Text(status,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 11, color: NiaTokens.inkSecondary)),
           ],
         ),
       );
 
-  Widget _benefits() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          sectionTitle('Benefits & protection'),
-          const SizedBox(height: NiaTokens.s3),
-          Row(
-            children: <Widget>[
-              Expanded(
-                  child: iconTile(Icons.verified_user_outlined, 'Insurance', 'Active')),
-              Expanded(
-                  child: iconTile(Icons.add_circle_outline, 'Health', 'Covered')),
-              Expanded(
-                  child: iconTile(
-                      Icons.health_and_safety_outlined, 'Accident', 'Covered')),
-              Expanded(
-                  child: iconTile(Icons.call_outlined, 'Tele-consult', 'Available')),
-            ],
-          ),
-        ],
-      );
-
-  Widget _upcoming() => niaCard(
+  /// Goals — where Family becomes magical. A real goal (a school fee), and the
+  /// ways it is already within reach — each one a different pillar quietly doing
+  /// its job. The cross-pillar flywheel, felt without a diagram.
+  Widget _goal() => InfoCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            capsLabel('UPCOMING', color: NiaTokens.inkSecondary),
-            const SizedBox(height: NiaTokens.s2),
             Row(
               children: <Widget>[
                 niaIconChip(Icons.school_outlined),
@@ -150,7 +146,7 @@ class FamilyPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const <Widget>[
-                      Text('School fees',
+                      Text("Ravi's school fees",
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -171,27 +167,62 @@ class FamilyPage extends StatelessWidget {
             const SizedBox(height: NiaTokens.s3),
             niaHairline(),
             const SizedBox(height: NiaTokens.s3),
-            foundByRafiqi('Ways to cover this'),
+            foundByRafiqi('Covered by'),
             const SizedBox(height: NiaTokens.s2),
-            _cover(Icons.work_outline, 'Two overtime shifts', 'Work'),
-            _cover(Icons.trending_up, 'Machine Operator promotion', 'Work'),
-            _cover(Icons.shopping_bag_outlined,
-                '₹300 grocery savings × 4 months', 'Store'),
+            _cover('Two overtime shifts', 'Work'),
+            _cover('A Machine Operator promotion', 'Work'),
+            _cover('Four months of Sukh savings', 'Store'),
           ],
         ),
       );
 
-  Widget _cover(IconData icon, String title, String tag) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
-        child: Row(
+  Widget _cover(String title, String tag) => Semantics(
+        label: '$title, from $tag',
+        excludeSemantics: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
+          child: Row(
+            children: <Widget>[
+              const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
+              const SizedBox(width: NiaTokens.s3),
+              Expanded(
+                child: Text(title,
+                    style: const TextStyle(fontSize: 13, color: NiaTokens.ink)),
+              ),
+              pillarTag(tag),
+            ],
+          ),
+        ),
+      );
+
+  /// Protection — never a product menu. The reassuring answer to one question:
+  /// is my family protected? Yes.
+  Widget _protection() => InfoCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(icon, size: 18, color: NiaTokens.blue),
-            const SizedBox(width: NiaTokens.s3),
-            Expanded(
-              child: Text(title,
-                  style: const TextStyle(fontSize: 13, color: NiaTokens.ink)),
+            const Text('Your family is protected',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: NiaTokens.ink)),
+            const SizedBox(height: NiaTokens.s4),
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: iconTile(Icons.verified_user_outlined, 'Insurance',
+                        'Active',
+                        statusColor: NiaTokens.blue)),
+                Expanded(
+                    child: iconTile(Icons.medical_services_outlined, 'Medical',
+                        'Covered',
+                        statusColor: NiaTokens.blue)),
+                Expanded(
+                    child: iconTile(Icons.savings_outlined, 'Emergency fund',
+                        'Ready',
+                        statusColor: NiaTokens.blue)),
+              ],
             ),
-            pillarTag(tag),
           ],
         ),
       );

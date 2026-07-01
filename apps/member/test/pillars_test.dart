@@ -95,14 +95,34 @@ void main() {
     expect(find.text('Essentials you buy'), findsNothing);
   });
 
-  testWidgets('Family · send more home', (WidgetTester tester) async {
+  testWidgets('Family · take better care of home', (WidgetTester tester) async {
     await pump(tester, const FamilyPage());
-    expect(find.text('Send more home'), findsOneWidget);
+    // Care, not remittance: the promise and the organising question.
+    expect(find.text('Take better care of home'), findsOneWidget);
+    expect(
+        find.text('How are the people you left home for?'), findsOneWidget);
+    // People come first — the hero is who, not how much.
+    expect(find.text('Mother'), findsOneWidget);
+    expect(find.text('Father'), findsOneWidget);
+    expect(find.text('Ravi'), findsOneWidget);
+    // Money comes only after people.
     expect(find.text('₹5,000'), findsOneWidget);
-    expect(find.text('My family'), findsOneWidget);
-    expect(find.text('Benefits & protection'), findsOneWidget);
-    expect(find.text('School fees'), findsOneWidget);
-    expect(find.text('This adds to your NiaBook'), findsOneWidget);
+    expect(find.text('reached home this month'), findsOneWidget);
+    // Goals are the cross-pillar flywheel, felt without a diagram.
+    expect(find.text("Ravi's school fees"), findsOneWidget);
+    expect(find.textContaining('Covered by · found by RafiQi'), findsOneWidget);
+    expect(find.text('Two overtime shifts'), findsOneWidget);
+    expect(find.text('Four months of Sukh savings'), findsOneWidget);
+    expect(find.text('Work'), findsWidgets); // cross-pillar tags
+    expect(find.text('Store'), findsOneWidget);
+    // Protection reassures, never sells.
+    expect(find.text('Your family is protected'), findsOneWidget);
+    expect(find.text('Emergency fund'), findsOneWidget);
+    // The close lands on purpose, not finance.
+    expect(find.text('The people you left home for are doing better'),
+        findsOneWidget);
+    expect(find.text('This adds to your NiaBook'), findsNothing);
+    expect(find.text('Send more home'), findsNothing);
   });
 
   testWidgets('every pillar closes with a NiaBook contribution and offers SOS',

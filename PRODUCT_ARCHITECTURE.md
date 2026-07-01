@@ -15,9 +15,12 @@ Nia helps a migrant worker do four things. Every screen serves one of them.
 | **Work** | Earn more | A better, certified, higher-paying job. |
 | **Living** | Spend less | Lower, predictable living costs. |
 | **Store** | Keep more | Member prices and smart swaps. |
-| **Family** | Send more home | More reaches the people it was earned for. |
+| **Family** | Take better care of home | The people you left home for are cared for — money is one way, not the only one. |
 
-Earn more · spend less · keep more · send more home. That is the whole company.
+Earn more · spend less · keep more · care for home. That is the whole company.
+(The nav still reads **Family**; the promise is care. Family is the emotional
+centre — not a remittance, payments, or insurance screen. Every block answers one
+question: *how are the people I left home for?*)
 
 ## The role of NiaBook
 
@@ -48,7 +51,7 @@ Identity → Economic promise → Reality → Opportunity → Supporting → Imp
 | Work | Current job, pay, attendance | Higher-paying certified role | Better jobs, skill progress | Higher wages · voucher · savings · home |
 | Living | Studio, this month's cost | A cheaper path | Nest, meals, community, safety, services | Lower, predictable cost |
 | Store | Savings today, month, year | Voucher, smart swaps | Essentials at member prices | Higher savings |
-| Family | What reached home | Ways to meet an upcoming goal | Family status, benefits, protection | More reached home |
+| Family | How the people at home are | Ways to meet an upcoming goal (cross-pillar) | Family status, protection | The people at home are cared for |
 
 The labels change; the scaffold never does. When a Member learns one pillar, they
 understand the others.
@@ -79,13 +82,22 @@ Also: **Member** (never tenant) · **Nest** (never room or bed) · **Membership 
    don't build it. (Recording → compounding.)
 5. **RafiQi finds; the Member decides.** SOS reaches help through an abstract route
    (Nia Emergency), never permanently a single destination.
-6. **The emotional contract — every screen leaves the Member more hopeful than when
-   they opened it.** Not informed. Not educated. More hopeful. This is not UX; it is
-   the promise of the company. Per pillar: Work → hope of higher income · Living →
-   hope of lower costs · Store → hope of higher savings · Family → hope that people
-   back home are doing better · NiaBook → hope because progress is visible. A screen
-   that leaves the Member merely *informed* has failed this law, even if it matches
-   the spec.
+6. **The emotional contract — every screen leaves the Member more than informed.**
+   Not educated. Not merely informed — moved. This is not UX; it is the promise of
+   the company. **Every pillar ends on a different emotion, and that is the point:**
+
+   | Screen | Emotion | The Member feels |
+   |---|---|---|
+   | Work | **Hope** | "I can earn more." |
+   | Living | **Relief** | "My life here is easier." |
+   | Store | **Satisfaction** | "I kept more." |
+   | Family | **Purpose** | "The people I left home for are doing better." |
+   | NiaBook | **Truth** | "Here is what became real." |
+
+   Achieve those five emotions and you have not built five screens — you have built
+   one operating system with five emotional states. Family is the one that closes
+   emotionally, not financially; protect that. A screen that leaves the Member
+   merely *informed* has failed this law, even if it matches the spec.
 
 ## The intake test for every future feature
 
