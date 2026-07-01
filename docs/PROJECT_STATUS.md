@@ -208,12 +208,21 @@ next Wallet Product Review** — the read model's interpretation is unchanged.)
     note; Home's "Your family" row opens it and the Q3 marker is retired. App-only, no codegen.
     Member suite 31; verify green.
 
-    *Next: either (a) **Slice B** — issuance `POST /v1/sessions` (re-proof; `Idempotency-Key`;
-    `device_id`; drives `SessionStore.issue` → revokes the prior device), then C (sign-out, wires the
-    Profile button) → D (operator recovery rebind, needs an ops credential; wires the Recovery
-    screen) → E (Closed force-end) → F (app wiring); or (b) more app-only product polish — the Wallet
-    money-story treatment or a returning (Paused→resume) flow. Not blocked: Membership write/command
-    surface; PostgreSQL adapters (ADR-0006); Wallet ledger event store.*
+14. ~~**Slice B — session issuance + phone sign-in**~~ — **DONE (2026-07-01).** `POST /v1/sessions`
+    (`openapi.sessions.yaml` + codegen): phone-first re-proof issues an opaque, device-bound token
+    (spec 0002 FD-S1). `@nia/sessions` — a phone→member directory (the verification seam; OTP is a
+    later, spec-gated step) → `SessionStore.issue` (new device revokes the prior, FD-S3),
+    default-deny on an unrecognised phone, idempotent. Wired into the composed preview (shares its
+    store; seeds the demo phones; clock pinned to the June scenario). App: `ApiSessionSource` +
+    `PhoneSignInPage`; `main_preview` opens on Phone → Session → app. The Founder's whole chain now
+    runs end to end. Sessions 5, preview 7, member 33; verify green, no codegen drift.
+
+    *Next (plan 0002): **Slice C** — sign-out `DELETE /v1/sessions/current` (ERR-8; makes the Profile
+    button real) → **Slice D** — operator recovery rebind (FD-S2/ERR-2; needs a minimal ops
+    credential, D1 — the critical path; makes the Recovery screen real) → **E** (Closed force-end,
+    ERR-7) → **F** (app wiring). Separately: **verification strength (OTP)** needs a Founder/Product
+    spec (Book VIII §1.3). App-only polish available: Wallet money-story treatment; Paused→resume.
+    Not blocked: Membership write/command surface; PostgreSQL adapters (ADR-0006); Wallet ledger.*
 
 Full plan and Engineering Readiness Review: spec §14
 ([`0001-membership-strawman-spec.md`](product/0001-membership-strawman-spec.md)).
