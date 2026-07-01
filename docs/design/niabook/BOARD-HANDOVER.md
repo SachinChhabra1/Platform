@@ -16,6 +16,21 @@ Prepared 2026-07-01 for the board meeting. One place, everything you need.
 
 ---
 
+## The one takeaway
+
+If the board leaves with one thing: **Nia is no longer building features. It is
+building a monthly record of progress for migrant workers.** A far more durable vision
+than "we redesigned the wallet."
+
+The product principle behind it: **every Nia service earns its place by making the next
+page of NiaBook better** — the test for any feature is *"will this improve next month's
+NiaBook?"* Living lowers the cost of being here; Sukh Store keeps more in your pocket;
+Health prevents unexpected costs; Family ensures money reaches home; Learning raises
+future earnings; Insurance protects what you've built. (Full direction:
+`niabook-next-iteration.md`.)
+
+---
+
 ## The narrative ladder — say it in this order
 
 Lead with what the Member feels. Explain the mechanism only after they feel it.
