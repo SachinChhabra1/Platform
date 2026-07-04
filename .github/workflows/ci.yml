@@ -27,9 +27,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-      # Validate the shared OpenAPI contract (packages/types; Book VIII ch. 4).
+      # Validate every committed OpenAPI spec (packages/types; Book VIII ch. 4).
+      # Glob, not an explicit list, so a new spec is gated the moment it lands.
       - name: Validate API contract
-        run: npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.base.yaml packages/types/openapi/openapi.wallet.yaml packages/types/openapi/openapi.membership.yaml
+        run: npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.*.yaml
 
   typescript:
     runs-on: ubuntu-latest

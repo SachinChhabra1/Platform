@@ -16,10 +16,10 @@ fi
 
 if command -v npx >/dev/null 2>&1; then
   echo "▶ api contract lint"
-  npx --yes @redocly/cli@1.25.0 lint \
-    packages/types/openapi/openapi.base.yaml \
-    packages/types/openapi/openapi.wallet.yaml \
-    packages/types/openapi/openapi.membership.yaml || fail=1
+  # Lint every committed OpenAPI spec via a glob — self-maintaining, so a new
+  # spec is gated the moment it lands (an explicit list drifted once: sessions
+  # was added but never gated).
+  npx --yes @redocly/cli@1.25.0 lint packages/types/openapi/openapi.*.yaml || fail=1
 else
   echo "⊘ npx not found — skipping API contract lint"
 fi
