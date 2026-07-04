@@ -48,6 +48,9 @@ the Wallet read-slice (ADR-0008); money-movement flows are gated on OD-1…OD-6 
   (`test/goldens/*.png`, the visual spec — keep byte-identical unless a Founder-approved change).
   See [`docs/09_TESTING.md`](docs/09_TESTING.md).
 - Repository gate: `nia verify` (suite + non-destructive codegen-drift check).
+- CI: `.github/workflows/ci.yml` (lint gates via `scripts/lint/`, OpenAPI contract, TS
+  typecheck+test, Flutter analyze+test). Runs on a GitHub runner only when pushed to a GitHub
+  remote — see `FOUNDER_REVIEW.md` Q7.
 
 ## Risk notes
 

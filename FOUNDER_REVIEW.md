@@ -54,6 +54,17 @@ References.
 - **Options:** leave as-is (cross-linked) · make `04` strictly technical (ADRs/stack) and route product doctrine only through `03`/`01_NIA_OS`.
 - **Recommendation:** leave as-is; it loses nothing. **Impact:** navigation clarity only. **Urgency:** trivial. **Blocking?** No.
 
+### Q7 — Push the repo to a GitHub remote to activate CI?
+- **Context:** a comprehensive CI workflow already exists (`.github/workflows/ci.yml`: lint gates,
+  OpenAPI contract, TS typecheck+test, Flutter analyze+test). But `origin` is a **local recovery
+  bundle**, so CI never actually runs on a runner.
+- **Options:** (a) push to a GitHub remote so CI executes on every PR/push; (b) keep bundle-based
+  local recovery + local verification (`nia verify`) only.
+- **Recommendation:** add a GitHub remote when convenient — the workflow is ready and it makes the
+  gates real. Not urgent while `nia verify` runs locally.
+- **Impact:** turns configured CI into enforced CI. **Urgency:** low. **Blocking?** No.
+  **References:** `.github/workflows/ci.yml`, `ENGINEERING_AUDIT.md`.
+
 ---
 
 ## Resolved

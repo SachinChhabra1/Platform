@@ -11,9 +11,16 @@ Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
   services). The audit is the durable Phase-2 scan output; it surfaced the next in-authority slice.
 - `<E6 commit>` — closed the audit's finding 2: `test/common_test.dart` covers Monogram,
   SectionLabel, prototypeNoOp, and SOS→Operator sheet. Suite **68 → 72**, goldens byte-identical.
-- Audit finding 3 (no CI) is now the next in-authority candidate → `ROADMAP.md` E7.
-- Weakness observed (v1.0 evidence, not fixed): the loop's orientation list names files that
-  didn't exist — now reconciled. Stayed within Engineering Authority; board freeze intact.
+- **Drift caught (in my own new audit):** it claimed "no CI," but `.github/workflows/ci.yml`
+  already exists and is comprehensive. Corrected the audit, roadmap (E7 = already present), and
+  index; logged the CI-activation question as `FOUNDER_REVIEW.md` Q7 (origin is a local bundle,
+  so CI runs only when pushed to GitHub).
+- **v1.0 evidence (weaknesses observed, per the stabilization directive):**
+  1. The loop's orientation list named files that didn't exist (now reconciled).
+  2. A generated audit was written from an **incomplete scan** — it missed `.github/`. Lesson: the
+     Phase-2 repository scan must include CI/workflow + infra config, not just `lib/`+docs. The loop
+     caught it within the same session, which is the system working as intended.
+- Stayed within Engineering Authority; board freeze intact; goldens byte-identical throughout.
 
 ## 2026-07-04 — Engineering OS v1.0 (final governance additions)
 
