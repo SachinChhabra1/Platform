@@ -166,6 +166,15 @@ export {
   InMemoryDurableStore,
   FileDurableStore,
 } from './durable_store.js';
+// The PostgreSQL durable adapter seam (ADR-0006) — same DurableStore<T> interface
+// over a node-postgres-shaped SqlExecutor port; no `pg` dependency added here.
+export {
+  type SqlQuery,
+  type SqlResult,
+  type SqlExecutor,
+  PostgresDurableStore,
+  pgKeyValueSchema,
+} from './postgres_store.js';
 // Savings withdrawal mechanics (R7; ADR-0016) — instant-to-Wallet, T+n settle,
 // interest to the Member net of a disclosed fee, no early-withdrawal penalty. The
 // rate/formula is the InterestAccrualPolicy seam (Founder-owned pricing; zero
