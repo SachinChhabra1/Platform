@@ -11,6 +11,19 @@ References.
 
 ## Open
 
+### OD-7 — Arrears recovery ordering (opened during R3 implementation)
+- **Context:** ADR-0012/OD-1 defines the single-cycle waterfall and that deferred claims carry forward as
+  arrears (now recorded). It does **not** define how arrears are **recovered** from a future wage — where
+  recovery sits in the waterfall, and the order among arrears. Implementation stopped and opened this OD
+  rather than invent it (Step-5 rule).
+- **Options:** A recover-first (rejected — re-creates the debt trap) · **B** current-cycle-first, recover
+  from surplus oldest-first, capped, Nia's own arrears last (recommended) · C per-category interleave.
+- **Recommendation:** **B** — full brief with the exact ruling shortcut in
+  [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
+- **Impact:** un-gates arrears recovery (2nd half of R3). **Urgency:** low — recovery only bites on a
+  Member's *second* short settlement; R4–R8 don't depend on it. **Blocking?** Blocks completing R3 only.
+- **References:** [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `services/wallet/src/arrears.ts`.
+
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,
   `profile`, `membership`, `promise`, `clusters`, `family/my_family`). `wallet` uses retired "wallet" language.

@@ -26,10 +26,19 @@ consequences, or materially change how Nia is built. Keep ADRs rare so they stay
 | [0010](docs/adr/0010-i18n-architecture.md) | i18n architecture |
 | [0011](docs/adr/0011-typescript-testing-and-shared-libs.md) | TypeScript test runner and shared backend libraries |
 
-## Open decisions — ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
+## Open decisions
+
+Newly opened during implementation (Step-5 rule: an uncovered product decision surfaced while building
+stops work and opens an OD rather than inventing behaviour):
+
+| OD | Decision needed | Blocks | Opened | Brief |
+|----|-----------------|--------|--------|-------|
+| OD-7 | **Arrears recovery ordering** — where recovering prior arrears sits in the next wage's waterfall, and the order among arrears | Arrears recovery (2nd half of R3; recording is done) | 2026-07-04, during R3 | [`/OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md) |
+
+## Open decisions — the OD-1…OD-6 batch: ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
 
 OD-1…OD-6 were ruled by the Founder on 2026-07-04 (ratified as recommended), each becoming an ADR and
-locked in [`/ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md). No open decisions remain.
+locked in [`/ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md).
 
 | OD | Decision | Ruling | ADR |
 |----|----------|--------|-----|

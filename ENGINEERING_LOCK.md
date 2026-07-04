@@ -35,6 +35,12 @@ commit can't contain its own hash).
 | OD-4 | Offline conflict resolution | **C** — per-type: money server-authoritative-with-reconciliation, intent last-write-wins, logs merge | Founder | 2026-07-04 | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) | `f885800` | — | 🔒 **Locked** |
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `f885800` | — | 🔒 **Locked** |
 | OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `f885800` | — | 🔒 **Locked** |
+| OD-7 | Arrears recovery ordering | — (rec: B — current cycle first, recover from surplus oldest-first capped, Nia last) | Founder | — | ADR-0018 | — | — | ⏳ **Pending ruling** |
+
+**⏳ OD-7 was opened during R3 implementation** (the Step-5 rule working): recording carry-forward arrears
+is locked and built (ADR-0012), but *recovering* them is an uncovered decision, so building stopped and
+opened OD-7 rather than invent a recovery order. Recording is safe to ship; recovery stays unbuilt until
+OD-7 is ruled. Brief: [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
 
 **Reversibility at a glance** (from the briefs — drives how carefully each must be ruled):
 

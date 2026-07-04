@@ -22,6 +22,7 @@ Member's trust, the briefs recommend the Member. That is not softness; it is the
 | **OD-4** | Offline conflict-resolution per record type | 🔴 Architectural | Offline write paths | [`OD-4_OFFLINE_BRIEF.md`](OD-4_OFFLINE_BRIEF.md) | **C** — per-type: money server-authoritative, intent last-write |
 | **OD-5** | Savings withdrawal mechanics (settlement, interest) | 🟡 Partial | Savings Flow | [`OD-5_SAVINGS_BRIEF.md`](OD-5_SAVINGS_BRIEF.md) | **B** — instant-to-Wallet, T+ settle; interest accrues to Member |
 | **OD-6** | The Floor — authoritative enumeration source | 🔴 Root | Dignity gates (cross-cutting) | [`OD-6_FLOOR_BRIEF.md`](OD-6_FLOOR_BRIEF.md) | **B** — one versioned server config, `the_floor`, Founder-owned |
+| **OD-7** | Arrears recovery ordering *(opened during R3 impl)* | 🔴 Hard | Arrears recovery (2nd half of R3) | [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md) | **B** — current cycle first; recover from surplus, oldest-first, capped; Nia last |
 
 🔴 expensive/irreversible once built — rule with most care · 🟡 moderate · 🟢 freely tunable later. Each
 brief carries a **Decision profile** header (owner · reversible? · latest safe date · blocks). **Rule the

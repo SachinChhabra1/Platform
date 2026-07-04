@@ -26,9 +26,17 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   is ignored and take-home tracks the injected floor); runs `allocateWage`; returns the `WageAllocation`
   contract; default-deny 401/403, 400 validation, server-time header. **Concrete `the_floor` config NOT
   built** — it plugs into the seam with OD-6/ADR-0017.
-- ⏭ **Next R3 slices:** the `arrears` ledger record type (persist carried-forward arrears + the waived
-  fee); wiring settlements into the wallet activity ledger. Then R4–R8 per their locked ADRs. Each
-  strictly against `ENGINEERING_LOCK.md`; if a slice hits an uncovered decision, STOP and open a new OD.
+- ✅ **Arrears carry-forward record type + persistence DONE** — `arrears.ts` (`ArrearsRecord`, pure
+  `arrearsFrom`, `ArrearsLedger` port + in-memory seam), wired into the settlement endpoint (records
+  deferred claims; waived fee not carried). `arrears.test.ts` + endpoint arrears block, +9 tests
+  (wallet 39 → 48).
+- 🛑 **Arrears RECOVERY is blocked on OD-7** — how recovery sits in the next wage's waterfall is NOT
+  defined by ADR-0012. Per Step-5, building STOPPED and **opened OD-7**
+  ([`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `FOUNDER_REVIEW.md`; `DECISIONS.md`;
+  pending row in `ENGINEERING_LOCK.md`). Recording is safe to ship; recovery stays unbuilt until ruled.
+- ⏭ **Next:** rule OD-7 to finish R3, or proceed to **R4 Remittance** (ADR-0013), **R5 RafiQi**
+  (ADR-0014), etc. — each strictly against its locked ADR; if a slice hits an uncovered decision, STOP
+  and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 
