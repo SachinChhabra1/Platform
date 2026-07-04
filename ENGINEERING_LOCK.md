@@ -36,7 +36,7 @@ commit can't contain its own hash).
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `f885800` | — | 🔒 **Locked** |
 | OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `f885800` | — | 🔒 **Locked** |
 | OD-7 | Arrears recovery ordering | **B** — current-cycle claims first; recover arrears from surplus only, oldest-first, capped at 50% of surplus per cycle; Nia's own fee/advance recovered last; cap is Founder-owned config | Founder | 2026-07-04 | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) | `de4e9bc` | — | 🔒 **Locked** |
-| OD-8 | Operator money-conflict resolution model | — (rec: B — Operator resolves accept-proposal / keep-server / manual; each an authoritative ledger write recording operator + reason; per-operator identity) | Founder | — | ADR-0019 | — | — | ⏳ **Pending ruling** |
+| OD-8 | Operator money-conflict resolution model | **B** — Operator resolves accept-proposal / keep-server / manual; each an authoritative ledger write recording operator + reason; operators authenticate with a per-operator credential | Founder | 2026-07-04 | [ADR-0019](docs/adr/0019-operator-conflict-resolution.md) | _(this commit)_ | — | 🔒 **Locked** |
 
 **✅ OD-7 was opened during R3 implementation** (the Step-5 rule working) and **ruled 2026-07-04**:
 recording carry-forward arrears was already locked and built (ADR-0012); *recovering* them was the
@@ -49,8 +49,11 @@ unchanged and first, then only surplus above the dignity floor recovers arrears,
 **⏳ OD-8 was opened during backend integration hardening** (the Step-5 rule working): ADR-0015 (OD-4)
 defines how an offline money conflict is detected and queued to the Operator, but NOT how the Operator
 *resolves* it — which value becomes the Member's money. The read-only reconciliation surface (list/view
-the queue) was built because ADR-0015 already mandates it; the RESOLVE action stays unbuilt until OD-8 is
-ruled. Brief: [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md).
+the queue) was built because ADR-0015 already mandates it; the RESOLVE action stayed unbuilt until OD-8 was
+ruled. **Ruled Option B, 2026-07-04** ([ADR-0019](docs/adr/0019-operator-conflict-resolution.md)): the
+Operator resolves each money conflict as accept-proposal / keep-server / manual, every resolution an
+authoritative ledger write recording the operator + reason, operators on a per-operator credential. Brief:
+[`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md).
 
 **🔒 R3 arrears recovery — recorded implementation judgment (2026-07-04, Founder-ratified).** ADR-0018
 locks the recovery *ordering* (current cycle first · surplus-above-floor only · oldest-first · Nia last).

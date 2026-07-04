@@ -42,3 +42,4 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0016](0016-savings-withdrawal-mechanics.md) | Savings withdrawal mechanics: settlement + interest (OD-5) | Accepted |
 | [0017](0017-the-floor-authoritative-source.md) | The Floor: authoritative enumeration source (OD-6) | Accepted |
 | [0018](0018-arrears-recovery-ordering.md) | Arrears recovery ordering (OD-7) | Accepted |
+| [0019](0019-operator-conflict-resolution.md) | Operator money-conflict resolution model (OD-8) | Accepted |

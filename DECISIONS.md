@@ -28,15 +28,9 @@ consequences, or materially change how Nia is built. Keep ADRs rare so they stay
 
 ## Open decisions
 
-Newly opened during implementation (Step-5 rule: an uncovered product decision surfaced while building
-stops work and opens an OD rather than inventing behaviour):
-
-| OD | Decision needed | Blocks | Opened | Brief |
-|----|-----------------|--------|--------|-------|
-| OD-8 | **Operator money-conflict resolution model** — how the Operator RESOLVES a queued offline money conflict (which value wins, its money effect, operator identity). ADR-0015 defines detection/queueing, not resolution | Conflict resolution (write half of the reconciliation surface; read-only listing is built) | 2026-07-04, during integration hardening | [`/OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md) |
-
-*(OD-7, arrears recovery ordering, was opened under this same rule during R3 and ruled 2026-07-04 — see
-the resolved table below.)*
+**None.** OD-8 (Operator money-conflict resolution), opened during integration hardening under the Step-5
+rule, was ruled by the Founder on 2026-07-04 — see the resolved table below. No backend product decision
+is currently open.
 
 ## Open decisions — the OD-1…OD-6 batch: ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
 
@@ -52,3 +46,4 @@ locked in [`/ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md).
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, T+n settle, interest to the Member | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) |
 | OD-6 | The Floor — authoritative source | **B** — one versioned, Founder-owned `the_floor` config | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) |
 | OD-7 | Arrears recovery ordering (opened during R3) | **B** — current cycle first; recover from surplus above the floor, oldest-first, capped (Founder config, 50%); Nia last | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) |
+| OD-8 | Operator money-conflict resolution (opened during integration hardening) | **B** — Operator resolves accept-proposal / keep-server / manual; each an authoritative ledger write recording operator + reason; per-operator credential | [ADR-0019](docs/adr/0019-operator-conflict-resolution.md) |

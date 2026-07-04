@@ -11,22 +11,7 @@ References.
 
 ## Open
 
-### OD-8 — Operator money-conflict resolution model (opened during integration hardening)
-- **Context:** ADR-0015/OD-4 defines how an offline **money** conflict is detected and queued to the
-  Operator ("never silently overwritten"). It does **not** define how the Operator **resolves** it — which
-  value becomes the Member's money. The read-only reconciliation surface (list/view the queue) is built;
-  the resolve action stopped and opened this OD rather than invent it (Step-5 rule).
-- **Options:** A keep-server-only (rejected — silently loses a legitimate offline write) · **B** Operator
-  adjudicates: accept-proposal / keep-server / manual, each an authoritative ledger write recording
-  operator + reason (recommended) · C auto-resolve by rule (rejected — a blind rule on money is the risk
-  ADR-0015 forbids).
-- **Recommendation:** **B** — full brief with the exact ruling shortcut in
-  [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md).
-- **Impact:** un-gates the write half of reconciliation. **Urgency:** low — conflicts only arise once
-  offline money writes are live, and they queue safely meanwhile. **Blocking?** Blocks conflict resolution
-  only; the rest of the backend is unaffected.
-- **References:** [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md);
-  `services/wallet/src/offline_sync.ts`, `services/wallet/src/ops_http.ts`.
+*(No open ODs. OD-8 was ruled 2026-07-04 — see Resolved.)*
 
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,
@@ -82,6 +67,11 @@ References.
 
 ## Resolved
 
+- **OD-8 — Operator money-conflict resolution model.** ✅ Resolved (Founder, 2026-07-04): **Option B** —
+  the Operator resolves each money conflict as accept-proposal / keep-server / manual, each an
+  authoritative ledger write recording operator + reason; operators authenticate with a per-operator
+  credential. [ADR-0019](docs/adr/0019-operator-conflict-resolution.md), **Locked** in
+  [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md).
 - **OD-7 — Arrears recovery ordering.** ✅ Resolved (Founder, 2026-07-04): **Option B** —
   current-cycle claims first, recover from surplus above the floor oldest-first, capped (config, 50%),
   Nia's own arrears last. [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md), **Locked** in
