@@ -19,7 +19,9 @@ jobs:
       # ...then prove real source is clean.
       - name: Lint gates
         run: node scripts/lint/run.mjs
-      # Every relative link in hand-authored docs must resolve (governance chain).
+      # Prove the doc-link gate is fail-closed, then run it (governance chain).
+      - name: Doc-link gate self-test
+        run: node scripts/check-doc-links.selftest.mjs
       - name: Doc-link integrity
         run: node scripts/check-doc-links.mjs
 

@@ -10,6 +10,8 @@ if command -v node >/dev/null 2>&1; then
   node scripts/lint/selftest.mjs || fail=1
   echo "▶ lint gates (clean source)"
   node scripts/lint/run.mjs || fail=1
+  echo "▶ doc-link gate self-test (fail-closed)"
+  node scripts/check-doc-links.selftest.mjs || fail=1
   echo "▶ doc-link integrity"
   node scripts/check-doc-links.mjs || fail=1
 else
