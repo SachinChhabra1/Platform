@@ -91,6 +91,16 @@ export {
   escalateIfStalled,
 } from './remittance_ledger.js';
 export { type RemittanceRouteDeps, registerRemittanceRoutes } from './remittance_http.js';
+// Service-to-service auth (rails, jobs, tooling) — a Founder/ops-owned shared
+// secret, constant-time verified. Distinct from the Member session boundary.
+export {
+  SERVICE_TOKEN_HEADER,
+  type ServiceAuthenticator,
+  SecretServiceAuthenticator,
+} from './service_auth.js';
+// Remittance rail webhook adapter (R4 infra) — service-authed, idempotent
+// sent/recipient_available/settled transitions over the same RemittanceStore.
+export { type RemittanceRailRouteDeps, registerRemittanceRailRoutes } from './rail_http.js';
 // RafiQi authorization + reversibility (R5; ADR-0014) — scoped/capped/time-bounded/
 // revocable standing consent, 24h reversibility, per-action confirmation fallback.
 export {

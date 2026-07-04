@@ -1,0 +1,198 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Remittance rail webhooks (service-to-service)
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    The payment-rail callback surface for remittance completion (R4 infra;
+    ADR-0013 / OD-2). The rail-DRIVEN transitions the Member API does not expose
+    arrive here: `sent`, `recipient_available` (the only confirmation — "Reached
+    home"), and `settled`. Authenticated by a SERVICE token (`X-Nia-Service-Token`,
+    a Founder/ops-owned shared secret), never a Member session — a Member cannot
+    self-confirm their own remittance. Every endpoint is IDEMPOTENT (webhooks are
+    re-delivered): a transition already applied returns 200 with the current state;
+    a genuinely invalid transition returns 409. Money is integer paise.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: rail
+    description: Remittance rail webhooks — service-authenticated state transitions (ADR-0013).
+
+paths:
+  /rail/remittances/{id}/sent:
+    post:
+      operationId: railRemittanceSent
+      tags: [rail]
+      summary: The rail reports the money has left ("sent" — NOT confirmed).
+      description: >
+        Records that the funds left on the rail (`in_transit`). This is explicitly
+        NOT confirmation. Idempotent once the remittance is in transit or beyond.
+      security:
+        - ServiceToken: []
+      parameters:
+        - $ref: "#/components/parameters/RemittanceId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Remittance"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rail/remittances/{id}/recipient-available:
+    post:
+      operationId: railRemittanceRecipientAvailable
+      tags: [rail]
+      summary: The rail confirms the funds are available to the recipient ("Reached home").
+      description: >
+        The ONLY path to confirmation (ADR-0013). Valid from `initiated` or
+        `in_transit`; idempotent once confirmed or settled. Returns 409 for an
+        escalated remittance (the Operator owns it) or one already settled beyond
+        reach.
+      security:
+        - ServiceToken: []
+      parameters:
+        - $ref: "#/components/parameters/RemittanceId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Remittance"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rail/remittances/{id}/settled:
+    post:
+      operationId: railRemittanceSettled
+      tags: [rail]
+      summary: The rail reports final settlement (only after confirmation).
+      description: >
+        Marks the remittance `settled`. Valid only from `confirmed_available`;
+        idempotent once settled; 409 otherwise.
+      security:
+        - ServiceToken: []
+      parameters:
+        - $ref: "#/components/parameters/RemittanceId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Remittance"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    ServiceToken:
+      type: apiKey
+      in: header
+      name: X-Nia-Service-Token
+      description: A Founder/ops-owned shared service secret (constant-time verified).
+
+  parameters:
+    RemittanceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+
+  responses:
+    Remittance:
+      description: The remittance's current state and audit history.
+      headers:
+        X-Nia-Server-Time:
+          $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RemittanceView"
+    Unauthorized:
+      description: Missing or invalid service token.
+      content:
+        application/json:
+          schema:
+            $ref: "./openapi.base.yaml#/components/schemas/Error"
+    NotFound:
+      description: No such remittance.
+      content:
+        application/json:
+          schema:
+            $ref: "./openapi.base.yaml#/components/schemas/Error"
+    Conflict:
+      description: The rail update does not apply to the remittance's current state.
+      content:
+        application/json:
+          schema:
+            $ref: "./openapi.base.yaml#/components/schemas/Error"
+
+  schemas:
+    Money:
+      type: object
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          enum: [INR]
+
+    RemittanceView:
+      type: object
+      required:
+        [id, state, amount, recipient_id, initiated_at, escalate_after, family_acknowledged, history]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+          enum: [initiated, in_transit, confirmed_available, settled, escalated]
+        amount:
+          $ref: "#/components/schemas/Money"
+        recipient_id:
+          type: string
+        settlement_id:
+          type: string
+        initiated_at:
+          type: string
+          format: date-time
+        escalate_after:
+          type: string
+          format: date-time
+        family_acknowledged:
+          type: boolean
+        history:
+          type: array
+          items:
+            type: object
+            required: [type, at]
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                enum: [initiated, sent, recipient_available, family_acknowledged, settled, escalated]
+              at:
+                type: string
+                format: date-time
+
+security:
+  - ServiceToken: []
