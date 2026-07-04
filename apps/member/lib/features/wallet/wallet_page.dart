@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../../widgets/nia_async.dart';
 import 'wallet_overview_source.dart';
 
 /// Wallet Overview (read-only) — the Wallet is the operating layer beneath the
@@ -21,17 +22,10 @@ import 'wallet_overview_source.dart';
 /// now — never the same number undistinguished. The default source is the
 /// Founder-accepted sample (this is still a Product Review Prototype; no backend
 /// is wired in by default).
-class WalletPage extends StatefulWidget {
+class WalletPage extends StatelessWidget {
   const WalletPage({super.key, this.source = const SampleWalletOverviewSource()});
 
   final WalletOverviewSource source;
-
-  @override
-  State<WalletPage> createState() => _WalletPageState();
-}
-
-class _WalletPageState extends State<WalletPage> {
-  late final Future<MonthlyOverview> _overview = widget.source.currentOverview();
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +35,14 @@ class _WalletPageState extends State<WalletPage> {
       children: <Widget>[
         const SectionLabel('This month'),
         const SizedBox(height: NiaTokens.s2),
-        FutureBuilder<MonthlyOverview>(
-          future: _overview,
-          builder: (BuildContext context, AsyncSnapshot<MonthlyOverview> snap) {
-            if (!snap.hasData) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: NiaTokens.s8),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-            return _MoneyStory(overview: snap.data!);
-          },
+        NiaAsyncView<MonthlyOverview>(
+          load: source.currentOverview,
+          loading: const Padding(
+            padding: EdgeInsets.symmetric(vertical: NiaTokens.s8),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          builder: (BuildContext context, MonthlyOverview o) =>
+              _MoneyStory(overview: o),
         ),
       ],
     );

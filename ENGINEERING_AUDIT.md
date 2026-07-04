@@ -13,7 +13,7 @@ diff vs the board freeze, and a repository scan (TODOs, dead code, test gaps).
 |---|---|---|
 | Build / verify | ✅ | `nia verify` green · no codegen drift |
 | Static analysis | ✅ | `flutter analyze lib test` — no issues |
-| Tests | ✅ | 77 pass across 17 files |
+| Tests | ✅ | 81 pass across 18 files |
 | Goldens | ✅ | deterministic; intentionally updated by R1 (freeze lifted) — see `docs/design/niabook/R1-visual-review.md` |
 | Dead code / TODOs | ✅ | 0 `TODO/FIXME` in `lib`; pillar_kit dead code removed (E1) |
 | Documentation | ✅ | manual 00–17 grounded; Product Bible from mining; links resolve |
@@ -44,10 +44,11 @@ frozen and proven byte-identical; grounded documentation.
 
 ## Prioritized backlog
 
-- **Unlocked (in-authority, golden-neutral):** none material remaining — the member app is clean
-  (analyze/77 tests/goldens deterministic), dead code removed, common.dart covered, CI present, E4
-  resolved, R1 complete. Further test-adding into legacy/prototype surfaces is low value (they are
-  candidates for retirement — `FOUNDER_REVIEW.md` Q3).
+- **Unlocked (in-authority):** **R9 — Production Readiness** (Founder ruling, 2026-07-04) — see
+  `ROADMAP.md`. R9.1 (live-surface error/offline states) done; R9.2 empty states, R9.3 loading
+  states, R9.4 accessibility audit, R9.5 crash-recovery boundary remain in-authority. The member app
+  is otherwise clean (analyze/81 tests/goldens deterministic), dead code removed, E4 resolved, R1
+  complete. Test-adding into legacy/prototype surfaces stays low value (retirement candidates — Q3).
 - **Gated (Founder):** R2 native (K1) · R3–R8 backend (OD-1…OD-6) · retiring the legacy wallet/home
   surfaces (Q3, a Founder product call) · pushing to a GitHub remote to activate CI (Q7). Tracked in
   `ROADMAP.md` / `FOUNDER_REVIEW.md`.

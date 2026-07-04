@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../../widgets/nia_async.dart';
 import '../membership/member_standing.dart';
 import '../membership/membership_source.dart';
 import '../promise/promise_page.dart';
@@ -48,7 +49,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final Future<MonthlyOverview> _overview = widget.walletSource.currentOverview();
   late final Future<MembershipView> _membership =
       widget.membershipSource.currentMembership();
 
@@ -93,23 +93,10 @@ class _HomePageState extends State<HomePage> {
 
         // 1 — The two §3 figures, live: what he can use now leads (the first
         // question), then what stayed his this month. Distinct numbers, kept apart.
-        FutureBuilder<MonthlyOverview>(
-          future: _overview,
-          builder: (BuildContext context, AsyncSnapshot<MonthlyOverview> snap) {
-            if (!snap.hasData) {
-              return const SizedBox(
-                height: 96,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-              );
-            }
-            final MonthlyOverview o = snap.data!;
+        NiaAsyncView<MonthlyOverview>(
+          load: widget.walletSource.currentOverview,
+          loading: const NiaAsyncLoading(height: 96),
+          builder: (BuildContext context, MonthlyOverview o) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

@@ -33,6 +33,44 @@ The board freeze is lifted. **R1 (the craftsmanship backlog) is complete** — a
 register via non-colour levers — motion timing + density (Q8) · ✅ #4 → **Continuity Coaching**,
 one calm next step per screen (Q9). Plus E4 (SOS dedup) and the progress-not-engagement law.
 
+## R9 — Production Readiness (Production Readiness Lead mode)
+
+Founder ruling (2026-07-04): when the feature roadmap is gated, become **Production Readiness Lead**
+and work R9 — the final 10% that turns a demo into software people trust. Not features. Populated from
+**repository inspection**, each item tagged by authority. The loop executes the 🔓 items; 🔒 items are
+audited and recorded, not faked. Loop rule: [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md).
+
+**In-authority + executable now (🔓) — the loop works these:**
+
+| # | Item | Grounding (found by inspection) | Status |
+|---|------|--------------------------------|--------|
+| R9.1 | **Live-surface error / offline states** | 6 `FutureBuilder`s on the live surfaces (`home_page` ×2, `wallet_page`, `my_family_page`, `profile_page`, `membership_header`) handle `!hasData` (spinner) but **not `hasError`** → an API failure / airplane mode / 4xx-5xx / timeout / the source's own `StateError` leaves the UI spinning forever. Golden-neutral (frozen screens render synchronously). | 🔓 IN PROGRESS |
+| R9.2 | **Empty-state review** | Confirm every zero/empty case is intentional (wallet empty story; `my_family` "Nothing sent home yet"; zero-savings). | 🔓 TODO |
+| R9.3 | **Loading states reassure** | Bare `CircularProgressIndicator`s on live surfaces — make them calm/consistent, not a raw spinner. | 🔓 TODO |
+| R9.4 | **Accessibility audit** | 16 semantics uses today; `nia_bottom_nav` is exemplary (Semantics + Tooltip). Audit icon-only controls (SOS, chevrons), `Monogram`/image semantics, tap targets ≥48px, text-scale resilience, contrast vs Book III. Semantics are golden-neutral. | 🔓 TODO |
+| R9.5 | **Crash recovery / error boundary** | No custom `ErrorWidget.builder`; a widget build error shows the raw red screen. Add a calm release fallback. | 🔓 TODO |
+
+**In-authority to AUDIT, changes gated (🟡) — a change to a frozen screen needs a Founder-approved screen change (golden-risk):**
+
+| # | Item | Note |
+|---|------|------|
+| R9.6 | **Motion audit** | `MovementCheck` / `NiaReveal` timing + curve consistency across screens. Audit is in-authority; altering a frozen screen's render is a Founder-approved screen change. |
+| R9.7 | **Typography audit** | `theme/nia_theme.dart` scale vs Book III; consistency. Audit in-authority; changes to frozen screens gated. |
+
+**Gated on the native build (🔒 R2 / K1) — cannot be measured web-only; audit & record, don't fake:**
+
+| # | Item | Gate |
+|---|------|------|
+| R9.8 | Launch-time / startup profiling | Needs a native/profile build (web only today — K1). |
+| R9.9 | Low-end Android · battery · memory profiling | Needs a physical device + native build. |
+| R9.10 | Play Store checklist · release-candidate review | Needs native build + store account (Founder). |
+
+**Gated on the Founder (🔒):**
+
+| # | Item | Gate |
+|---|------|------|
+| R9.11 | Analytics instrumentation | Must not conflict with the **progress-not-engagement** law (`PRODUCT_ARCHITECTURE.md`). *What* is legitimate to measure is a Founder call. |
+
 ## Next — all GATED (nothing is unlocked right now)
 
 | # | Task | Status | Gate / blocker |

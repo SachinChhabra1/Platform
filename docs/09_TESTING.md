@@ -18,7 +18,7 @@ flutter test test/niabook_golden_test.dart --update-goldens
 Repository-wide gate: **`nia verify`** (from repo root, after `source scripts/_env.sh`) runs the
 suite plus a non-destructive codegen-drift check. It must end `nia verify passed`.
 
-## The suite (77 tests today)
+## The suite (81 tests today)
 
 - **Screen contracts** — `pillars_test.dart` (each pillar's promise, hero, benefit-led copy,
   cross-pillar tags, emotional close) and `niabook_page_test.dart`.
@@ -31,6 +31,8 @@ suite plus a non-destructive codegen-drift check. It must end `nia verify passed
 - **Golden screenshots** — `niabook_golden_test.dart`: renders the five approved screens with
   real SF + Material fonts to `test/goldens/*.png`. These are **demo artefacts**, not pass/fail
   assertions; their job is visual review + freeze proof.
+- **Live-surface async states** — `async_states_test.dart` (R9.1): a failed fetch shows a calm,
+  recoverable error (not an endless spinner), and Retry re-fetches and recovers.
 - Plus prototype-invariant, preview-screen, config, membership, and family tests.
 
 ## The golden rule (the goldens are the visual spec)

@@ -45,7 +45,7 @@ the Wallet read-slice (ADR-0008); money-movement flows are gated on OD-1…OD-6 
 
 ## Verify / test surface
 
-- Member app: `apps/member/test/` — 17 test files, 77 tests, 5 golden screenshots
+- Member app: `apps/member/test/` — 18 test files, 81 tests, 5 golden screenshots
   (`test/goldens/*.png`, the visual spec — keep byte-identical unless a Founder-approved change).
   See [`docs/09_TESTING.md`](docs/09_TESTING.md).
 - Repository gate: `nia verify` (suite + non-destructive codegen-drift check).

@@ -31,11 +31,22 @@ A task must be **grounded** (found by inspecting the repo, e.g. grep/analyze/cov
 invented. Prefer changes that keep the five golden screenshots **byte-identical** — that is
 the proof the approved screens are visually untouched.
 
-## Only then evaluate stop conditions
+## When roadmap work is exhausted — become Production Readiness Lead
 
-Conclude the repository is blocked (and stop) only when **all** are true: no roadmap work,
-no technical debt, no safe refactor, no documentation drift, no missing tests, no engineering
-improvement, and no Founder-approved product work available.
+Do **not** stop merely because the feature roadmap is gated. When no roadmap work, technical debt,
+safe refactor, documentation drift, or missing test remains, **become Production Readiness Lead**
+(Founder ruling, 2026-07-04): work the **R9 — Production Readiness** backlog (`ROADMAP.md`) — the
+final 10% that turns a demo into software people trust (error/offline states, accessibility,
+empty/loading states, crash recovery, motion/typography audits, release readiness). Populate R9 from
+**repository inspection**, then execute every R9 item that is **within Engineering Authority and
+executable today**. Some items (native launch/low-end/battery/memory profiling, Play Store checklist,
+on-device release-candidate review) are gated on the native build (R2, K1) — **audit and record**
+those honestly; do not fake a result you cannot measure.
+
+Only conclude the repository is genuinely blocked (and stop) when **all** are true: no roadmap work,
+no technical debt, no safe refactor, no documentation drift, no missing tests, **no in-authority R9
+item left**, and no Founder-approved product work available. Then surface the gate — never manufacture
+make-work.
 
 ## Engineering authority
 
@@ -115,8 +126,8 @@ accumulated debt and recommended architectural improvements. Record the outcome 
 |---|---|---|
 | Build/verify | `nia verify` green, no codegen drift | ✅ green |
 | Static analysis | `flutter analyze` clean | ✅ clean |
-| Tests | count + all green | ✅ 77 green |
+| Tests | count + all green | ✅ 81 green |
 | Goldens | five screens deterministic to spec | ✅ deterministic (freeze lifted; R1 updated intentionally) |
 | Tech debt | dead code / duplication / TODOs | ✅ E4 resolved; 0 open |
 | Docs drift | implementation vs docs | ✅ reconciled |
-| Slices since last Council | should reset at 10 | ≥10 (E1,E2,E5,E6,R1a,E4,R1#1,Q8,Q9) — **Council review due** |
+| Slices since last Council | should reset at 10 | ≥11 (E1,E2,E5,E6,R1a,E4,R1#1,Q8,Q9,docs-reconcile,R9.1) — **Council review due** |

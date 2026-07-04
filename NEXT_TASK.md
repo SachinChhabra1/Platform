@@ -3,15 +3,25 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: BLOCKED — a Founder decision is required to continue
+## Status: Production Readiness Lead mode — R9 in progress (in-authority work available)
 
-*Last verified this way: 2026-07-04, HEAD `d3bd715` — `nia verify` green, 77 tests / 17 files,
-analyze clean, no drift, tree clean. State docs reconciled to this baseline the same session.*
+*Last verified: 2026-07-04 — `nia verify` green, **81 tests / 18 files**, analyze clean, no drift,
+tree clean.*
 
-**R1 (the craftsmanship backlog) is complete.** The board freeze is lifted. The member app is
-clean and healthy: `nia verify` green, `flutter analyze` clean, **77 tests**, no dead code, no
-TODOs, CI present, goldens deterministic, docs reconciled. **No unlocked in-authority engineering
-work remains.** Every next step needs you:
+**Founder ruling (2026-07-04):** when the feature roadmap is gated, become **Production Readiness
+Lead** and work **R9 — Production Readiness** ([`ROADMAP.md`](ROADMAP.md)) — the final 10% that makes
+the app trustworthy, not new features. R1 is complete; the board freeze is lifted.
+
+**Done this session:** R9.1 — live-surface error/offline states. Six live `FutureBuilder`s spun
+forever on API failure (airplane mode / 4xx-5xx / timeout); a calm error + Retry (`NiaAsyncView`) now
+replaces the infinite spinner on the three Wallet-Overview surfaces (home, wallet, my_family). +4
+tests; goldens byte-identical.
+
+**Next in-authority (pick up here):** R9.1b membership-surface error states (`profile_page`,
+`membership_header`, home greeting) · R9.2 empty-state review · R9.4 accessibility audit · R9.5
+crash-recovery error boundary. See R9 in `ROADMAP.md`.
+
+**Still Founder-gated (unchanged) — these are what move the product to real production:**
 
 | Next task | Gate |
 |---|---|

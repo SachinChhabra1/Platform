@@ -3,6 +3,29 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Production Readiness Lead mode; R9 created; R9.1 shipped
+
+- **Founder ruling:** when the feature roadmap is gated, become **Production Readiness Lead** — do not
+  sit idle. Encoded in `AUTONOMOUS-LOOP.md` (the stop condition now requires *no in-authority R9 item
+  left*). Created **R9 — Production Readiness** in `ROADMAP.md`, populated from repository inspection
+  and honestly tagged by authority (🔓 executable now · 🟡 audit-only, changes to frozen screens gated
+  · 🔒 native-build/Founder-gated — profiling/Play Store cannot be measured web-only, so they are
+  recorded, not faked).
+- **R9.1 shipped — live-surface error/offline states.** Inspection found six live `FutureBuilder`s
+  (home ×2, wallet, my_family, profile, membership_header) that handled loading but **not `hasError`**
+  → an API failure / airplane mode / timeout left the UI spinning forever. Added `NiaAsyncView`
+  (loading · calm error · Retry, no alarm colour per Book III) and wired the three Wallet-Overview
+  surfaces (home balance, wallet, my_family). Golden-neutral (frozen screens render synchronously).
+  Suite **77 → 81**. A real retry bug (`setState` callback returning a `Future`) was caught by the new
+  tests and fixed before commit — the system working as intended.
+- **Verified:** `nia verify` green, analyze clean, no drift, goldens byte-identical.
+- **Next in-authority:** R9.1b membership-surface error states · R9.2 empty states · R9.4 accessibility
+  audit · R9.5 crash-recovery boundary. **Founder-gated (unchanged):** R2 native, R3–R8 backend
+  (OD-1…OD-6, expire 2026-07-13), Q3 legacy retirement.
+- **Friction noted (evidence for a future Council, not acted on per the stabilization directive):** the
+  test count is hard-restated in ~10 docs, so every code slice must touch them all. A single canonical
+  count referenced elsewhere would cut this churn.
+
 ## 2026-07-04 — Baseline re-verified + state-doc reconciliation
 
 - **Level-A baseline established from the repository** (not memory/handover): `nia verify` green,

@@ -2,6 +2,17 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## R9 — Production Readiness unlocked; R9.1 error/offline states (2026-07-04)
+
+- **Founder ruling** — become **Production Readiness Lead** when the feature roadmap is gated. Encoded
+  the stop condition in `docs/AUTONOMOUS-LOOP.md`; created **R9 — Production Readiness** in `ROADMAP.md`
+  (grounded from repository inspection, tagged by authority).
+- **R9.1 — live-surface error/offline states.** New `NiaAsyncView` (loading · calm error · Retry)
+  replaces the infinite spinner that six live `FutureBuilder`s showed on any API failure (airplane
+  mode / 4xx-5xx / timeout). Wired the three Wallet-Overview surfaces (home, wallet, my_family);
+  `wallet_page`/`my_family_page` simplified to stateless. `async_states_test.dart` (+4); suite 77 → 81.
+  Goldens byte-identical.
+
 ## Docs: reconcile state to verified reality (2026-07-04)
 
 - Re-established a Level-A baseline from the repository: `nia verify` green, `flutter analyze` clean,

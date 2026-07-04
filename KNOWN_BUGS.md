@@ -2,7 +2,7 @@
 
 Grounded in the repository at HEAD `d3bd715`. "Bug" = defect in shipped behaviour;
 "limitation" = a known boundary of the current build. Verified state: `flutter analyze`
-clean, 77 tests pass, no codegen drift, zero `TODO/FIXME/HACK` in `apps/member/lib`.
+clean, 81 tests pass, no codegen drift, zero `TODO/FIXME/HACK` in `apps/member/lib`.
 
 ## Open
 

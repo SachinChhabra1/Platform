@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../../widgets/nia_async.dart';
 import '../wallet/wallet_overview_source.dart';
 import '../wallet/wallet_page.dart' show formatRupees;
 
@@ -21,17 +22,10 @@ import '../wallet/wallet_page.dart' show formatRupees;
 ///
 /// A body-only widget: it renders as a tab under the shell's app bar (the shell
 /// supplies the "My Family" title + global chrome).
-class MyFamilyPage extends StatefulWidget {
+class MyFamilyPage extends StatelessWidget {
   const MyFamilyPage({super.key, this.walletSource = const SampleWalletOverviewSource()});
 
   final WalletOverviewSource walletSource;
-
-  @override
-  State<MyFamilyPage> createState() => _MyFamilyPageState();
-}
-
-class _MyFamilyPageState extends State<MyFamilyPage> {
-  late final Future<MonthlyOverview> _overview = widget.walletSource.currentOverview();
 
   @override
   Widget build(BuildContext context) {
@@ -70,23 +64,11 @@ class _MyFamilyPageState extends State<MyFamilyPage> {
           // What reaches them — live from the Wallet remittance lines (§3).
           const SectionLabel('What reaches them'),
           const SizedBox(height: NiaTokens.s2),
-          FutureBuilder<MonthlyOverview>(
-            future: _overview,
-            builder: (BuildContext context, AsyncSnapshot<MonthlyOverview> snap) {
-              if (!snap.hasData) {
-                return const SizedBox(
-                  height: 28,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-                );
-              }
-              final sent = _remittanceTotal(snap.data!);
+          NiaAsyncView<MonthlyOverview>(
+            load: walletSource.currentOverview,
+            loading: const NiaAsyncLoading(height: 28, size: 20),
+            builder: (BuildContext context, MonthlyOverview data) {
+              final sent = _remittanceTotal(data);
               if (sent.minor <= 0) {
                 return Text('Nothing sent home yet this month.',
                     style: theme.textTheme.bodyLarge);
