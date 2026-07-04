@@ -3,6 +3,23 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Ground the operating manual in the real repo
+
+- Founder supplied a numbered manual package (00–18) and asked to adopt it, add `START_HERE`,
+  put the charter first, and strengthen the Product Bible.
+- **Finding surfaced:** the package was authored in an *empty* workspace — its status/index
+  assert "no app exists" and its NIA_OS/Product Bible describe a **generic finance app**
+  (surplus/insights), not the real NiaBook. Founder chose **"ground manual in real repo."**
+- **Done (docs only, no code, goldens untouched):**
+  - `START_HERE.md` + `docs/MANUAL.md` (`715afc5`) — numbered 00–17 index over the real canon,
+    charter-first, with an explicit reality-check that the app IS real. Generic content discarded.
+  - `docs/02_PRODUCT_BIBLE.md` (`58fca06`) — the real screen-by-screen bible (NiaBook/Work/
+    Living/Store/Family: purpose, hierarchy, member intent, missing-data behaviour, emotion,
+    acceptance) + calculation ledger.
+  - `docs/07_TESTING.md` (`<this commit>`) — grounded testing guide (the 68-test suite, golden
+    freeze rule, how to add tests).
+- Governance stayed frozen (this was Founder-requested doc work). Board demo untouched.
+
 ## 2026-07-01 — Autonomous loop, engineering-quality pass
 
 - Founder strengthened the loop: when no roadmap task is unlocked, create grounded

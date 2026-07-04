@@ -34,6 +34,16 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## Operating manual grounded in the real repo (2026-07-04)
+
+- `58fca06` **Product Bible (02)** — real screen-by-screen spec for the five screens (replaces
+  the package's generic finance-app template).
+- `715afc5` **START_HERE + MANUAL** — numbered 00–17 index over the real canon, charter-first;
+  corrects the package's "no app exists" premise.
+- `07_TESTING (07)` — grounded testing guide (68-test suite, golden freeze rule).
+- Reconciliation: adopted the package's *structure* only; discarded its empty-workspace,
+  wrong-product content. Real repo remains the single source of truth.
+
 ## Engineering quality — autonomous loop (2026-07-01)
 
 - **E5** — `test/niabook_scenario_test.dart`: 8 tests for `formatPaise` (Indian ₹
