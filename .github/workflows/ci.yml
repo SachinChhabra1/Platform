@@ -19,6 +19,9 @@ jobs:
       # ...then prove real source is clean.
       - name: Lint gates
         run: node scripts/lint/run.mjs
+      # Every relative link in hand-authored docs must resolve (governance chain).
+      - name: Doc-link integrity
+        run: node scripts/check-doc-links.mjs
 
   api-contract:
     runs-on: ubuntu-latest
