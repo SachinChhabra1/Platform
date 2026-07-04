@@ -3,6 +3,19 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Loop: E4 dedup + R1 #1 (Living "spend less")
+
+- **E4 (`888a1d4`)** — deduped the SOS control: NiaBook now uses shared `niaSosButton`
+  (byte-identical; goldens unchanged). Icon-chip kept separate by design (motion + lock badge;
+  circular-import) — documented in ROADMAP E4.
+- **R1 #1 (`<this commit>`)** — Living's middle now carries "spend less": each service row reads
+  **Included** (blue), echoing the utilities, so the whole screen (not just top/bottom) says
+  "inside your ₹2,400, nothing extra." No invented numbers. Living golden updated (only Living).
+- **Paused on genuine founder decisions (per the loop's pause rule):** R1 #3 (emotional register)
+  and #4 (daily-return pull) — recorded as `FOUNDER_REVIEW.md` Q8–Q9 with recommendations. Both
+  have 2+ valid directions and #4 risks inventing a feature; #3 bumps the "colour carries state
+  only" rule. These need Founder taste/direction.
+
 ## 2026-07-04 — Board freeze lifted; R1a: the ○→✓ motion
 
 - Founder lifted the board freeze and said "start R1" (craftsmanship backlog). FOUNDER_REVIEW Q1

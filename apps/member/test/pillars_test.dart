@@ -64,6 +64,9 @@ void main() {
     // Benefit-led copy (Living helps the Member earn/keep, not a facilities menu).
     expect(find.text('Rest well. Work better tomorrow.'), findsOneWidget);
     expect(find.text('Meet workers. Hear of better jobs.'), findsOneWidget);
+    // R1 #1: the middle carries the "spend less" feeling — every service reads as
+    // Included (inside the ₹2,400, nothing extra), not just a facilities menu.
+    expect(find.text('Included'), findsAtLeastNWidgets(6));
     // The outcome feeds NiaBook and returns time.
     expect(find.text('This month you kept ₹550 by living here'), findsOneWidget);
     expect(find.textContaining('~14 hours back'), findsOneWidget);

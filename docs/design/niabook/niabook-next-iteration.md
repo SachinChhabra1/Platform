@@ -114,6 +114,9 @@ The founder review ("does it feel like one product, and does each screen deliver
    community, safety, services, requests) inform more than they say "my cost fell."
    The "spend less" emotion only lands at the top (₹2,400, everything included) and
    bottom (kept ₹550). Make the middle carry the cost-reduction feeling.
+   **✅ Done (R1 #1):** each service row now reads **Included** (blue), echoing the
+   utilities above — the middle says "all this is inside your ₹2,400, nothing extra."
+   No invented numbers.
 2. **NiaBook doesn't show the ○→✓ motion.** The core idea — a line moving from waiting
    to true — is narrated in the deck but only implied on screen ("4 unlocked · 9
    waiting"). Make the movement visible; it is the most distinctive idea in the product.

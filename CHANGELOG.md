@@ -34,6 +34,14 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## R1 #1 + E4 (2026-07-04)
+
+- **R1 #1** — Living's middle carries "spend less": each service row now reads *Included* (blue),
+  echoing the utilities; the whole screen says "inside your ₹2,400, nothing extra." Living golden
+  updated. R1 #3/#4 paused as founder decisions (`FOUNDER_REVIEW.md` Q8–Q9).
+- `888a1d4` **E4** — deduped the SOS control (NiaBook uses shared `niaSosButton`; goldens
+  unchanged). Icon-chip kept separate by design.
+
 ## R1a — the ○→✓ motion (freeze lifted, 2026-07-04)
 
 - **R1a** — board freeze lifted; started the craftsmanship backlog. Added `MovementCheck` and made

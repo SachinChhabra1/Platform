@@ -31,8 +31,9 @@ The board freeze has been **lifted** by the Founder. R1 (the craftsmanship backl
 Product changes are again allowed, but stay within established patterns (craftsmanship, not
 redesign — `docs/design/niabook/niabook-next-iteration.md`) and keep goldens intentional.
 
-**R1 sub-items:** ✅ #2 ○→✓ motion visible (R1a) · ⬜ #1 Living middle carries "spend less" ·
-⬜ #3 per-pillar emotional register (Family warmer than Work) · ⬜ #4 uneven daily-return pull.
+**R1 sub-items:** ✅ #2 ○→✓ motion visible (R1a) · ✅ #1 Living middle carries "spend less" ·
+⏸ #3 per-pillar emotional register · ⏸ #4 daily-return pull — **both are genuine founder
+decisions** (2+ valid directions / feature-invention risk); see `FOUNDER_REVIEW.md` Q8–Q9.
 
 ## Next — all GATED (nothing is unlocked right now)
 
