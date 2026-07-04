@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/pillars/family_page.dart';
 import 'package:member/features/pillars/living_page.dart';
+import 'package:member/features/pillars/nia_components.dart';
 import 'package:member/features/pillars/pillar_kit.dart';
 import 'package:member/features/pillars/store_page.dart';
 import 'package:member/features/pillars/work_page.dart';
@@ -139,6 +140,9 @@ void main() {
       await pump(tester, page);
       expect(find.text('SOS'), findsOneWidget);
       expect(find.textContaining('NiaBook'), findsWidgets);
+      // Q9: exactly one Continuity Coaching line — a next step, never a hook.
+      expect(find.byType(CoachingLine), findsOneWidget);
+      expect(find.textContaining('Next:'), findsOneWidget);
     }
   });
 

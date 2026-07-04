@@ -280,6 +280,49 @@ class NiaReveal extends StatelessWidget {
   }
 }
 
+/// Continuity Coaching (Founder decision Q9): **at most one** contextual next step per
+/// screen, shown only when it is genuinely valuable. A quiet fact, then the single next
+/// step — calm, helpful, optional. A trusted advisor, never a feed: no gamification, no
+/// manufactured streaks, no engagement hooks. Nia is a progress product, not an
+/// engagement product.
+class CoachingLine extends StatelessWidget {
+  const CoachingLine({super.key, required this.fact, required this.next});
+
+  /// A grounded fact about progress so far (e.g. "You kept ₹185 this month.").
+  final String fact;
+
+  /// The one next step worth taking (e.g. "use your ₹500 voucher before 30 July.").
+  final String next;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Icon(Icons.arrow_forward, size: 14, color: NiaTokens.blue),
+        const SizedBox(width: NiaTokens.s2),
+        Expanded(
+          child: Text.rich(TextSpan(
+            style: const TextStyle(
+                fontSize: 13, height: 1.35, color: NiaTokens.inkSecondary),
+            children: <InlineSpan>[
+              TextSpan(text: '$fact  '),
+              const TextSpan(
+                  text: 'Next: ',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, color: NiaTokens.blue)),
+              TextSpan(
+                  text: next,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, color: NiaTokens.ink)),
+            ],
+          )),
+        ),
+      ],
+    );
+  }
+}
+
 /// The signature NiaBook motion made visible: a line moving from **waiting (○)** to
 /// **true (✓)**. One-shot on mount — the hollow ○ crossfades and the ✓ scales in
 /// (easeOutCubic), settling on ✓ so goldens capture the final, true state. Colour

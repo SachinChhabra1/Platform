@@ -150,6 +150,22 @@ void main() {
     });
   });
 
+  group('CoachingLine (Continuity Coaching)', () {
+    testWidgets('shows the fact and the single next step', (WidgetTester t) async {
+      await _pump(
+        t,
+        const CoachingLine(
+          fact: 'You kept ₹185 this month.',
+          next: 'use your ₹500 Sukh voucher before 30 July.',
+        ),
+      );
+      expect(find.textContaining('You kept ₹185 this month.'), findsOneWidget);
+      expect(find.textContaining('Next:'), findsOneWidget);
+      expect(find.textContaining('use your ₹500 Sukh voucher before 30 July.'),
+          findsOneWidget);
+    });
+  });
+
   group('MovementCheck (the ○→✓ motion)', () {
     Opacity opacityOf(WidgetTester t, IconData icon) => t.widget<Opacity>(
         find.ancestor(of: find.byIcon(icon), matching: find.byType(Opacity)).first);

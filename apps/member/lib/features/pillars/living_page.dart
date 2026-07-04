@@ -40,6 +40,10 @@ class LivingPage extends StatelessWidget {
           title: 'This month you kept ₹550 by living here',
           subtitle: 'Plus ~14 hours back — time to earn · Feeds your NiaBook',
         ),
+        coaching: const CoachingLine(
+          fact: "You've kept ₹550 living here.",
+          next: "laundry's included — log a Sunday shift instead (+₹800).",
+        ),
       ),
     );
   }

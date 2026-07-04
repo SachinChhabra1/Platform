@@ -57,35 +57,19 @@ References.
 - **Impact:** turns configured CI into enforced CI. **Urgency:** low. **Blocking?** No.
   **References:** `.github/workflows/ci.yml`, `ENGINEERING_AUDIT.md`.
 
-### Q8 — R1 #3: how should per-pillar emotional register be expressed? (Family warmer than Work)
-- **Context:** the shared visual language nails "one product," but Family doesn't yet *feel*
-  warmer than Work — the difference is carried only by copy. The backlog asks for a tonal shift
-  per promise "without breaking the system."
-- **Tension:** the obvious lever (a warm colour tint per pillar) would violate a design law —
-  "**colour carries state only, never decoration**." So warmth must come from non-colour levers.
-- **Options:** (a) softer levers — larger monograms / rounder avatars / more whitespace / lighter
-  type on Family; (b) a per-pillar accent within the palette (bends the colour rule — needs a
-  ruling); (c) documentary member photography (bigger change); (d) leave as copy-only for now.
-- **Recommendation:** (a) — express warmth through spacing/rounding/typography, not colour. But
-  which levers and how far is a **taste call I shouldn't make alone**; several are equally valid.
-- **Impact:** touches all four pillars' feel. **Blocking?** Not for other work; blocks R1 #3 only.
-
-### Q9 — R1 #4: what is the daily-return hook (esp. for Living)?
-- **Context:** NiaBook and Store earn a daily open; Living earns it least. "Give every pillar a
-  reason to come back." A real daily hook is closer to a **new feature** than craftsmanship, so
-  it needs a product direction (Engineering Authority forbids inventing features).
-- **Options:** (a) surface a daily-changing element (today's meal / community event) — new
-  content/feature; (b) lean on the existing "31 days left" countdown as the recurring pull;
-  (c) a streak / "days you kept more" motif; (d) a daily "one thing for tomorrow" coaching line
-  (from backlog §4) across pillars.
-- **Recommendation:** (d) — the coaching line from the backlog (§4 "end with coaching") is the
-  most grounded and system-consistent daily nudge, and it already has documented intent. I can
-  build (d) if you confirm; the others invent product.
-- **Impact:** cross-pillar. **Blocking?** Blocks R1 #4 only.
-
 ---
 
 ## Resolved
+
+- **Q8 — per-pillar emotional register.** ✅ Approved 2026-07-04: **no colour for emotion**
+  (colour stays reserved for state/success/warning/error/progress). Differentiate via typography
+  weight, spacing rhythm, copy tone, icon treatment, density, motion timing. Identities: NiaBook
+  factual · Living calm/spacious · Work precise/energetic · Family warm/personal. No new palette,
+  gradients, illustration, or noise. **Building now (R1 #3).**
+- **Q9 — daily-return.** ✅ Approved with refinement 2026-07-04: **reject the daily hook**;
+  implement **Continuity Coaching** — at most one contextual next step per screen, only when
+  meaningful, never gamified/artificial/DAU-driven. Calm, helpful, optional. **Built:** one
+  grounded `CoachingLine` on NiaBook + all four pillars.
 
 - **Q1 — Lift the board freeze / start R1?** ✅ Resolved 2026-07-04: Founder lifted the freeze
   and said "start R1." R1 is in progress (E4 also unlocked); first slice R1a (○→✓ motion) shipped.

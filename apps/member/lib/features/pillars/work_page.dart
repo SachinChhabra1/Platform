@@ -33,6 +33,10 @@ class WorkPage extends StatelessWidget {
           subtitle:
               '+₹2,000 wages · +₹500 Sukh voucher → more savings → your NiaBook',
         ),
+        coaching: const CoachingLine(
+          fact: "You've worked 21 of 22 days this month.",
+          next: '20 minutes of training left — then +₹2,500/month.',
+        ),
       ),
     );
   }

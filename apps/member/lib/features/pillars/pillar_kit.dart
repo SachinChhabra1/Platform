@@ -54,6 +54,7 @@ class PillarScaffold extends StatelessWidget {
     required this.promiseSub,
     required this.body,
     required this.contribution,
+    this.coaching,
   }) : assert(
           body.map((PillarBlock b) => b.role).toSet().length == 3,
           'A pillar must contain all three body roles: reality, opportunity, '
@@ -73,6 +74,10 @@ class PillarScaffold extends StatelessWidget {
   /// How this improves NiaBook — the flywheel contribution, always last.
   final Widget contribution;
 
+  /// Optional Continuity Coaching (Q9): at most one contextual next step, shown
+  /// below the contribution only when genuinely valuable. Never an engagement hook.
+  final Widget? coaching;
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -87,6 +92,12 @@ class PillarScaffold extends StatelessWidget {
           const SizedBox(height: NiaTokens.s4),
         ],
         contribution,
+        if (coaching != null) ...<Widget>[
+          const SizedBox(height: NiaTokens.s4),
+          niaHairline(),
+          const SizedBox(height: NiaTokens.s4),
+          coaching!,
+        ],
       ],
     );
   }

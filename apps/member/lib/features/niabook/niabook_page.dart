@@ -56,6 +56,14 @@ class NiaBookPage extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: NiaTokens.s5),
+        const Divider(height: 1, thickness: 1, color: NiaTokens.hairline),
+        const SizedBox(height: NiaTokens.s4),
+        // Continuity Coaching (Q9): one calm next step. Progress, not engagement.
+        const CoachingLine(
+          fact: '₹300 more stayed with you this month.',
+          next: 'your ₹500 Sukh voucher is ready to use.',
+        ),
       ],
     );
   }

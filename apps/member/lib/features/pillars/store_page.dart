@@ -32,6 +32,10 @@ class StorePage extends StatelessWidget {
           title: 'This month, ₹185 moved into your NiaBook',
           subtitle: 'Today ₹63 · this year ₹2,460 — savings that compound',
         ),
+        coaching: const CoachingLine(
+          fact: 'You kept ₹185 this month.',
+          next: 'use your ₹500 Sukh voucher before 30 July.',
+        ),
       ),
     );
   }

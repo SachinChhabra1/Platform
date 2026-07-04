@@ -34,6 +34,10 @@ class FamilyPage extends StatelessWidget {
           title: 'The people you left home for are doing better',
           subtitle: 'Your NiaBook remembers every month you showed up',
         ),
+        coaching: const CoachingLine(
+          fact: '₹5,000 reached home, on time.',
+          next: "Ravi's school fees (₹1,200) are due 15 July.",
+        ),
       ),
     );
   }

@@ -74,6 +74,13 @@ void main() {
     expect(find.byType(MovementCheck), findsAtLeastNWidgets(2));
   });
 
+  testWidgets('closes with one Continuity Coaching line (Q9)',
+      (WidgetTester tester) async {
+    await pump(tester);
+    expect(find.byType(CoachingLine), findsOneWidget);
+    expect(find.textContaining('Next:'), findsOneWidget);
+  });
+
   testWidgets('SOS reaches a human in one tap', (WidgetTester tester) async {
     await pump(tester);
     await tester.tap(find.text('SOS'));
