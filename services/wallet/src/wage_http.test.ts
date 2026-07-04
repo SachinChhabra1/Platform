@@ -32,7 +32,7 @@ let ledger: InMemoryArrearsLedger;
 // Default injected floor ₹20 unless a test overrides it. This is the seam — the
 // value lives server-side, never in the request. A fresh arrears ledger is wired
 // each build and exposed via the module-level `ledger` for assertions.
-function build(floorRupees = 20): FastifyInstance {
+function build(floorRupees = 20, recoveryCapBps = 0): FastifyInstance {
   ledger = new InMemoryArrearsLedger();
   const app = createServer({ serviceName: 'wage-test' });
   registerWageSettlementRoutes(app, {
@@ -42,6 +42,7 @@ function build(floorRupees = 20): FastifyInstance {
     }),
     floor: new InMemoryFloorSource({ default: R(floorRupees) }),
     arrears: ledger,
+    recoveryCapBps,
     now: () => new Date('2026-07-04T00:00:00.000Z'),
   });
   return app;
@@ -250,5 +251,54 @@ describe('Wage settlement HTTP — access and validation', () => {
     server = build();
     const res = await settle({ wage: money(100), claims: CLAIMS, cause: 'none' });
     expect(res.headers['x-nia-server-time']).toBe('2026-07-04T00:00:00.000Z');
+  });
+});
+
+describe('Wage settlement HTTP — arrears recovery from surplus (OD-7 / ADR-0018)', () => {
+  // A first short wage that defers fee (₹10) + advance (₹25) as arrears.
+  const SHORT_WAGE = R(20) + R(30) + R(20) + R(50) + R(15); // ₹135, floor ₹20
+
+  it('recovers prior arrears from surplus, oldest/Nia-last order, net of take-home; money conserves', async () => {
+    server = build(20, 5000); // cap 50% of surplus
+    // Cycle 1: create the arrears (no surplus → recovery is a no-op this cycle).
+    const b1 = (await settle({ wage: { minor: SHORT_WAGE, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' })).json();
+    expect(b1.recovery.total).toEqual({ minor: 0, currency: 'INR' });
+    expect((await ledger.listOpenArrears(MEMBER)).map((r) => r.amount.minor)).toEqual([R(10), R(25)]);
+
+    // Cycle 2: a full wage with ₹200 surplus above the floor. Budget = 50% × ₹200 = ₹100,
+    // which clears both Nia arrears (₹10 + ₹25 = ₹35).
+    const wage2 = R(20) + CLAIMS_TOTAL + R(200);
+    const b2 = (await settle({ wage: { minor: wage2, currency: 'INR' }, claims: CLAIMS, cause: 'none' })).json();
+    expect(b2.recovery.total).toEqual({ minor: R(35), currency: 'INR' });
+    expect(b2.recovery.cap_bps).toBe(5000);
+    expect(b2.recovery.lines.map((l: { category: string }) => l.category)).toEqual(['membership_fee', 'advance_repayment']);
+    expect(b2.recovery.lines.every((l: { remaining: { minor: number } }) => l.remaining.minor === 0)).toBe(true);
+    // Take-home is the ₹220 surplus-inclusive figure MINUS the ₹35 recovered.
+    expect(b2.take_home).toEqual({ minor: R(220) - R(35), currency: 'INR' });
+    // Money conserved: wage = take_home + Σpaid + recovery.total.
+    expect(b2.take_home.minor + paidSum(b2) + b2.recovery.total.minor).toBe(wage2);
+    // Both arrears are cleared.
+    expect(await ledger.listOpenArrears(MEMBER)).toEqual([]);
+  });
+
+  it('never recovers without surplus above the floor (the current month comes first)', async () => {
+    server = build(20, 5000);
+    await settle({ wage: { minor: SHORT_WAGE, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' });
+    // A second short wage: take-home lands on the floor, no surplus → no recovery.
+    const b = (await settle({ wage: { minor: SHORT_WAGE, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' })).json();
+    expect(b.recovery.total).toEqual({ minor: 0, currency: 'INR' });
+    expect(b.take_home).toEqual({ minor: R(20), currency: 'INR' });
+    // The prior arrears are untouched (₹10 + ₹25), plus this cycle's new ones.
+    expect((await ledger.listOpenArrears(MEMBER)).reduce((s, r) => s + r.amount.minor, 0)).toBe(R(70));
+  });
+
+  it('with the default cap (0) recovery is off even when surplus and arrears both exist', async () => {
+    server = build(20); // recoveryCapBps defaults to 0
+    await settle({ wage: { minor: SHORT_WAGE, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' });
+    const wage2 = R(20) + CLAIMS_TOTAL + R(200);
+    const b = (await settle({ wage: { minor: wage2, currency: 'INR' }, claims: CLAIMS, cause: 'none' })).json();
+    expect(b.recovery.total).toEqual({ minor: 0, currency: 'INR' });
+    expect(b.take_home).toEqual({ minor: R(220), currency: 'INR' }); // full surplus kept
+    expect((await ledger.listOpenArrears(MEMBER)).reduce((s, r) => s + r.amount.minor, 0)).toBe(R(35));
   });
 });

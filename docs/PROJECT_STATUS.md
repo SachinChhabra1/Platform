@@ -17,13 +17,16 @@ implementation is underway strictly against the lock: **R3 Wage** (allocator · 
 early-withdrawal penalty), and **R8 The Floor** (the versioned, Founder-owned, audited `the_floor` config
 behind the `FloorSource` seam: append-only version history = audit trail; `RegistryFloorSource` plugged
 into wage settlement; read-only `GET /v1/floor` exposing only the public guarantees) — domains + endpoints
-all done (`services/wallet` 20 → 161 tests, nine OpenAPI contracts gated). **The backend policy spine
-R3–R8 is complete.** **OD-7 was opened** during R3 (arrears recovery ordering — Step-5 guardrail) and
-remains **Founder-gated** — the one open backend decision. R7/R8 un-ruled numbers (interest
-rate/formula/fee + horizon `n`; the concrete Floor values) are Founder-owned config behind seams, not
-invented in code (recorded judgment in [`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: rule
-**OD-7**, then the remaining per-slice infra (jobs, rail/webhook adapters, durable stores). R2/native
-untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+all done (`services/wallet` 20 → 175 tests, nine OpenAPI contracts gated). **The backend policy spine
+R3–R8 is complete, and OD-7 (arrears recovery) is now ruled + built — R3 Wage Flow is fully closed
+(both halves).** OD-7 was opened during R3 (Step-5 guardrail), ruled Option B on 2026-07-04
+([ADR-0018](../docs/adr/0018-arrears-recovery-ordering.md)), and implemented: current-cycle waterfall
+first, then surplus-above-floor recovers arrears oldest-first, capped (Founder config, 50%), Nia last.
+**No backend product decision is currently open.** All un-ruled numbers (savings interest rate/fee +
+horizon `n`; the concrete Floor values; the recovery cap) are Founder-owned config behind seams, not
+invented in code (recorded judgments in [`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: the
+remaining per-slice infra (jobs, rail/webhook adapters, durable stores). R2/native untouched (separate
+Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
 rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
 *Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).

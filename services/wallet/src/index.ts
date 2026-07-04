@@ -60,8 +60,12 @@ export {
   type ArrearsRecord,
   type WaiverRecord,
   type ArrearsLedger,
+  type RecoveryLine,
+  type RecoveryPlan,
+  type RecoveryMeta,
   arrearsFrom,
   waiverFrom,
+  planArrearsRecovery,
   InMemoryArrearsLedger,
 } from './arrears.js';
 // Remittance completion (R4; ADR-0013) — "sent" is not "confirmed"; confirmed =

@@ -2,6 +2,27 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend R3 arrears recovery — OD-7 ruled + implemented (ADR-0018) (2026-07-04)
+
+OD-7 (arrears recovery ordering), opened during R3 under the Step-5 rule, was **ruled by the Founder**
+(Option B) and implemented, **closing the second half of R3 Wage Flow**. `services/wallet` 161 → 175 tests.
+
+- **Governance** (`de4e9bc`): the ruling recorded as [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md);
+  ENGINEERING_LOCK OD-7 row set **Locked** with the recorded judgment that the recovery cap stays injected
+  config; DECISIONS OD-7 moved Open → Resolved; ADR index updated.
+- **Implementation:** the pure `planArrearsRecovery` (`arrears.ts`) encodes the ADR-0018 order — the
+  current-cycle waterfall (ADR-0012) runs first and unchanged; only surplus **above the dignity floor**
+  recovers prior arrears, **oldest-first**, capped, **Nia's own fee/advance last** (never re-inverting
+  OD-1's "Nia last"); partial recovery reduces a record and keeps it `open`, full recovery marks it
+  `recovered` with audit provenance (`ArrearsRecord.status` widened `'open' | 'recovered'`;
+  `ArrearsLedger.applyRecovery`). The wage settlement runs the recovery pass after allocating, nets it from
+  take-home, and returns a `recovery` block (`openapi.wage.yaml`) disclosing the applied cap and per-record
+  lines. Money still conserves: `take_home + Σpaid + recovery.total = wage`.
+- **The cap is Founder-owned config, never a constant in the algorithm** — `planArrearsRecovery` takes it
+  as a parameter; the ruled 50% (5000 bps) is supplied at composition; 0 (recovery off) is the default
+  until wired. Reordering recovery, recovering Nia's arrears before the Member's, or dipping into the floor
+  require Founder review ([`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)).
+
 ## Backend R8 The Floor — implementation against ADR-0017 (2026-07-04)
 
 R8 built strictly against the locked OD-6 ([ADR-0017](docs/adr/0017-the-floor-authoritative-source.md));

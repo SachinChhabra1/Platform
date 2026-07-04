@@ -35,7 +35,7 @@ commit can't contain its own hash).
 | OD-4 | Offline conflict resolution | **C** — per-type: money server-authoritative-with-reconciliation, intent last-write-wins, logs merge | Founder | 2026-07-04 | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) | `f885800` | — | 🔒 **Locked** |
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `f885800` | — | 🔒 **Locked** |
 | OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `f885800` | — | 🔒 **Locked** |
-| OD-7 | Arrears recovery ordering | **B** — current-cycle claims first; recover arrears from surplus only, oldest-first, capped at 50% of surplus per cycle; Nia's own fee/advance recovered last; cap is Founder-owned config | Founder | 2026-07-04 | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) | _(this commit)_ | — | 🔒 **Locked** |
+| OD-7 | Arrears recovery ordering | **B** — current-cycle claims first; recover arrears from surplus only, oldest-first, capped at 50% of surplus per cycle; Nia's own fee/advance recovered last; cap is Founder-owned config | Founder | 2026-07-04 | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) | `de4e9bc` | — | 🔒 **Locked** |
 
 **✅ OD-7 was opened during R3 implementation** (the Step-5 rule working) and **ruled 2026-07-04**:
 recording carry-forward arrears was already locked and built (ADR-0012); *recovering* them was the

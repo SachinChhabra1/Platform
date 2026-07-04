@@ -14,7 +14,13 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { API_PREFIX, sessionFromRequest, type SessionStore } from '@nia/runtime';
 import type { FloorSource } from './floor.js';
-import { arrearsFrom, waiverFrom, type ArrearsLedger } from './arrears.js';
+import {
+  arrearsFrom,
+  planArrearsRecovery,
+  waiverFrom,
+  type ArrearsLedger,
+  type RecoveryPlan,
+} from './arrears.js';
 import {
   allocateWage,
   type ShortfallCause,
@@ -33,10 +39,16 @@ export interface WageRouteDeps {
   readonly floor: FloorSource;
   /**
    * The arrears seam. Deferred claims carry forward (ADR-0012) — the settlement
-   * records them here. Recording only; RECOVERY of arrears from a future wage is
-   * an uncovered decision (OD-7) and is deliberately not done.
+   * records them here — and prior arrears are RECOVERED from this cycle's surplus
+   * (OD-7 / ADR-0018) via the same seam.
    */
   readonly arrears: ArrearsLedger;
+  /**
+   * The OD-7 recovery cap in basis points of surplus (Founder-owned config;
+   * 5000 = 50% is the ruled value; 0 disables recovery — the honest default until
+   * the Founder value is wired at composition). Never a constant in the algorithm.
+   */
+  readonly recoveryCapBps?: number;
   /** Clock for the server-time header and the arrears `arisenOn` date. Injectable for tests. */
   readonly now?: () => Date;
 }
@@ -90,6 +102,21 @@ function allocationDto(a: WageAllocation) {
     waived_membership_fee: money(a.waivedMembershipFeePaise),
     floor_breached: a.floorBreached,
     shortfall: a.shortfall,
+  };
+}
+
+/// The OD-7 recovery block of the response (ADR-0018). Discloses the applied cap
+/// (config, transparency) and one line per arrears record touched, in recovery
+/// order. Empty `lines` + zero `total` when nothing was recovered.
+function recoveryDto(plan: RecoveryPlan, capBps: number) {
+  return {
+    total: money(plan.totalRecoveredPaise),
+    cap_bps: capBps,
+    lines: plan.lines.map((l) => ({
+      category: CLAIM_DOMAIN_TO_WIRE[l.category],
+      recovered: money(l.recoveredPaise),
+      remaining: money(l.remainingPaise),
+    })),
   };
 }
 
@@ -209,13 +236,27 @@ export function registerWageSettlementRoutes(app: FastifyInstance, deps: WageRou
       cause: parsed.cause,
     });
 
+    const settlementId = randomUUID();
+    const arisenOn = now().toISOString().slice(0, 10);
+
+    // OD-7 / ADR-0018 recovery pass — AFTER the current-cycle waterfall. Only
+    // surplus ABOVE the dignity floor recovers PRIOR arrears (read before this
+    // cycle's are recorded), oldest-first, capped by the Founder-owned config,
+    // Nia's own last. The floor is never dipped into. Recovered cash leaves the
+    // Member's take-home to clear the old obligation.
+    const capBps = deps.recoveryCapBps ?? 0;
+    const priorArrears = await deps.arrears.listOpenArrears(member);
+    const surplusPaise = Math.max(0, allocation.takeHomePaise - dignityFloorPaise);
+    const recovery = planArrearsRecovery(priorArrears, surplusPaise, capBps);
+    if (recovery.totalRecoveredPaise > 0) {
+      await deps.arrears.applyRecovery(member, recovery, { settlementId, recoveredOn: arisenOn });
+    }
+    const finalTakeHomePaise = allocation.takeHomePaise - recovery.totalRecoveredPaise;
+
     // Record the settlement's carry-forward outcomes (ADR-0012), recorded
     // DISTINCTLY: deferred claims as arrears (the Member owes them later), and a
     // waived fee as a waiver (Nia forgave it — never owed, on the record). The
     // allocator already keeps the two apart, so they never double-count.
-    // Recording only — recovery of arrears from a future wage is OD-7, not done here.
-    const settlementId = randomUUID();
-    const arisenOn = now().toISOString().slice(0, 10);
     await deps.arrears.recordArrears(
       arrearsFrom(allocation, {
         membershipId: member,
@@ -233,6 +274,11 @@ export function registerWageSettlementRoutes(app: FastifyInstance, deps: WageRou
       }),
     );
 
-    return reply.code(200).send(allocationDto(allocation));
+    // Money still conserves: wage = take_home (net) + Σpaid (this cycle) + recovery.total.
+    return reply.code(200).send({
+      ...allocationDto(allocation),
+      take_home: money(finalTakeHomePaise),
+      recovery: recoveryDto(recovery, capBps),
+    });
   });
 }

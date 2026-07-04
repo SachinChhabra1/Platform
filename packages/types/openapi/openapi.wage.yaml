@@ -145,10 +145,11 @@ components:
     WageAllocation:
       type: object
       description: >
-        The result of the ADR-0012 waterfall. Money is conserved:
-        `take_home` + Σ`paid` = `wage`.
+        The result of the ADR-0012 waterfall plus the ADR-0018 (OD-7) arrears
+        recovery pass. Money is conserved:
+        `take_home` + Σ`paid` + `recovery.total` = `wage`.
       required:
-        [take_home, paid, arrears, waived_membership_fee, floor_breached, shortfall]
+        [take_home, paid, arrears, waived_membership_fee, floor_breached, shortfall, recovery]
       additionalProperties: false
       properties:
         take_home:
@@ -156,7 +157,8 @@ components:
             - $ref: "#/components/schemas/Money"
           description: >
             Cash that reaches the Member — the protected dignity floor plus any
-            surplus after every claim.
+            surplus after every claim, NET of any prior arrears recovered from that
+            surplus this cycle (`recovery.total`, OD-7). Never below the floor.
         paid:
           allOf:
             - $ref: "#/components/schemas/WageClaims"
@@ -181,6 +183,53 @@ components:
         shortfall:
           type: boolean
           description: True when any claim was not fully met (or the floor was breached).
+        recovery:
+          allOf:
+            - $ref: "#/components/schemas/ArrearsRecovery"
+          description: >
+            Prior arrears recovered from this cycle's surplus (OD-7 / ADR-0018).
+            Empty (`total` = 0, no `lines`) when there was no surplus above the
+            floor or no prior arrears.
+
+    ArrearsRecovery:
+      type: object
+      description: >
+        The ADR-0018 (OD-7) recovery pass — runs AFTER the current-cycle waterfall.
+        Only surplus above the dignity floor recovers prior arrears, oldest-first,
+        capped (`cap_bps`, Founder-owned config); Nia's own fee/advance recover last.
+      required: [total, cap_bps, lines]
+      additionalProperties: false
+      properties:
+        total:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Total prior arrears recovered from surplus this cycle.
+        cap_bps:
+          type: integer
+          minimum: 0
+          maximum: 10000
+          description: >
+            The applied recovery cap in basis points of surplus (Founder-owned
+            config; 5000 = 50%; 0 = recovery disabled). Disclosed for transparency.
+        lines:
+          type: array
+          description: One entry per arrears record touched, in recovery order.
+          items:
+            type: object
+            required: [category, recovered, remaining]
+            additionalProperties: false
+            properties:
+              category:
+                type: string
+                enum: [rent, curry, remittance, savings, membership_fee, advance_repayment]
+              recovered:
+                allOf:
+                  - $ref: "#/components/schemas/Money"
+                description: Amount recovered from this arrears record this cycle.
+              remaining:
+                allOf:
+                  - $ref: "#/components/schemas/Money"
+                description: Still owed on this record after recovery (0 = fully recovered).
 
 security:
   - MemberSession: []

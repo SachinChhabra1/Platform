@@ -3,7 +3,7 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: R3–R8 DONE (backend policy spine complete). NEXT: rule OD-7 (Founder-gated), then per-slice infra.
+## Status: R3–R8 DONE + OD-7 ruled & built (R3 fully closed). No open backend decision. NEXT: per-slice infra.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -15,13 +15,9 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 Member-facing endpoints; `services/wallet` 20 → 161 tests, nine OpenAPI contracts gated; `nia verify`
 green). **The backend policy spine R3–R8 is complete.**
 
-### ▶ NEXT: rule OD-7 (Founder-gated), then per-slice infra
-The forward path no longer has an un-built, un-gated policy slice. What remains is:
-- **OD-7 — arrears recovery ordering (Founder decision).** The one open backend product decision, opened
-  during R3 per Step-5. Recording carry-forward arrears is built; **recovery** stays unbuilt until ruled.
-  Recommendation B (current cycle first; recover from surplus, oldest-first, capped; Nia last). Rule it,
-  then build recovery into the wage waterfall against the ADR. Brief:
-  [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
+### ▶ NEXT: per-slice infra (no OD, in-authority)
+The forward path has **no un-built, un-gated policy slice and no open backend decision** — the whole
+policy spine R3–R8 plus OD-7 is ruled and built. What remains is in-authority infra:
 - **Per-slice infra (no OD, in-authority):** the rail webhook adapter + scheduled SLA sweep (R4); RafiQi
   orchestrator auto-take + reversal compensation (R5); the Operator reconciliation surface + durable sync
   store (R6); the interest-accrual job + rail settlement adapter + `savings` deposit wiring (R7); the
@@ -86,10 +82,14 @@ savings interest rate/fee/formula + horizon `n` (R7). Build the mechanism; never
   in-memory seam. Wired into the settlement endpoint; policy stays in the allocator (`wage.ts` untouched).
   Tests prove: arrears written on unpaid claims; waived fee recorded distinctly (no double-count); ledger
   reconciles to the returned `WageAllocation`. `arrears.test.ts` + endpoint block, wallet 39 → 54.
-- 🛑 **Arrears RECOVERY is blocked on OD-7** — how recovery sits in the next wage's waterfall is NOT
-  defined by ADR-0012. Per Step-5, building STOPPED and **opened OD-7**
-  ([`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `FOUNDER_REVIEW.md`; `DECISIONS.md`;
-  pending row in `ENGINEERING_LOCK.md`). Recording is safe to ship; recovery stays unbuilt until ruled.
+- ✅ **Arrears RECOVERY DONE (OD-7 ruled → ADR-0018, Locked)** — the Step-5 gate opened OD-7; the Founder
+  ruled Option B on 2026-07-04 and it is built. `planArrearsRecovery` (`arrears.ts`): the current-cycle
+  waterfall runs first, then surplus **above the dignity floor** recovers prior arrears, oldest-first,
+  capped (Founder config, ruled 50%; injected, never baked in), Nia's fee/advance last;
+  `ArrearsRecord.status` widened `'open' | 'recovered'` with partial-recovery handling +
+  `ArrearsLedger.applyRecovery`. The settlement runs the pass after allocating, nets it from take-home,
+  and returns a `recovery` block (`openapi.wage.yaml`). Money conserves: `take_home + Σpaid + recovery
+  = wage`. `arrears_recovery.test.ts` + wage endpoint block, wallet 161 → 175. **Both halves of R3 done.**
 
 **R4 — Remittance completion (ADR-0013/OD-2) — domain DONE.**
 - ✅ **State machine** (`remittance.ts`): `initiated → in_transit ("sent") → confirmed_available
