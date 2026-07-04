@@ -92,3 +92,4 @@ export {
   InMemoryGrantStore,
   InMemoryRafiqiActionStore,
 } from './rafiqi_ledger.js';
+export { type RafiqiRouteDeps, registerRafiqiRoutes } from './rafiqi_http.js';

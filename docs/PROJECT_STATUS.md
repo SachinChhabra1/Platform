@@ -10,11 +10,13 @@ backlog) is complete, and the suite is at **92 tests** — `nia verify` green, `
 clean, no codegen drift, goldens deterministic. **R9 — Production Hardening is ✅ SIGNED OFF**
 (2026-07-04, [`../R9_SIGNOFF.md`](../R9_SIGNOFF.md)): in-authority scope complete, residual items gated
 (native build R2/K1, or a Founder-approved frozen-screen change Q11). R9 is now a **parallel** hardening
-stream, not the terminal gate. An **in-authority engineering-quality loop** then ran and is exhausted
-(ROADMAP E8–E10: OpenAPI glob lint, doc-link integrity gate, CHANGELOG current); the next valuable
-engineering work is money-path/behaviour testing, which is OD-gated. **The forward path is backend
-(R2–R8), all Founder-gated** — frontend engineering is ~90–95% complete and the bottleneck is now the OD
-rulings (OD-1 critical, expires
+stream, not the terminal gate. **OD-1…OD-6 were ruled + Locked (2026-07-04)** and the backend un-paused;
+implementation is underway strictly against the lock: **R3 Wage** (allocator · endpoint · arrears+waiver)
+and **R4 Remittance** and **R5 RafiQi** domains + Member-facing endpoints are done (`services/wallet`
+20 → 96 tests). **OD-7 was opened** during R3 (arrears recovery ordering — Step-5 guardrail). Next: R6
+Offline (ADR-0015). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
+*Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).
 
 **Board baseline: Product Polish was COMPLETE for the board (baseline `795b0de`, 2026-07-01).** After M1

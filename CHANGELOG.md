@@ -2,6 +2,27 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend R3–R5 — implementation against the locked ODs (2026-07-04)
+
+Backend un-paused after OD-1…OD-6 were ruled + Locked ([`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md),
+ADRs 0012–0017). Built strictly against the lock; `services/wallet` 20 → 96 tests.
+
+- **R3 Wage Flow (ADR-0012):** the shortfall waterfall allocator (dignity floor → rent → curry →
+  remittance → savings → fee → advance; Nia last; money conserved); `POST /v1/wage/settlements` on an
+  injected `FloorSource` seam (the dignity floor is server-side, never client-set — OD-6); and the
+  arrears carry-forward record + a **distinct** waiver record (employer-caused fee waiver), reconciling
+  to the returned allocation. **Arrears recovery is blocked on OD-7** (opened — see below).
+- **R4 Remittance (ADR-0013):** the confirmation state machine — **"sent" is never "confirmed"**;
+  confirmed = recipient-available ("Reached home"); 24h SLA → Operator escalation; family ack optional;
+  append-only audit by remittance + settlement id. Member-facing endpoint (`openapi.remittance.yaml`:
+  initiate + read); rail-driven transitions kept off the Member API.
+- **R5 RafiQi (ADR-0014):** scoped/capped/time-bounded/revocable standing authorisation with a
+  per-action-confirmation fallback; 24h action reversibility. Member-facing endpoints
+  (`openapi.rafiqi.yaml`: grant/revoke/list; list/read/reverse — 409 after the window).
+- **OD-7 opened** during R3 (Step-5 guardrail): arrears **recovery** ordering is not covered by ADR-0012,
+  so building stopped and opened [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md)
+  rather than invent it.
+
 ## Engineering-quality loop — verify/CI hygiene (2026-07-04)
 
 - **Doc-link integrity gate** (`7466c65`): `scripts/check-doc-links.mjs` walks every hand-authored

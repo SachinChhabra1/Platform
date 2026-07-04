@@ -63,10 +63,15 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   authorised (auto grant vs Member confirmation); `reverseAction` (undo within the window) and pure
   `checkReversibility` (settles once elapsed). Grant/action stores auditable by id/Member. +13 tests
   (wallet 73 → 86).
-- ⏭ **Next R5 slices:** HTTP endpoints (grant/revoke, list grants, take/reverse action) +
-  `openapi.rafiqi.yaml`; wiring reversal to the target money path (e.g. savings OD-5). No new OD —
-  ADR-0014 covers R5. Then **R6 Offline** (ADR-0015), etc. — each strictly against its locked ADR; if a
-  slice hits an uncovered decision, STOP and open a new OD.
+- ✅ **Member-facing endpoints + contract DONE** — `openapi.rafiqi.yaml` + `rafiqi_http.ts`: grant a
+  standing authorisation, revoke, list grants (transparency); list/read actions; **reverse an action**
+  (200 in-window, **409 after the 24h window**). Default-deny 401/403, owner-only (404, no leak),
+  server-time header. RafiQi *taking* an action stays the orchestrator boundary (seeded via the store in
+  tests). +10 tests (wallet 86 → 96).
+- ⏭ **Remaining R5 (infra, no OD):** the RafiQi orchestrator wiring (`authorizeAction` → auto-take) and
+  reversal → target money-path compensation (e.g. savings OD-5).
+- ➡️ **Now: R6 Offline** (ADR-0015) — per-record-type conflict resolution: money
+  server-authoritative-with-reconciliation, intent last-write-wins, logs merge.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

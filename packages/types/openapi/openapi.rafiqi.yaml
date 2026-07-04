@@ -1,0 +1,325 @@
+openapi: 3.1.0
+info:
+  title: Nia API — RafiQi authorization
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    RafiQi authorization + reversibility (R5; ADR-0014 / OD-3, locked in
+    `/ENGINEERING_LOCK.md`). "RafiQi finds; the Member decides." This is the
+    MEMBER-facing surface of that authority: the Member grants a standing
+    authorisation (explicit, scoped by action-type + rupee cap, time-bounded,
+    revocable), sees what RafiQi did, and can REVERSE any RafiQi-initiated action
+    within its 24h window. RafiQi *taking* an action (auto under a grant, or after
+    per-action confirmation) is the orchestrator boundary (ADR-0004), not this
+    Member API. Money is integer paise.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: rafiqi
+    description: RafiQi standing authorisation + action reversibility (ADR-0014).
+
+paths:
+  /rafiqi/grants:
+    post:
+      operationId: grantRafiqiAuthorization
+      tags: [rafiqi]
+      summary: Grant RafiQi a standing authorisation (explicit consent).
+      description: >
+        Explicitly authorises RafiQi to act for the Member within a single
+        action-type and a per-action rupee cap, for a bounded time (`ttl_ms` from
+        now — the server computes the expiry). Revocable at any time.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - $ref: "./openapi.base.yaml#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrantRequest"
+      responses:
+        "201":
+          description: The granted authorisation.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GrantView"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+    get:
+      operationId: listRafiqiGrants
+      tags: [rafiqi]
+      summary: The Member's RafiQi authorisations (active and past — transparency).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The Member's grants.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GrantList"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rafiqi/grants/{id}/revoke:
+    post:
+      operationId: revokeRafiqiGrant
+      tags: [rafiqi]
+      summary: Revoke a standing authorisation (the Member's control).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The revoked grant.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GrantView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rafiqi/actions:
+    get:
+      operationId: listRafiqiActions
+      tags: [rafiqi]
+      summary: The RafiQi actions taken for the Member (audit).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The Member's RafiQi actions.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionList"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rafiqi/actions/{id}:
+    get:
+      operationId: getRafiqiAction
+      tags: [rafiqi]
+      summary: One RafiQi action's state and audit history.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The action.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /rafiqi/actions/{id}/reverse:
+    post:
+      operationId: reverseRafiqiAction
+      tags: [rafiqi]
+      summary: Reverse a RafiQi action within its 24h window (the Member's undo).
+      description: >
+        Undo a RafiQi-initiated action while it is still reversible. After the 24h
+        window closes (or once reversed/settled) this returns 409.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The reversed action.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "409":
+          $ref: "./openapi.base.yaml#/components/responses/Conflict"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: A money amount in integer minor units (paise) — never a float.
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 1
+          example: 50000
+        currency:
+          type: string
+          enum: [INR]
+
+    GrantRequest:
+      type: object
+      required: [action_type, cap, ttl_ms]
+      additionalProperties: false
+      properties:
+        action_type:
+          type: string
+          description: The action-type this grant authorises (open code, data not policy).
+        cap:
+          $ref: "#/components/schemas/Money"
+        ttl_ms:
+          type: integer
+          minimum: 1
+          description: How long the grant lasts from now, in milliseconds (time-bounded).
+
+    GrantView:
+      type: object
+      required: [id, action_type, cap, granted_at, expires_at]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        action_type:
+          type: string
+        cap:
+          $ref: "#/components/schemas/Money"
+        granted_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        revoked_at:
+          type: string
+          format: date-time
+
+    ActionView:
+      type: object
+      required:
+        [id, action_type, amount, taken_at, reversible_until, authorization, state, history]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        action_type:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        taken_at:
+          type: string
+          format: date-time
+        reversible_until:
+          type: string
+          format: date-time
+        authorization:
+          type: string
+          enum: [auto, confirmed]
+          description: How it was authorised — an active grant, or the Member confirmed.
+        grant_id:
+          type: string
+        state:
+          type: string
+          enum: [reversible, reversed, settled]
+        history:
+          type: array
+          items:
+            type: object
+            required: [type, at]
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                enum: [taken, reversed, settled]
+              at:
+                type: string
+                format: date-time
+
+    GrantList:
+      type: object
+      required: [grants]
+      additionalProperties: false
+      properties:
+        grants:
+          type: array
+          items:
+            $ref: "#/components/schemas/GrantView"
+
+    ActionList:
+      type: object
+      required: [actions]
+      additionalProperties: false
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionView"
+
+security:
+  - MemberSession: []
