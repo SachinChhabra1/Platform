@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13 (OD window).
 **A ruling becomes ADR-0012 and un-gates R3 (Wage Flow) → R4–R8.**
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** |
+| Reversible? | **No — effectively irreversible once Members rely on it.** The order can be re-ruled in code, but Members build trust and household budgeting around "what comes out first"; changing it after launch is a felt breach, not a config tweak. Decide as if permanent. |
+| Latest safe decision date | **2026-07-13** (OD window) — and before any Member sees a real shortfall |
+| Blocks | R3 Wage Flow → R4–R8 (all downstream money flows) |
+
 ---
 
 ## The one question

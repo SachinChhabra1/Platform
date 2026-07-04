@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13.
 **A ruling becomes an ADR and un-gates offline write paths.** Book V §3.4.
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** (product intent) + Engineering (mechanism) |
+| Reversible? | **No (architectural).** Conflict-resolution is baked into the sync layer and every write flow; changing it later means re-auditing all queued-write paths and risking data already reconciled under the old rule. Core architecture — decide once. |
+| Latest safe decision date | **2026-07-13** (OD window) — before any offline *write* path ships |
+| Blocks | Offline write paths (`services/edge`); cross-cuts Wage / Remittance / Savings / Membership writes |
+
 ## Decision to be made
 
 The app and kit operate offline by design; writes queue locally and sync when a network returns. **When

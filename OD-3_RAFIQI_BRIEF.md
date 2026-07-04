@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13.
 **A ruling becomes an ADR and un-gates RafiQi-initiated actions.** Books IX §5, VIII §3.8; ADR-0004.
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** |
+| Reversible? | **No (hard).** The consent model is a **trust and compliance** commitment — once Members have granted standing authorisations under one format, changing what "consent" means is a re-consent event across the whole base, not a refactor. The reversibility *window length* is tunable; the consent *model* is not. |
+| Latest safe decision date | **2026-07-13** (OD window) — before the first standing grant is issued |
+| Blocks | RafiQi-initiated actions (`services/rafiqi`); touches Work / Store / Savings flows |
+
 ## Decision to be made
 
 RafiQi is the orchestrator that acts for the Member (a smart swap, moving savings, taking an

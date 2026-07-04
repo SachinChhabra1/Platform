@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13.
 **A ruling becomes an ADR and un-gates the dignity gates (cross-cutting).** Book I (Art. I) → V.
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** (the Floor is Founder-owned by definition) |
+| Reversible? | **No (architectural root).** Not the Floor's *contents* (those are versioned and meant to evolve) but *where it lives and how services read it*. Many services will depend on the chosen source; changing the source later is a cross-service migration. The mechanism is the irreversible part. |
+| Latest safe decision date | **2026-07-13** (OD window) — rule **first/early**, others reference it |
+| Blocks | Dignity gates (cross-cutting); referenced by OD-1, OD-4, OD-5 |
+
 ## Decision to be made
 
 "The Floor" — the non-negotiable dignity guarantees every Member gets (*"one Floor for everyone,"* Book

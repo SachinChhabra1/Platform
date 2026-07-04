@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13.
 **A ruling becomes an ADR and un-gates the Remittance-completion slice.** Books I §4.9, IV §4.3.
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** |
+| Reversible? | **Yes (high).** The confirmation *definition* has data-model weight (see below), but the **SLA duration and wording are freely tunable** post-launch — 24h → 12h is a config change, not a migration. Decide, then refine with real rail data. |
+| Latest safe decision date | **2026-07-13** (OD window) |
+| Blocks | Remittance-completion flow (money-movement; folds into R6 integration) |
+
 ## Decision to be made
 
 When a Member sends money home, **what counts as "the money reached the family"**, and **how long may

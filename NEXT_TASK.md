@@ -29,8 +29,12 @@ leverage unlock is OD-1 / backend un-pause** (below). The OD rulings expire **20
 briefs (OD-1…OD-6), each with the decision, why it matters, 2–3 options with pros/cons, a recommendation,
 the cost of delay, and the APIs/data model/services affected. One sitting → six rulings → the whole
 backend month (R2–R8) unlocks. Rule **OD-1 first** (critical path, [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md))
-and **OD-6 early** (the Floor is a root the others reference). On each ruling: write the ADR, un-gate the
-slice, build against the existing `services/*` scaffold.
+and **OD-6 early** (the Floor is a root the others reference). Each brief now carries a **Decision profile**
+(owner · reversible? · latest safe date · blocks) — the 🔴 rows (OD-1/3/4/6) are expensive to reverse, rule
+them as if permanent. On each ruling: write the ADR, **freeze the decision into
+[`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)** (Status: Locked + commit hash), un-gate the slice, build
+against the existing `services/*` scaffold. **During R2–R8, locked decisions are immutable** — if a
+behaviour isn't covered by a Locked row, it's a new Founder decision (add to the book, don't improvise).
 
 **Founder-gated — these are what move the product to real production:**
 

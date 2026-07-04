@@ -3,6 +3,15 @@
 **For:** Founder ruling. **Prepared:** 2026-07-04. **Expires:** 2026-07-13.
 **A ruling becomes an ADR and un-gates the Savings Flow slice.** Book IV §4.4.
 
+## Decision profile
+
+| Field | Value |
+|---|---|
+| Decision owner | **Founder** |
+| Reversible? | **Partial (moderate).** *Settlement timing* is tunable post-launch. *Interest treatment* is harder — moving yield from Member to Nia later would be a felt takeaway, so treat the "interest to the Member" call as sticky. Improvements (faster settlement, lower fee) are always safe; takeaways are not. |
+| Latest safe decision date | **2026-07-13** (OD window) |
+| Blocks | Savings Flow slice; pairs with OD-1 (savings deduction) and OD-3 (RafiQi-moved savings) |
+
 ## Decision to be made
 
 When a Member withdraws from savings: **(a) how fast do they get their money** (availability vs.
