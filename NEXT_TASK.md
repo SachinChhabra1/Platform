@@ -25,6 +25,18 @@ item needs a Founder decision or the native build. Per the loop, this is not fai
 correctly reporting a gate. **The critical path has moved entirely to Founder decisions; the highest-
 leverage unlock is OD-1 / backend un-pause** (below). The OD rulings expire **2026-07-13**.
 
+**Engineering-quality loop ran (2026-07-04) and is now exhausted.** In-authority, non-product hygiene
+delivered (ROADMAP E8–E10): OpenAPI contract lint via glob (closed the ungated `sessions` spec);
+doc-link integrity gate (`scripts/check-doc-links.mjs`, protects the governance chain); CHANGELOG brought
+current. Confirmed no remaining safe gap — backend infra (`runtime`/`log`/`sessions`/`preview`) is
+well-tested, lockfile is frozen-clean, `.nvmrc` consistent, and the only dependency updates are risky
+majors (TS 6 / Vitest 4 / Redocly 2 — not behaviour-preserving, so out of bounds). **The next valuable
+engineering work is money-path / behaviour testing and implementation (wallet · wage · remittance ·
+savings · offline · Floor). That is OD-gated by definition** — writing those tests now would assert
+behaviour that OD-1…OD-6 are meant to *define*, and would pre-empt the very rulings the
+[`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md) exists to freeze. So the loop correctly **stops here** and
+surfaces the blocker: rule the decision book.
+
 **The full Founder Decision Book is READY** — [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md) — six one-page
 briefs (OD-1…OD-6), each with the decision, why it matters, 2–3 options with pros/cons, a recommendation,
 the cost of delay, and the APIs/data model/services affected. One sitting → six rulings → the whole

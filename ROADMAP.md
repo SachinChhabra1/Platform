@@ -39,6 +39,9 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E6 | Test `widgets/common.dart` (Monogram, SectionLabel, prototypeNoOp, SOS→Operator sheet) | ✅ DONE | +4 tests (68 → 72); goldens untouched. |
 | E7 | CI setup | ✅ ALREADY PRESENT | `.github/workflows/ci.yml` predates the loop (lint/contract/TS/Flutter gates). No work needed. Activating it on a GitHub runner is a Founder call — `FOUNDER_REVIEW.md` Q7. |
 | E4 | Unify SOS + icon-chip duplication | ✅ DONE (scoped) | SOS deduped — NiaBook now uses `niaSosButton` (byte-identical; goldens unchanged). Icon-chip **kept separate by design:** NiaBook's chip carries the R1a ○→✓ motion + a lock badge the pillar chip lacks, and merging would create a circular `pillar_kit ↔ nia_components` import for marginal gain. Engineering call, documented. |
+| E8 | OpenAPI contract lint via glob | ✅ DONE | The contract-lint list had drifted — `openapi.sessions.yaml` (a live contract) was ungated in both `scripts/verify.sh` and CI. Switched both to `openapi.*.yaml` so every spec is gated on landing. |
+| E9 | Doc-link integrity gate | ✅ DONE | `scripts/check-doc-links.mjs` fails the build on any broken relative link in hand-authored docs (protects the governance chain: Constitution → ADRs → OD book → briefs → lock → roadmap). Fail-closed; 221 links clean; wired into verify + CI. |
+| E10 | Engineering-quality loop closeout | ✅ DONE | Confirmed no remaining safe gap: infra (`runtime`/`log`/`sessions`/`preview`) well-tested; lockfile frozen-clean; `.nvmrc` consistent; only dep updates are risky majors (TS 6, Vitest 4, Redocly 2 — not behaviour-preserving). CHANGELOG brought current. **Next valuable engineering work is money-path/behaviour testing (wallet/wage/remittance/savings) — which is OD-gated** (those tests assert behaviour OD-1…OD-6 must *define* first). Blocker documented in `NEXT_TASK.md`. |
 
 ## Now (R1 COMPLETE)
 
