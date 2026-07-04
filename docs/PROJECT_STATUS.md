@@ -22,11 +22,16 @@ R3–R8 is complete, and OD-7 (arrears recovery) is now ruled + built — R3 Wag
 (both halves).** OD-7 was opened during R3 (Step-5 guardrail), ruled Option B on 2026-07-04
 ([ADR-0018](../docs/adr/0018-arrears-recovery-ordering.md)), and implemented: current-cycle waterfall
 first, then surplus-above-floor recovers arrears oldest-first, capped (Founder config, 50%), Nia last.
-**No backend product decision is currently open.** All un-ruled numbers (savings interest rate/fee +
-horizon `n`; the concrete Floor values; the recovery cap) are Founder-owned config behind seams, not
-invented in code (recorded judgments in [`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: the
-remaining per-slice infra (jobs, rail/webhook adapters, durable stores). R2/native untouched (separate
-Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+**Integration hardening is done** (`services/wallet` 20 → 214 tests): service auth, the remittance rail
+webhook adapter, the scheduled SLA sweep, savings accrual + settlement jobs, the read-only Operator
+reconciliation surface, the durable-store primitive (`FileDurableStore`) + a durable `RemittanceStore`,
+and the production config loader + `composeWalletApp` (every Founder value read from the environment, none
+invented). **OD-8 is now open** — opened during hardening (Step-5): how the Operator RESOLVES a money
+conflict (ADR-0015 covers detection/queueing, not resolution); the read-only surface shipped, the resolve
+action waits on the ruling (rec. B). All un-ruled numbers (savings interest rate/fee + horizon `n`; the
+concrete Floor values; the recovery cap) are Founder-owned config behind seams (recorded judgments in
+[`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: rule OD-8, then extend the durable-store pattern
+to the remaining ports (Postgres online). R2/native untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
 rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
 *Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).

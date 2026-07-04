@@ -3,7 +3,7 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: R3–R8 DONE + OD-7 ruled & built (R3 fully closed). No open backend decision. NEXT: per-slice infra.
+## Status: Policy spine R3–R8 done; integration hardening done. NEXT: rule OD-8, then durable-adapter fan-out.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -15,18 +15,30 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 Member-facing endpoints; `services/wallet` 20 → 161 tests, nine OpenAPI contracts gated; `nia verify`
 green). **The backend policy spine R3–R8 is complete.**
 
-### ▶ NEXT: per-slice infra (no OD, in-authority)
-The forward path has **no un-built, un-gated policy slice and no open backend decision** — the whole
-policy spine R3–R8 plus OD-7 is ruled and built. What remains is in-authority infra:
-- **Per-slice infra (no OD, in-authority):** the rail webhook adapter + scheduled SLA sweep (R4); RafiQi
-  orchestrator auto-take + reversal compensation (R5); the Operator reconciliation surface + durable sync
-  store (R6); the interest-accrual job + rail settlement adapter + `savings` deposit wiring (R7); the
-  Founder-owned config-backed Floor store + shared `@nia/floor` lib extraction + wiring
-  `RegistryFloorSource` into the wage boot in place of `InMemoryFloorSource` (R8).
+### ▶ NEXT: rule OD-8 (Founder), then the durable-adapter fan-out
+The policy spine R3–R8 and the first round of integration hardening are done. One decision is open and a
+bounded infra fan-out remains.
+
+- **▶ OD-8 — Operator money-conflict resolution model (Founder decision).** The one open backend decision,
+  opened during integration hardening per Step-5. The read-only reconciliation surface is built; the
+  RESOLVE action (which value wins on a money conflict, its money effect, operator identity) stays unbuilt
+  until ruled. Recommendation B. Brief:
+  [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md). Rule it → ADR-0019 →
+  build the resolve endpoint + operator identity.
+- **Integration hardening — DONE this round (in-authority):** service auth; remittance rail webhooks;
+  scheduled SLA sweep; savings accrual + settlement jobs; the read-only Operator reconciliation surface;
+  the durable-store primitive (`FileDurableStore`) + a durable `RemittanceStore`; the production config
+  loader + `composeWalletApp`. See CHANGELOG "Backend integration hardening".
+- **Remaining infra (no OD, in-authority):** extend the durable-store pattern to the other ports (savings,
+  arrears, rafiqi, sync, escalations, reconciliation, floor registry) — same `DurableStore<T>` seam; the
+  real Postgres adapter (ADR-0006) when online; RafiQi orchestrator auto-take + reversal compensation (R5);
+  extract the co-located domains into their own `services/*` packages when the workspace can grow.
 - **Do NOT start R2/native** — separate Founder go-ahead.
 
-Seams awaiting Founder *values* (not engineering): the concrete `the_floor` config values (R8) and the
-savings interest rate/fee/formula + horizon `n` (R7). Build the mechanism; never invent the numbers.
+Seams awaiting Founder *values* (not engineering), all now readable from config without any invented
+number: the concrete `the_floor` config values (via `NIA_FLOOR_CONFIG_PATH`), the savings interest
+rate/fee/formula + horizon `n`, and the recovery cap (`NIA_RECOVERY_CAP_BPS`, ruled 50%). Build the
+mechanism; never invent the numbers.
 
 **R8 The Floor — DONE (ADR-0017 / OD-6).**
 - ✅ **Versioned, audited config** (`the_floor.ts`): contents per ADR (baseline dignity floor, settlement

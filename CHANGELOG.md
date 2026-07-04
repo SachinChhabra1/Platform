@@ -2,6 +2,40 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend integration hardening (2026-07-04)
+
+The in-authority infra that turns the policy spine into a runnable service.
+`services/wallet` 175 → 214 tests, thirteen OpenAPI contracts gated; `nia verify`
+green throughout. No locked policy touched, no new dependency, no invented value.
+
+- **Service auth** (`d1f471d`): `SecretServiceAuthenticator` — constant-time
+  `X-Nia-Service-Token` verification against Founder/ops-owned secret(s) (rotatable
+  set; empty ⇒ deny). The boundary for non-Member callers (rails, jobs, ops).
+- **Remittance rail webhooks** (`d1f471d`): `POST /v1/rail/remittances/{id}/{sent,
+  recipient-available,settled}` (`openapi.rail.yaml`) — the rail-driven transitions
+  the Member API omits, idempotent (webhooks re-deliver), 409 on invalid/escalated.
+- **Scheduled SLA sweep** (`7a7dcdf`): `sweepRemittanceSla` + `POST
+  /v1/ops/remittance-sla-sweep` (service-authed; external scheduler → HTTP, no
+  in-process timer). Idempotent.
+- **Savings jobs** (`3eb8039`): `accrueAllSavings` + `settleDueWithdrawals` + ops
+  triggers — interest accrual (via the Founder policy seam) and T+n withdrawal
+  settlement, both idempotent.
+- **Operator reconciliation surface — read-only** (`6df189d`): `GET
+  /v1/ops/reconciliation[/{recordId}]` makes the ADR-0015 "never lost" guarantee
+  visible. Resolution deliberately NOT built (**OD-8**, `6ee19f2`).
+- **Durable stores** (`d7f3af2`): `DurableStore<T>` interface + dependency-free
+  `FileDurableStore` (atomic writes, survives restart) + `DurableRemittanceStore`;
+  the production adapter is Postgres (ADR-0006) implementing the same interface.
+- **Production wiring** (`9050f3e`): `loadWalletConfig(env)` reads every
+  Founder/ops value (service secret, recovery cap, savings horizon, Floor seed
+  file) with honest-empty defaults; `composeWalletApp` assembles the full service
+  over durable stores + the config seams, each route group in its own scope.
+
+**OD-8 opened** (`6ee19f2`): building the Operator surface exposed an uncovered
+decision — how the Operator RESOLVES a money conflict (which value wins). ADR-0015
+covers detection/queueing, not resolution. Per Step-5, the resolve action stopped
+and opened OD-8; the read-only surface shipped.
+
 ## Backend R3 arrears recovery — OD-7 ruled + implemented (ADR-0018) (2026-07-04)
 
 OD-7 (arrears recovery ordering), opened during R3 under the Step-5 rule, was **ruled by the Founder**
