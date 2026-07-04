@@ -2,6 +2,46 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Engineering-quality loop — verify/CI hygiene (2026-07-04)
+
+- **Doc-link integrity gate** (`7466c65`): `scripts/check-doc-links.mjs` walks every hand-authored
+  Markdown file and fails the build on any relative link that doesn't resolve — the governance chain
+  (Constitution → ADRs → OD decision book → briefs → `ENGINEERING_LOCK.md` → `ROADMAP.md`) is a web of
+  cross-links, so a dead link is silent rot. Generated output is skipped. Fail-closed (catches a planted
+  break); 221 links clean. Wired into `scripts/verify.sh` + CI.
+- **OpenAPI contract lint via glob** (`3432645`): the contract-lint step listed specs explicitly and had
+  drifted — `openapi.sessions.yaml` (a live service contract) was ungated in both the local gate and CI.
+  Switched both to `openapi.*.yaml` so every committed spec is gated the moment it lands.
+- Non-product, in-authority; `nia verify` green throughout.
+
+## OD decision governance — Founder Decision Book + Engineering Lock (2026-07-04)
+
+- **Founder Decision Book** (`4362bd5`, `65b6501`): `OD_DECISION_BOOK.md` + six one-page briefs
+  (`OD-1…OD-6`), each with decision · why · 2–3 options (pros/cons) · recommendation · cost of delay ·
+  APIs/data-model/services affected · one-line ruling shortcut. Recommendations run down the repo's own
+  law ("the Member wins", "one Floor for everyone"). Grounded in the `services/*` scaffold, the wallet
+  ledger categories, and ADR-0004/5/6/7.
+- **Decision-profile headers + `ENGINEERING_LOCK.md`** (`36c1e8b`): each brief gains owner · reversible? ·
+  latest-safe-date · blocks (4 of 6 are 🔴 hard-to-reverse). The lock is the frozen-decision ledger —
+  once a ruling is Locked there, implementation treats it as immutable until a formal Founder revision.
+  Governance flow: Book → rulings → Lock → R2–R8 → verify. All rows Pending until the Founder rules.
+- Docs/governance only; no code change.
+
+## R9 — SIGNED OFF; motion + typography audits (2026-07-04)
+
+- **R9 sign-off + restructure** (`070945a`): `R9_SIGNOFF.md` closes R9's in-authority scope; R9 recast as
+  a **parallel Production Hardening stream** (not the terminal gate) with the three-stream program model
+  (Claude/backend · Vercel/design · Founder/OD rulings). Forward path is now backend (R2–R8), all
+  Founder-gated.
+- **Motion audit** (`703e225`): `R9_MOTION_AUDIT.md`. All motion is one-shot `TweenAnimationBuilder`
+  (no controllers/tickers/spinners; goldens safe); per-pillar durations encode the Q8 register. Fixed
+  **golden-neutral**: `NiaReveal` + `MovementCheck` now honor `MediaQuery.disableAnimations` (OS Reduce
+  Motion), snapping to the final frame. +2 tests (`motion_test.dart`); suite 90 → 92; goldens
+  byte-identical.
+- **Typography audit** (`703e225`): `R9_TYPOGRAPHY_AUDIT.md`. Family/colour/weight discipline pass; debt
+  recorded — the 7-step theme scale is bypassed by ~11 inline `fontSize` values + no `TextScaler` clamp;
+  reconciliation repaints frozen screens → gated (Q11).
+
 ## R9.4 — accessibility (whole-app, in-authority) (2026-07-04)
 
 - Whole-app accessibility audit ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)). Golden-neutral
