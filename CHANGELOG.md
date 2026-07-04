@@ -36,13 +36,15 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
 
 ## Operating manual grounded in the real repo (2026-07-04)
 
-- `58fca06` **Product Bible (02)** — real screen-by-screen spec for the five screens (replaces
-  the package's generic finance-app template).
-- `715afc5` **START_HERE + MANUAL** — numbered 00–17 index over the real canon, charter-first;
-  corrects the package's "no app exists" premise.
-- `07_TESTING (07)` — grounded testing guide (68-test suite, golden freeze rule).
-- Reconciliation: adopted the package's *structure* only; discarded its empty-workspace,
-  wrong-product content. Real repo remains the single source of truth.
+- **Product Bible (03)** — regenerated from repository mining: implementation map (real widgets),
+  state/nav/i18n/RafiQi with ADR references, five screen chapters, legacy surfaces, calculation
+  ledger, and `FOUNDER REVIEW` markers. The one book written from scratch.
+- `eda64e0` **00–17 navigation layer** — short `START_HERE` + Orientation Mode + `02_MANUAL`
+  index + thin index docs pointing to the real canon (never restating ADRs). MANUAL→02,
+  PRODUCT_BIBLE→03, TESTING→09.
+- Reconciliation: the package is a **governance reference only**; its structure was adopted, its
+  empty-workspace/wrong-product content discarded. The real repo remains the single source of
+  truth.
 
 ## Engineering quality — autonomous loop (2026-07-01)
 

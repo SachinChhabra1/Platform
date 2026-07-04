@@ -10,15 +10,20 @@ Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 - **Finding surfaced:** the package was authored in an *empty* workspace — its status/index
   assert "no app exists" and its NIA_OS/Product Bible describe a **generic finance app**
   (surplus/insights), not the real NiaBook. Founder chose **"ground manual in real repo."**
+- **Refined per Founder:** treat the package as a **governance reference only**; build a thin
+  **navigation layer** (00–17) over the real canon; write the one real deliverable — the Product
+  Bible — from **repository mining**, not memory/template; never restate ADRs (reference them);
+  mark uncertainty for Founder review.
 - **Done (docs only, no code, goldens untouched):**
-  - `START_HERE.md` + `docs/MANUAL.md` (`715afc5`) — numbered 00–17 index over the real canon,
-    charter-first, with an explicit reality-check that the app IS real. Generic content discarded.
-  - `docs/02_PRODUCT_BIBLE.md` (`58fca06`) — the real screen-by-screen bible (NiaBook/Work/
-    Living/Store/Family: purpose, hierarchy, member intent, missing-data behaviour, emotion,
-    acceptance) + calculation ledger.
-  - `docs/07_TESTING.md` (`<this commit>`) — grounded testing guide (the 68-test suite, golden
-    freeze rule, how to add tests).
-- Governance stayed frozen (this was Founder-requested doc work). Board demo untouched.
+  - `eda64e0` — the 00–17 navigation layer: short `START_HERE.md` + `docs/01_START_HERE.md`
+    (Orientation Mode) + `docs/02_MANUAL.md` (index table) + thin index docs `00,04–08,10–17`
+    pointing to the real canon; renumbered MANUAL→02, PRODUCT_BIBLE→03, TESTING→09.
+  - `<bible commit>` — **`docs/03_PRODUCT_BIBLE.md` regenerated from mining**: an implementation
+    map (real widgets/files), state/nav/i18n/RafiQi grounded with ADR references, the five screen
+    chapters, a legacy-surfaces section, the calculation ledger, and `FOUNDER REVIEW` markers
+    (state-mgmt choice, legacy-surface fates, Promise headline FD-2, tenure Q4, sample data).
+  - Testing guide moved to `docs/09_TESTING.md`.
+- Governance stayed frozen (Founder-requested doc work). Board demo untouched.
 
 ## 2026-07-01 — Autonomous loop, engineering-quality pass
 
