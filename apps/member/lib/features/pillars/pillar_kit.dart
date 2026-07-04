@@ -152,16 +152,6 @@ Widget capsLabel(String s, {Color color = NiaTokens.blue}) => Text(
           color: color),
     );
 
-/// A plain section title (sentence case, ink) — e.g. "Better jobs waiting".
-Widget sectionTitle(String s, {Widget? trailing}) => Row(
-      children: <Widget>[
-        Text(s,
-            style: const TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
-        if (trailing != null) ...<Widget>[const Spacer(), trailing],
-      ],
-    );
-
 /// A rounded icon chip. Grey by default; [filled] paints solid blue with a white
 /// icon (the hero chip); [muted] greys the icon; [check] adds a small blue check
 /// badge (a gain that became true).
@@ -198,69 +188,6 @@ Widget niaIconChip(IconData icon,
     ),
   );
 }
-
-/// A card container: white with a hairline by default; [grey] fills soft grey;
-/// [hero] paints a 2px blue border (the primary opportunity).
-Widget niaCard({required Widget child, bool hero = false, bool grey = false}) =>
-    Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(NiaTokens.s4),
-      decoration: BoxDecoration(
-        color: grey ? NiaTokens.surfaceGrey : NiaTokens.ground,
-        border: hero
-            ? Border.all(color: NiaTokens.blue, width: 2)
-            : (grey ? null : Border.all(color: NiaTokens.hairline)),
-        borderRadius: BorderRadius.circular(NiaTokens.radius),
-      ),
-      child: child,
-    );
-
-/// A list row: icon + title + subtitle, with an optional trailing string (e.g. a
-/// gain) and a chevron.
-Widget niaListRow(
-  IconData icon,
-  String title,
-  String subtitle, {
-  String? trailing,
-  Color trailingColor = NiaTokens.blue,
-  bool chevron = false,
-}) =>
-    Padding(
-      padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(icon, size: 18, color: NiaTokens.blue),
-          const SizedBox(width: NiaTokens.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: NiaTokens.ink)),
-                Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 12, color: NiaTokens.inkSecondary)),
-              ],
-            ),
-          ),
-          if (trailing != null)
-            Text(trailing,
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: trailingColor)),
-          if (chevron)
-            const Padding(
-              padding: EdgeInsets.only(left: 4),
-              child: Icon(Icons.chevron_right, size: 18, color: NiaTokens.inkSecondary),
-            ),
-        ],
-      ),
-    );
 
 /// A stat cell (label, value, sub) — used in pairs.
 Widget statCard(String label, String value, String sub) => Container(
@@ -319,38 +246,6 @@ Widget pillarTag(String s) => Container(
       child: Text(s,
           style: const TextStyle(
               fontSize: 11, fontWeight: FontWeight.w600, color: NiaTokens.blue)),
-    );
-
-/// The flywheel strip that closes every pillar: "this improves your NiaBook".
-Widget niaBookStrip(String title, String sub) => Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(NiaTokens.s3),
-      decoration: BoxDecoration(
-        color: NiaTokens.blueTint,
-        borderRadius: BorderRadius.circular(NiaTokens.radius),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Icon(Icons.trending_up, size: 18, color: NiaTokens.blue),
-          const SizedBox(width: NiaTokens.s2),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: NiaTokens.blue)),
-                Text(sub,
-                    style: const TextStyle(
-                        fontSize: 12, color: NiaTokens.inkSecondary)),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
 
 /// A quiet blue text link with a chevron (no behaviour in the prototype).
