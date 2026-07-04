@@ -10,6 +10,21 @@ Canonical references: [`PRODUCT_ARCHITECTURE.md`](PRODUCT_ARCHITECTURE.md) (what
 (ADRs + open decisions), [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) (current state).
 Loop rules + what may be done without a Founder decision: [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md).
 
+## Program structure — three parallel streams (Founder ruling, 2026-07-04)
+
+R9 is **not the terminal gate before backend**. It is a **parallel Production Hardening stream**. Once
+R9 is signed off, the program runs three streams at once, like a real engineering org:
+
+| Stream | Owner | Scope |
+|---|---|---|
+| **Backend** — R2 native packaging · R3 Wage Flow · R4 Membership · R5 Ledger · R6 Integration · R7 Production data · R8 Release | **Claude** | The forward path. Every item is currently **Founder-gated** (OD rulings + backend un-pause). |
+| **Design evolution** — motion, typography, micro-interactions | **Vercel / design** | Visual refinement in parallel; lands in Flutter as Founder-approved screen changes (Q11). |
+| **Business decisions** — OD-1…OD-6, business rules, real API contracts | **Founder** | The current bottleneck. OD-1 (Wage Flow) is the critical path; ODs expire **2026-07-13**. |
+
+**R9 — Production Hardening: ✅ SIGNED OFF (2026-07-04)** — [`R9_SIGNOFF.md`](R9_SIGNOFF.md). In-authority
+scope complete; residual items are gated (native build R2/K1, or a frozen-screen change Q11) and do not
+hold R9 open. The forward path is now **backend (R2–R8)**, all Founder-gated — see the stream table above.
+
 ## Engineering quality — UNLOCKED (in-authority, behaviour-preserving)
 
 These need no Founder decision and keep the five goldens byte-identical (they don't touch the
@@ -33,7 +48,12 @@ The board freeze is lifted. **R1 (the craftsmanship backlog) is complete** — a
 register via non-colour levers — motion timing + density (Q8) · ✅ #4 → **Continuity Coaching**,
 one calm next step per screen (Q9). Plus E4 (SOS dedup) and the progress-not-engagement law.
 
-## R9 — Production Readiness (Production Readiness Lead mode)
+## R9 — Production Hardening · ✅ SIGNED OFF (2026-07-04) — [`R9_SIGNOFF.md`](R9_SIGNOFF.md)
+
+**R9's in-authority scope is complete and signed off.** It ran `audit → fix → verify → sign-off` and does
+**not** stay open for perpetual polish. Every category below is ✅ in-authority-complete or 🔒 Founder-gated;
+no open in-authority R9 work remains. R9 is now a **parallel hardening stream** (see the stream table at
+the top), not a gate before backend. The forward path is **R2–R8 (backend)**.
 
 Founder ruling (2026-07-04): when the feature roadmap is gated, become **Production Readiness Lead**
 and work R9 — the final 10% that turns a demo into software people trust. Not features. Populated from
@@ -52,13 +72,14 @@ never leave one partially complete if it can be finished within the slice (`docs
 | Offline | ✅ | ✅ | ✅ | ✅ | Folded into async (sign-in offline kept distinct from default-deny) |
 | Crash recovery | ✅ | ✅ | ✅ | ✅ | R9.5 — global `ErrorWidget.builder` calm fallback |
 | Housekeeping · test-count restatement | ✅ | ✅ | — | ✅ | R9.0 — consolidated to one canonical count |
-| Accessibility | ✅ | ✅¹ | ✅ | 🟡 | Labels/roles/headers/contrast done ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)); ¹ sub-48px tap targets + text-scale reflow on the 5 frozen screens gated on a Founder-approved screen change (Q11) |
+| Accessibility | ✅ | ✅¹ | ✅ | ✅/🔒 | In-authority complete (labels/roles/headers/contrast — [`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)); ¹ residual 🔒: sub-48px tap targets + text-scale reflow on the 5 frozen screens (Q11) |
 | Motion | ✅ | ✅ | ✅ | ✅ | Whole-app audit ([`R9_MOTION_AUDIT.md`](R9_MOTION_AUDIT.md)); golden-neutral reduce-motion fix on both primitives (+2 tests). Only deferred item is a *branded* route transition (product call, not readiness) |
-| Typography | ✅ | 🔒 | — | 🟡 | Audit done ([`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md)): family/colour/weight pass; 7-step scale bypassed by ~11 inline sizes + text-scale reflow gated on a Founder-approved screen change (Q11) |
+| Typography | ✅ | 🔒 | — | ✅/🔒 | Audit complete, family/colour/weight pass ([`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md)); residual 🔒: reconcile ~11 inline sizes to the 7-step scale + `TextScaler` clamp — repaints frozen screens (Q11) |
 | Performance (launch/low-end/battery/memory) | 🔒 | 🔒 | — | 🔒 | Gated on the native build (K1/R2) — unmeasurable web-only |
 
-Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔒 gated · — N/A. A category is **Complete** only
-when every applicable cell is ✅.
+Legend: ✅ done · ✅/🔒 in-authority complete, residual Founder-gated · 🟡 in progress · ⬜ not started ·
+🔒 gated · — N/A. For **R9 sign-off**, a category is closed when it is ✅ or ✅/🔒 (all in-authority
+work done; any remainder genuinely gated). No category is 🟡 or ⬜ — R9 is signed off ([`R9_SIGNOFF.md`](R9_SIGNOFF.md)).
 
 **In-authority + executable now (🔓) — the loop works these:**
 

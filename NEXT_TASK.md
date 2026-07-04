@@ -3,37 +3,31 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Production Readiness Lead mode — R9 in-authority lane EXHAUSTED, gate surfaced
+## Status: R9 — Production Hardening ✅ SIGNED OFF (2026-07-04). Forward path = backend (R2–R8), all Founder-gated.
 
 *Last verified: 2026-07-04 — `nia verify` green, **92 tests / 21 files**, analyze clean, no drift,
 tree clean.*
 
-**Founder ruling (2026-07-04):** when the feature roadmap is gated, become **Production Readiness
-Lead** and work **R9 — Production Readiness** ([`ROADMAP.md`](ROADMAP.md)) — the final 10% that makes
-the app trustworthy, not new features. R1 is complete; the board freeze is lifted.
+**R9 is signed off** ([`R9_SIGNOFF.md`](R9_SIGNOFF.md)). Every category is ✅ in-authority-complete or
+🔒 Founder-gated; no open in-authority R9 work remains. R9 does **not** stay open for perpetual polish —
+it is now a **parallel Production Hardening stream** (Founder ruling, 2026-07-04), not the terminal gate
+before backend. The program runs three streams: **Claude → backend (R2–R8)**, **Vercel → design
+evolution**, **Founder → OD-1…OD-6**. See the stream table at the top of [`ROADMAP.md`](ROADMAP.md).
 
-**Done this session:** Founder rulings encoded (visual prototypes = design references, Constitution
-rule 7; "finish categories, not files", `AUTONOMOUS-LOOP.md`); R9 restructured into a **category
-matrix**. Closed categories: **Async / Empty / Offline** (the async audit — [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md)),
-**R9.0** test-count consolidation, **R9.5** crash recovery (calm `NiaErrorScreen` replaces the raw
-crash box). Suite 77 → 87.
+**Frontend engineering is ~90–95% complete.** The remainder is gated polish, not implementation. The
+bottleneck has moved off frontend entirely; the highest return is now **backend integration, production
+data, release**.
 
-**R9.4 Accessibility done (in-authority)** — whole-app audit ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)):
-SOS is a labelled button, NiaBook language/month toggles are buttons, `Monogram` is excluded,
-`SectionLabel`s are headers, the Profile call button has a tooltip; contrast passes WCAG AA. Gated on a
-Founder-approved screen change (Q11): sub-48px tap targets + text-scale reflow on the frozen screens.
+**Honest queue state: there is no unblocked in-authority engineering task.** Every forward item needs a
+Founder decision or the native build. Per the loop, this is not failure — the queue is correctly
+reporting a gate. **The single highest-leverage unlock is OD-1 / backend un-pause** (below); the OD
+rulings expire **2026-07-13**.
 
-**Motion + Typography audits DONE** — [`R9_MOTION_AUDIT.md`](R9_MOTION_AUDIT.md) and
-[`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md). Motion closed fully (golden-neutral reduce-motion
-fix on both primitives, +2 tests); typography audit done, its reconciliation gated (Q11).
+**The one in-authority thing that compresses the schedule now:** draft the **OD-1 decision brief**
+(Wage Flow options · tradeoff · recommendation) so the Founder can rule in minutes rather than reopen the
+whole design space. Offered — say *"draft the OD-1 brief"* to have it ready before the ruling.
 
-**The in-authority R9 lane is now exhausted.** Every remaining R9 item is gated: Performance on the
-native build (R2/K1), and the frozen-screen fixes (a11y tap-targets, typography scale, text-scale) on a
-Founder-approved screen change (Q11). **This is the point NEXT_TASK was told to reach: surface the
-gate. The critical path is OD-1 / backend un-pause** (below) — nothing further moves the product to
-real production without a Founder ruling. See the R9 matrix in `ROADMAP.md`.
-
-**Still Founder-gated (unchanged) — these are what move the product to real production:**
+**Founder-gated — these are what move the product to real production:**
 
 | Next task | Gate |
 |---|---|
