@@ -34,6 +34,14 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## Engineering OS v1.0 — final governance (2026-07-04)
+
+- `REPOSITORY_CONSTITUTION.md` — source-of-truth hierarchy (intent vs. reality axes) + tie-break rule.
+- `FOUNDER_REVIEW.md` — the Founder questions queue, seeded with the six real open questions.
+- Orientation exit checklist added to `docs/01_START_HERE.md`; v1.0 stabilization directive
+  recorded in `AUTONOMOUS-LOOP.md` (operate within the system; don't redesign it; ship NiaBook).
+- Governance is now frozen at v1.0. Last framework change; the loop runs the product next.
+
 ## Operating manual grounded in the real repo (2026-07-04)
 
 - **Product Bible (03)** — regenerated from repository mining: implementation map (real widgets),

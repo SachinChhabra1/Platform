@@ -3,6 +3,22 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Engineering OS v1.0 (final governance additions)
+
+- Three Founder-requested additions, then governance is frozen at **v1.0**:
+  - `REPOSITORY_CONSTITUTION.md` — one page: the source-of-truth hierarchy on two axes (intent vs.
+    reality) and the tie-break rule when two docs disagree.
+  - `FOUNDER_REVIEW.md` — the Founder questions queue (record, don't interrupt), **seeded with the
+    six real open questions** (board-freeze/R1, backend/OD rulings, legacy surfaces, Promise FD-2,
+    positioning, a doc-org nit).
+  - Orientation **exit checklist** (measurable) added to `docs/01_START_HERE.md`; the
+    "mark uncertainty" rule now routes to `FOUNDER_REVIEW.md`.
+- Wired both top-level files into `START_HERE.md` and `docs/02_MANUAL.md`. Recorded the v1.0
+  **stabilization directive** in `AUTONOMOUS-LOOP.md`: operate within the system, don't redesign
+  it; record weaknesses here as evidence; ship NiaBook.
+- Docs only; goldens untouched; board demo live. **This is the last governance work — the loop
+  now runs the product, not the process.**
+
 ## 2026-07-04 — Ground the operating manual in the real repo
 
 - Founder supplied a numbered manual package (00–18) and asked to adopt it, add `START_HERE`,

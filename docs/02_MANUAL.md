@@ -30,5 +30,11 @@ from scratch is **03 · Product Bible** (mined from the implementation). Launche
 | 16 | Risk Register | [`16_RISK_REGISTER.md`](16_RISK_REGISTER.md) → `../KNOWN_BUGS.md` + `../DECISIONS.md` | index |
 | 17 | Autonomous Loop | [`17_AUTONOMOUS_LOOP.md`](17_AUTONOMOUS_LOOP.md) → `AUTONOMOUS-LOOP.md` | index |
 
+**Two top-level files sit above the manual:**
+- [`../REPOSITORY_CONSTITUTION.md`](../REPOSITORY_CONSTITUTION.md) — the source-of-truth hierarchy
+  and the tie-break rule when two documents disagree. Read it first.
+- [`../FOUNDER_REVIEW.md`](../FOUNDER_REVIEW.md) — the queue of open Founder decisions. Record
+  questions here instead of interrupting; keep working.
+
 **Principle:** the manual *organises and exposes* the repository's knowledge; it does not replace
 it. Canonical content stays in its real file. Never restate an ADR — reference it.

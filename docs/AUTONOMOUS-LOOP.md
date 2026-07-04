@@ -72,10 +72,16 @@ engineering work left within your delegated authority.
 ## Governance freeze
 
 Governance documents (this file, `DECISIONS.md`, the ADRs, `PRODUCT_ARCHITECTURE.md`,
-`DESIGN_SYSTEM_LOCK.md`) are **stable**. Modify them only when the Founder explicitly requests
-it, or to correct a factual inaccuracy. Engineering sessions update **operational state**
-(status, roadmap, changelog, session journal, scorecard) — they do **not** continually
-redesign the governance framework. Optimise the product, not the process.
+`DESIGN_SYSTEM_LOCK.md`, `REPOSITORY_CONSTITUTION.md`) are **stable**. Modify them only when the
+Founder explicitly requests it, or to correct a factual inaccuracy. Engineering sessions update
+**operational state** (status, roadmap, changelog, session journal, scorecard) — they do **not**
+continually redesign the governance framework. Optimise the product, not the process.
+
+**Stabilization period (v1.0, from 2026-07-04).** The Engineering Operating System is at v1.0.
+For now the objective is to **prove it works by operating within it**, not to refine it. Do not
+redesign the framework or add governance documents. Any weakness discovered in the system is
+**recorded in the session journal** (`SESSION.md`) as evidence — not immediately fixed by changing
+governance. The next meaningful feedback comes from **shipping NiaBook**, not from more process.
 
 ## Engineering budget (target allocation over time)
 
