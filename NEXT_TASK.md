@@ -3,7 +3,47 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Backend complete offline — spine + hardening + OD-7/8 + durable fan-out + Postgres seam + RafiQi orchestrator. NEXT: online-only work (real pg + DB), or R2/native on Founder go-ahead.
+## Status: Backend complete offline — spine + hardening + OD-7/8 + durable fan-out + Postgres seam + RafiQi orchestrator + **online wiring code-complete & deploy-ready**. NEXT is hard-blocked: needs a **live Postgres** to execute, or **Founder values/decisions** to fill the seams.
+
+### ⛔ Blocked — what is left needs a live DB or a Founder ruling (2026-07-04)
+
+The online backend wiring is now **code-complete and deploy-ready** (commits `f99dfa9`,
+`2089a71`, `e3cbc6b`; `services/wallet` **274 TS tests**; `nia verify` green). The whole
+service is proven end-to-end over the **production Postgres code path** with no database
+(`InMemorySqlExecutor`), across all five money flows. Everything remaining is behind one of
+two hard stops — do NOT work around either:
+
+**1. Needs a live Postgres + network (cannot run/verify in the offline sandbox):**
+The offline sandbox has **no `pg` driver, no network to install it, no reachable Postgres,
+no binaries, no creds** — probed and confirmed 2026-07-04. The code path is written and
+tested against a fake; only real-DB *execution* remains. Exact human actions, in order:
+  - `pnpm add pg --filter @nia/wallet` (in an online environment) — the one dependency the
+    sandbox could not fetch. `connectPgSqlExecutor` already loads it by dynamic import.
+  - Set env: `NIA_STORE=postgres` and `DATABASE_URL=postgres://…` (or the standard `PG*`
+    vars — node-postgres reads them itself).
+  - Boot via `pnpm --filter @nia/wallet start`. `bootstrapWalletApp` connects the pool, runs
+    the idempotent migration (`runWalletMigrations` — one `CREATE TABLE IF NOT EXISTS` per
+    `WALLET_STORE_NAMES` entry), then composes over `PostgresDurableStoreFactory`. Verify the
+    five flows against the real DB (mirror `e2e_smoke.test.ts`).
+  - *Then* (optimisation, not blocking): push the `values()` list scans down to SQL
+    (indexed/paged) instead of `SELECT … ORDER BY seq` full-table reads; extract the
+    co-located money domains into their own `services/*` packages once the workspace can grow.
+
+**2. Needs Founder values / a Founder decision (never invent — locked discipline):**
+Every seam below reads its value from config with an honest-empty default; the *mechanism* is
+built, the *number/behaviour* is Founder-owned.
+  - `the_floor` concrete values → `NIA_FLOOR_CONFIG_PATH` (JSON: dignity/settlement/women
+    floors + any per-Member overrides + author/note).
+  - Savings interest **rate / fee / formula + horizon `n`** → a concrete `InterestAccrualPolicy`
+    (zero-yield `NoInterestAccrualPolicy` until supplied) + `NIA_SAVINGS_SETTLE_MS`.
+  - Arrears **recovery cap** → `NIA_RECOVERY_CAP_BPS` (ruled 50% = `5000`; 0 ⇒ recovery off).
+  - Service + operator **credentials** → `NIA_SERVICE_TOKENS`, `NIA_OPERATOR_CONFIG_PATH`.
+  - Concrete RafiQi `MoneyEffect`s per action type (each `reverse` the exact inverse of
+    `apply`). **If a specific money path's behaviour is not defined by an ADR, STOP and open a
+    new OD — do not improvise the money semantics.**
+
+**Do NOT** start R2/native (separate Founder go-ahead) or frontend/UI, and do not invent any
+Founder value to make the above "runnable" — that is exactly the discipline the lock protects.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -21,11 +61,12 @@ hardening, OD-7 and OD-8 (both ruled + built), the durable-store fan-out across 
 adapter seam, and the RafiQi orchestrator. **No backend product decision is open.** What remains needs the
 online environment or a Founder go-ahead:
 
-- **Online-only (needs the sandbox's network / a database):** implement the `SqlExecutor` with the real
-  `pg` driver (a one-liner over `pg.Pool`), run `pgKeyValueSchema` migrations, and point `composeWalletApp`
-  at `PostgresDurableStore` instead of `FileDurableStore`; add the missing durable indexes / push the list
-  scans down to SQL. Extract the co-located domains into their own `services/*` packages once the workspace
-  can grow (the offline sandbox cannot add a pnpm workspace member).
+- **Online-only (needs the sandbox's network / a database):** ✅ the real `pg` `SqlExecutor`
+  (`PgSqlExecutor` / `connectPgSqlExecutor`), the `pgKeyValueSchema` migration runner
+  (`runWalletMigrations`), and the config-selectable backing wired through `bootstrapWalletApp` are now
+  **built and tested** (see the ⛔ Blocked section above for the exact run steps). Remaining online-only:
+  execute against a real Postgres, push the list scans down to SQL, and extract the co-located domains into
+  their own `services/*` packages once the workspace can grow (the offline sandbox cannot add a member).
 - **Founder values (config, not engineering):** the concrete `the_floor` values
   (`NIA_FLOOR_CONFIG_PATH`), the savings interest rate/fee/formula + horizon `n`, the recovery cap
   (`NIA_RECOVERY_CAP_BPS`, ruled 50%), and the service + operator credentials. Seams read them from config;

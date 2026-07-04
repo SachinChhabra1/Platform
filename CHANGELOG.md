@@ -2,6 +2,38 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Online backend wiring — real pg, configurable backing, deploy bootstrap, e2e smoke (2026-07-04)
+
+The online-only wiring the Postgres seam anticipated, built to the limit of the
+offline sandbox (no live DB, no `pg` install): the code is deploy-ready and the
+whole service is proven over the production Postgres code path with no database.
+`services/wallet` 245 → 274 tests; `nia verify` green; no dependency added to the
+sandbox; no locked policy touched; no new product decision.
+
+- **Real pg `SqlExecutor` + durable factory + migrations** (`f99dfa9`):
+  `PgSqlExecutor` over a structural `PgPool`; `connectPgSqlExecutor` loads `pg` by
+  dynamic import (non-literal specifier — no static dep) and throws an actionable
+  error if the driver is absent. `DurableStoreFactory` (File / InMemory / Postgres)
+  opens every store by logical name; `WALLET_STORE_NAMES` is the single source of
+  truth shared with `runWalletMigrations` (schema and composition cannot drift).
+  `InMemorySqlExecutor` — dependency-free parity backing implementing exactly the
+  statements the store + migration emit, so the service runs over the Postgres path
+  with no DB (mirrors `InMemoryDurableStore`).
+- **Configurable backing + deploy bootstrap** (`2089a71`): `NIA_STORE`
+  (`file`|`postgres`) + `DATABASE_URL` read from env (deploy config, never a product
+  value). `composeWalletApp` opens stores through an injectable factory (default
+  file); `store=postgres` without an injected backing throws and points at
+  `bootstrapWalletApp` (compose stays free of async connect side-effects).
+  `bootstrapWalletApp(env)` connects pg, runs the idempotent migration, composes
+  over the Postgres factory, and returns `dispose()`; `start.ts` boots through it.
+  The missing-`pg` case fails loudly — no silent fallback to files.
+- **End-to-end backend smoke over BOTH backings** (`e3cbc6b`): the five money flows
+  (wage settlement, remittance, savings withdrawal, RafiQi action + reversal,
+  offline conflict + Operator resolution) driven through the fully composed app,
+  parameterised over file AND the Postgres code path (`InMemorySqlExecutor`). No
+  Founder value invented — Floor/tokens/operator credential are test fixtures passed
+  as config exactly as deploy reads them from files/env.
+
 ## Backend infra — durable fan-out, Postgres seam, RafiQi orchestrator (2026-07-04)
 
 In-authority infra completing the persistence story and the RafiQi wiring.
