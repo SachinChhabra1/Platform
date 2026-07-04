@@ -21,6 +21,8 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E2 | Add direct tests for the shared component surface `nia_components.dart` (InfoCard styles, ListRow semantics/trailing, SummaryCard icon param, SectionHeader, OpportunityCard, NiaReveal) | ✅ DONE | +11 tests (49 → 60); goldens untouched. |
 | E3 | Audit pass for further grounded debt | ✅ DONE | No further dead code; remaining safe queue exhausted. |
 | E5 | Unit-test `formatPaise` (Indian ₹ grouping/sign/rounding) + `NiaBookMonth.sample` invariants | ✅ DONE | +8 tests (60 → 68); goldens untouched. |
+| E6 | Test `widgets/common.dart` (Monogram, SectionLabel, prototypeNoOp, SOS→Operator sheet) | ✅ DONE | +4 tests (68 → 72); goldens untouched. |
+| E7 | CI setup (run analyze + tests on push) | 🔓 OPEN | In-authority (DX/reliability); next engineering candidate. |
 | E4 | Unify SOS + icon-chip duplication (`niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`) into one shared control | 🔒 LOCKED | Touches the **frozen** NiaBook screen → golden-risk. Deferred until after the board (same gate as R1). |
 
 ## Now (frozen)

@@ -34,6 +34,13 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## Continuous loop — audit inputs + coverage (2026-07-04)
+
+- **E6** — `test/common_test.dart`: 4 tests for `widgets/common.dart` (Monogram, SectionLabel,
+  prototypeNoOp, SOS→Operator sheet). Suite 68 → 72. Goldens byte-identical.
+- `a62830a` **REPOSITORY_INDEX + ENGINEERING_AUDIT** — grounded in the real monorepo; resolves
+  the drift where the loop referenced non-existent orientation files.
+
 ## Engineering OS v1.0 — final governance (2026-07-04)
 
 - `REPOSITORY_CONSTITUTION.md` — source-of-truth hierarchy (intent vs. reality axes) + tie-break rule.
