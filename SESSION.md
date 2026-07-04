@@ -3,6 +3,21 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — R1 COMPLETE (Q8 register + Q9 coaching + philosophy)
+
+- Founder decisions Q8 + Q9 approved; implemented and R1 finished.
+- **Philosophy (`e143c1b`)** — added the north-star law: Nia is a **progress product, not an
+  engagement product** (`PRODUCT_ARCHITECTURE.md`). Never manufacture engagement.
+- **Q9 Continuity Coaching (`4cf1fea`)** — `CoachingLine` + a `coaching` slot on PillarScaffold;
+  one grounded next step on NiaBook + all four pillars. +2 tests; all 5 goldens updated.
+- **Q8 emotional register (`536b2a8`)** — non-colour levers only: motion timing + spacing density
+  per identity (Work dense/snappy · Living & Family airy/gentle · Store brisk · NiaBook factual).
+  Colour stays state-only. Work/Living/Family goldens denser/airier; Store/NiaBook motion-neutral.
+- **Wrap:** regenerated all goldens (deterministic), `nia verify` green, 77 tests, no drift. Wrote
+  `docs/design/niabook/R1-visual-review.md` (before/after `795b0de`→`536b2a8`).
+- **R1 is complete** (all four items + E4 + the philosophy law). Next roadmap items (R2 native,
+  R3–R8 backend) are all Founder-gated — genuine founder decision required to continue.
+
 ## 2026-07-04 — Loop: E4 dedup + R1 #1 (Living "spend less")
 
 - **E4 (`888a1d4`)** — deduped the SOS control: NiaBook now uses shared `niaSosButton`

@@ -115,7 +115,7 @@ accumulated debt and recommended architectural improvements. Record the outcome 
 |---|---|---|
 | Build/verify | `nia verify` green, no codegen drift | ✅ green |
 | Static analysis | `flutter analyze` clean | ✅ clean |
-| Tests | count + all green | ✅ 75 green |
+| Tests | count + all green | ✅ 77 green |
 | Goldens | five screens byte-identical to spec | ✅ frozen |
 | Tech debt | dead code / duplication / TODOs | 🟡 1 gated item (E4, post-board) |
 | Docs drift | implementation vs docs | ✅ reconciled |

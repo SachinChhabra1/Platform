@@ -34,6 +34,13 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## R1 complete — Q8 register + Q9 coaching (2026-07-04)
+
+- `536b2a8` **Q8** — per-pillar emotional register via non-colour levers (motion timing + spacing
+  density). R1 #3 done; **R1 complete**. Visual review in `docs/design/niabook/R1-visual-review.md`.
+- `4cf1fea` **Q9** — Continuity Coaching: one calm next step per screen (R1 #4). `CoachingLine`.
+- `e143c1b` **Philosophy** — progress product, not engagement product.
+
 ## R1 #1 + E4 (2026-07-04)
 
 - **R1 #1** — Living's middle carries "spend less": each service row now reads *Included* (blue),

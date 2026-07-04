@@ -13,8 +13,8 @@ diff vs the board freeze, and a repository scan (TODOs, dead code, test gaps).
 |---|---|---|
 | Build / verify | ✅ | `nia verify` green · no codegen drift |
 | Static analysis | ✅ | `flutter analyze lib test` — no issues |
-| Tests | ✅ | 75 pass across 17 files |
-| Goldens | ✅ | all 5 byte-identical (freeze lifted 2026-07-04; R1a kept them identical) |
+| Tests | ✅ | 77 pass across 17 files |
+| Goldens | ✅ | deterministic; intentionally updated by R1 (freeze lifted) — see `docs/design/niabook/R1-visual-review.md` |
 | Dead code / TODOs | ✅ | 0 `TODO/FIXME` in `lib`; pillar_kit dead code removed (E1) |
 | Documentation | ✅ | manual 00–17 grounded; Product Bible from mining; links resolve |
 | Tech debt | 🟡 | one known duplication (E4) — **gated** (touches frozen NiaBook screen) |
