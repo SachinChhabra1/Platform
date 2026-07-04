@@ -19,6 +19,7 @@
 /// (the sync boundary) when online.
 
 import { randomUUID } from 'node:crypto';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export type RecordClass = 'money' | 'intent' | 'append_only';
 
@@ -96,6 +97,21 @@ export class InMemorySyncStore implements SyncStore {
   }
   async put(record: SyncRecord): Promise<void> {
     this.#byId.set(record.id, record);
+  }
+}
+
+/// Durable `SyncStore` over any `DurableStore<SyncRecord>` (the server's
+/// record-of-record for reconciliation).
+export class DurableSyncStore implements SyncStore {
+  readonly #backing: DurableStore<SyncRecord>;
+  constructor(backing: DurableStore<SyncRecord> = new InMemoryDurableStore<SyncRecord>()) {
+    this.#backing = backing;
+  }
+  async get(id: string): Promise<SyncRecord | undefined> {
+    return this.#backing.get(id);
+  }
+  async put(record: SyncRecord): Promise<void> {
+    await this.#backing.put(record.id, record);
   }
 }
 
@@ -211,6 +227,31 @@ export class InMemoryReconciliationQueue implements ReconciliationQueue {
   }
   async save(item: ReconciliationItem): Promise<void> {
     this.#byId.set(item.id, item);
+  }
+}
+
+/// Durable `ReconciliationQueue` over any `DurableStore<ReconciliationItem>` — a
+/// queued money conflict must survive a restart (never lost, ADR-0015). Items are
+/// keyed by their own id; `listPending` scans for pending.
+export class DurableReconciliationQueue implements ReconciliationQueue {
+  readonly #backing: DurableStore<ReconciliationItem>;
+  constructor(backing: DurableStore<ReconciliationItem> = new InMemoryDurableStore<ReconciliationItem>()) {
+    this.#backing = backing;
+  }
+  async enqueue(item: ReconciliationItem): Promise<void> {
+    await this.#backing.put(item.id, item);
+  }
+  async listForRecord(recordId: string): Promise<readonly ReconciliationItem[]> {
+    return (await this.#backing.values()).filter((i) => i.recordId === recordId);
+  }
+  async listPending(): Promise<readonly ReconciliationItem[]> {
+    return (await this.#backing.values()).filter((i) => i.status === 'pending');
+  }
+  async get(id: string): Promise<ReconciliationItem | undefined> {
+    return this.#backing.get(id);
+  }
+  async save(item: ReconciliationItem): Promise<void> {
+    await this.#backing.put(item.id, item);
   }
 }
 

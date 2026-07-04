@@ -48,6 +48,7 @@ export {
 export {
   type FloorRegistry,
   InMemoryFloorRegistry,
+  DurableFloorRegistry,
   RegistryFloorSource,
 } from './the_floor_registry.js';
 export { type FloorRouteDeps, registerFloorRoutes } from './floor_http.js';
@@ -67,6 +68,7 @@ export {
   waiverFrom,
   planArrearsRecovery,
   InMemoryArrearsLedger,
+  DurableArrearsLedger,
 } from './arrears.js';
 // Remittance completion (R4; ADR-0013) — "sent" is not "confirmed"; confirmed =
 // recipient-available; 24h SLA → Operator; family ack optional.
@@ -90,6 +92,7 @@ export {
   InMemoryRemittanceStore,
   DurableRemittanceStore,
   InMemoryOperatorEscalations,
+  DurableOperatorEscalations,
   escalateIfStalled,
   sweepRemittanceSla,
 } from './remittance_ledger.js';
@@ -127,6 +130,8 @@ export {
   type RafiqiActionStore,
   InMemoryGrantStore,
   InMemoryRafiqiActionStore,
+  DurableGrantStore,
+  DurableRafiqiActionStore,
 } from './rafiqi_ledger.js';
 export { type RafiqiRouteDeps, registerRafiqiRoutes } from './rafiqi_http.js';
 // Offline write reconciliation (R6; ADR-0015) — per record class: money
@@ -149,6 +154,8 @@ export {
   resolveConflict,
   InMemorySyncStore,
   InMemoryReconciliationQueue,
+  DurableSyncStore,
+  DurableReconciliationQueue,
 } from './offline_sync.js';
 export { type SyncRouteDeps, registerSyncRoutes } from './sync_http.js';
 // Operator identity (OD-8/ADR-0019) — per-operator credential for conflict resolution.
@@ -200,6 +207,8 @@ export {
   type SettlementJobResult,
   InMemorySavingsAccountStore,
   InMemoryWithdrawalStore,
+  DurableSavingsAccountStore,
+  DurableWithdrawalStore,
   accrueAllSavings,
   settleDueWithdrawals,
 } from './savings_ledger.js';

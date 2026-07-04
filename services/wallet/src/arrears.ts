@@ -17,6 +17,7 @@
 import type { Money } from './money.js';
 import { paise } from './money.js';
 import { DEDUCTION_ORDER, type WageAllocation, type WageClaims } from './wage.js';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export type ArrearsCategory = keyof WageClaims;
 
@@ -270,5 +271,45 @@ export class InMemoryArrearsLedger implements ArrearsLedger {
         };
       }),
     );
+  }
+}
+
+/// Durable `ArrearsLedger` over two `DurableStore`s (arrears + waivers, recorded
+/// distinctly, both keyed by record id). Recovery re-`put`s the updated arrears
+/// records. Same port as the in-memory ledger; the wage settlement is unaffected.
+export class DurableArrearsLedger implements ArrearsLedger {
+  readonly #arrears: DurableStore<ArrearsRecord>;
+  readonly #waivers: DurableStore<WaiverRecord>;
+  constructor(
+    arrears: DurableStore<ArrearsRecord> = new InMemoryDurableStore<ArrearsRecord>(),
+    waivers: DurableStore<WaiverRecord> = new InMemoryDurableStore<WaiverRecord>(),
+  ) {
+    this.#arrears = arrears;
+    this.#waivers = waivers;
+  }
+  async recordArrears(records: readonly ArrearsRecord[]): Promise<void> {
+    for (const rec of records) await this.#arrears.put(rec.id, rec);
+  }
+  async recordWaivers(records: readonly WaiverRecord[]): Promise<void> {
+    for (const rec of records) await this.#waivers.put(rec.id, rec);
+  }
+  async listOpenArrears(membershipId: string): Promise<readonly ArrearsRecord[]> {
+    return (await this.#arrears.values()).filter((r) => r.membershipId === membershipId && r.status === 'open');
+  }
+  async listWaivers(membershipId: string): Promise<readonly WaiverRecord[]> {
+    return (await this.#waivers.values()).filter((r) => r.membershipId === membershipId);
+  }
+  async applyRecovery(_membershipId: string, plan: RecoveryPlan, meta: RecoveryMeta): Promise<void> {
+    for (const line of plan.lines) {
+      const rec = await this.#arrears.get(line.id);
+      if (!rec || rec.status !== 'open') continue;
+      const fully = line.remainingPaise === 0;
+      await this.#arrears.put(line.id, {
+        ...rec,
+        amount: paise(line.remainingPaise),
+        status: fully ? 'recovered' : 'open',
+        ...(fully ? { recoveredInSettlementId: meta.settlementId, recoveredOn: meta.recoveredOn } : {}),
+      });
+    }
   }
 }

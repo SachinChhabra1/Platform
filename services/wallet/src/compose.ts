@@ -20,21 +20,22 @@ import type { WalletConfig } from './config.js';
 import { FileDurableStore } from './durable_store.js';
 import { InMemoryWalletActivitySource } from './source.js';
 import { registerWalletOverviewRoutes } from './http.js';
-import { InMemoryFloorRegistry, RegistryFloorSource } from './the_floor_registry.js';
-import { createInitialFloor } from './the_floor.js';
+import { DurableFloorRegistry, RegistryFloorSource } from './the_floor_registry.js';
+import { createInitialFloor, type FloorVersion } from './the_floor.js';
 import { registerFloorRoutes } from './floor_http.js';
-import { InMemoryArrearsLedger } from './arrears.js';
+import { DurableArrearsLedger, type ArrearsRecord, type WaiverRecord } from './arrears.js';
 import { registerWageSettlementRoutes } from './wage_http.js';
-import { NoInterestAccrualPolicy } from './savings.js';
-import { InMemorySavingsAccountStore, InMemoryWithdrawalStore } from './savings_ledger.js';
+import { NoInterestAccrualPolicy, type SavingsAccount, type Withdrawal } from './savings.js';
+import { DurableSavingsAccountStore, DurableWithdrawalStore } from './savings_ledger.js';
 import { registerSavingsRoutes } from './savings_http.js';
-import { DurableRemittanceStore, InMemoryOperatorEscalations } from './remittance_ledger.js';
+import { DurableRemittanceStore, DurableOperatorEscalations, type OperatorEscalation } from './remittance_ledger.js';
 import type { Remittance } from './remittance.js';
 import { registerRemittanceRoutes } from './remittance_http.js';
 import { registerRemittanceRailRoutes } from './rail_http.js';
-import { InMemoryGrantStore, InMemoryRafiqiActionStore } from './rafiqi_ledger.js';
+import { DurableGrantStore, DurableRafiqiActionStore } from './rafiqi_ledger.js';
+import type { AuthorizationGrant, RafiqiAction } from './rafiqi.js';
 import { registerRafiqiRoutes } from './rafiqi_http.js';
-import { InMemorySyncStore, InMemoryReconciliationQueue } from './offline_sync.js';
+import { DurableSyncStore, DurableReconciliationQueue, type SyncRecord, type ReconciliationItem } from './offline_sync.js';
 import { registerSyncRoutes } from './sync_http.js';
 import { SecretServiceAuthenticator } from './service_auth.js';
 import { InMemoryOperatorDirectory } from './operator_auth.js';
@@ -55,10 +56,15 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
   const sessions = opts.sessions ?? new InMemorySessionStore();
   const app = createServer({ serviceName: opts.serviceName ?? 'nia-wallet' });
 
-  // --- Founder-owned seams from config -------------------------------------
-  const floorRegistry = new InMemoryFloorRegistry();
-  if (config.floorSeed) {
-    // The Founder-provided values (from the config file) become Floor version 1.
+  // --- Shared stores — all durable, file-backed under the data dir ----------
+  // Each composes a FileDurableStore (the offline reference persistence); swap in
+  // the Postgres adapter (ADR-0006) online with no change to these lines.
+  const fds = <T,>(name: string): FileDurableStore<T> => new FileDurableStore<T>(join(config.dataDir, name));
+
+  const floorRegistry = new DurableFloorRegistry(fds<FloorVersion>('floor.json'));
+  if (config.floorSeed && (await floorRegistry.current()) === undefined) {
+    // The Founder-provided values (from the config file) become Floor version 1
+    // (idempotent across restart — only seeded if no version exists yet).
     await floorRegistry.publish(
       createInitialFloor({ values: config.floorSeed.values, author: config.floorSeed.author, note: config.floorSeed.note, now: now() }),
     );
@@ -66,19 +72,16 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
   const floor = new RegistryFloorSource(floorRegistry);
   const serviceAuth = new SecretServiceAuthenticator(config.serviceTokens);
 
-  // --- Shared stores (durable where an adapter exists) ----------------------
-  const remittanceStore = new DurableRemittanceStore(
-    new FileDurableStore<Remittance>(join(config.dataDir, 'remittances.json')),
-  );
-  const operatorEscalations = new InMemoryOperatorEscalations();
-  const arrears = new InMemoryArrearsLedger();
-  const savingsAccounts = new InMemorySavingsAccountStore();
-  const withdrawals = new InMemoryWithdrawalStore();
+  const remittanceStore = new DurableRemittanceStore(fds<Remittance>('remittances.json'));
+  const operatorEscalations = new DurableOperatorEscalations(fds<OperatorEscalation>('escalations.json'));
+  const arrears = new DurableArrearsLedger(fds<ArrearsRecord>('arrears.json'), fds<WaiverRecord>('waivers.json'));
+  const savingsAccounts = new DurableSavingsAccountStore(fds<SavingsAccount>('savings-accounts.json'));
+  const withdrawals = new DurableWithdrawalStore(fds<Withdrawal>('withdrawals.json'));
   const interestPolicy = new NoInterestAccrualPolicy();
-  const syncStore = new InMemorySyncStore();
-  const reconciliation = new InMemoryReconciliationQueue();
-  const grants = new InMemoryGrantStore();
-  const rafiqiActions = new InMemoryRafiqiActionStore();
+  const syncStore = new DurableSyncStore(fds<SyncRecord>('sync.json'));
+  const reconciliation = new DurableReconciliationQueue(fds<ReconciliationItem>('reconciliation.json'));
+  const grants = new DurableGrantStore(fds<AuthorizationGrant>('grants.json'));
+  const rafiqiActions = new DurableRafiqiActionStore(fds<RafiqiAction>('rafiqi-actions.json'));
 
   // Each route group is mounted in its own ENCAPSULATED Fastify scope, so its
   // onSend hook + error handler stay local (no cross-group override) — the routes

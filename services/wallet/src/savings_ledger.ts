@@ -12,6 +12,7 @@ import {
   type SavingsAccount,
   type Withdrawal,
 } from './savings.js';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export interface SavingsAccountStore {
   save(account: SavingsAccount): Promise<void>;
@@ -67,6 +68,49 @@ export class InMemoryWithdrawalStore implements WithdrawalStore {
 
   async listDueForSettlement(now: Date): Promise<readonly Withdrawal[]> {
     return [...this.#byId.values()].filter(
+      (w) => w.state === 'available' && Date.parse(w.settleDueAt) <= now.getTime(),
+    );
+  }
+}
+
+/// Durable `SavingsAccountStore` over any `DurableStore<SavingsAccount>` (file or
+/// Postgres). Same port; the accrual job and Member API are unaffected.
+export class DurableSavingsAccountStore implements SavingsAccountStore {
+  readonly #backing: DurableStore<SavingsAccount>;
+  constructor(backing: DurableStore<SavingsAccount> = new InMemoryDurableStore<SavingsAccount>()) {
+    this.#backing = backing;
+  }
+  async save(account: SavingsAccount): Promise<void> {
+    await this.#backing.put(account.id, account);
+  }
+  async get(id: string): Promise<SavingsAccount | undefined> {
+    return this.#backing.get(id);
+  }
+  async getForMember(membershipId: string): Promise<SavingsAccount | undefined> {
+    return (await this.#backing.values()).find((a) => a.membershipId === membershipId);
+  }
+  async listAll(): Promise<readonly SavingsAccount[]> {
+    return this.#backing.values();
+  }
+}
+
+/// Durable `WithdrawalStore` over any `DurableStore<Withdrawal>`.
+export class DurableWithdrawalStore implements WithdrawalStore {
+  readonly #backing: DurableStore<Withdrawal>;
+  constructor(backing: DurableStore<Withdrawal> = new InMemoryDurableStore<Withdrawal>()) {
+    this.#backing = backing;
+  }
+  async save(withdrawal: Withdrawal): Promise<void> {
+    await this.#backing.put(withdrawal.id, withdrawal);
+  }
+  async get(id: string): Promise<Withdrawal | undefined> {
+    return this.#backing.get(id);
+  }
+  async listForMember(membershipId: string): Promise<readonly Withdrawal[]> {
+    return (await this.#backing.values()).filter((w) => w.membershipId === membershipId);
+  }
+  async listDueForSettlement(now: Date): Promise<readonly Withdrawal[]> {
+    return (await this.#backing.values()).filter(
       (w) => w.state === 'available' && Date.parse(w.settleDueAt) <= now.getTime(),
     );
   }

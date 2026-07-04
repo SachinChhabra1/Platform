@@ -13,6 +13,7 @@
 
 import type { FloorSource } from './floor.js';
 import { resolveDignityFloor, type FloorVersion } from './the_floor.js';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export interface FloorRegistry {
   /** Append a published version. Must be exactly current+1 (monotonic, append-only). */
@@ -49,6 +50,34 @@ export class InMemoryFloorRegistry implements FloorRegistry {
 
   async history(): Promise<readonly FloorVersion[]> {
     return [...this.#versions];
+  }
+}
+
+/// Durable `FloorRegistry` over any `DurableStore<FloorVersion>` (keyed by version
+/// number). The append-only monotonic invariant is enforced the same way — a
+/// publish must be exactly the next version — so the audit history survives a
+/// restart intact.
+export class DurableFloorRegistry implements FloorRegistry {
+  readonly #backing: DurableStore<FloorVersion>;
+  constructor(backing: DurableStore<FloorVersion> = new InMemoryDurableStore<FloorVersion>()) {
+    this.#backing = backing;
+  }
+  async publish(version: FloorVersion): Promise<void> {
+    const expected = (await this.#backing.values()).length + 1;
+    if (version.version !== expected) {
+      throw new RangeError(`floor version must be ${expected} (append-only), got ${version.version}`);
+    }
+    await this.#backing.put(String(version.version), version);
+  }
+  async current(): Promise<FloorVersion | undefined> {
+    const all = await this.#backing.values();
+    return all.reduce<FloorVersion | undefined>((max, v) => (max === undefined || v.version > max.version ? v : max), undefined);
+  }
+  async get(version: number): Promise<FloorVersion | undefined> {
+    return this.#backing.get(String(version));
+  }
+  async history(): Promise<readonly FloorVersion[]> {
+    return [...(await this.#backing.values())].sort((a, b) => a.version - b.version);
   }
 }
 

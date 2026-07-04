@@ -6,6 +6,7 @@
 /// filterable by Member); escalations are recorded against the remittance id and
 /// carry the funding settlement id. The real append-only ledger plugs in here later.
 
+import { randomUUID } from 'node:crypto';
 import { checkSla, type Remittance } from './remittance.js';
 import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
@@ -98,6 +99,22 @@ export class InMemoryOperatorEscalations implements OperatorEscalations {
 
   async listForRemittance(remittanceId: string): Promise<readonly OperatorEscalation[]> {
     return [...(this.#byRemittance.get(remittanceId) ?? [])];
+  }
+}
+
+/// Durable `OperatorEscalations` over any `DurableStore<OperatorEscalation>`. An
+/// escalation has no natural unique key (many per remittance), so each is stored
+/// under a generated id; `listForRemittance` scans by remittance id.
+export class DurableOperatorEscalations implements OperatorEscalations {
+  readonly #backing: DurableStore<OperatorEscalation>;
+  constructor(backing: DurableStore<OperatorEscalation> = new InMemoryDurableStore<OperatorEscalation>()) {
+    this.#backing = backing;
+  }
+  async raise(escalation: OperatorEscalation): Promise<void> {
+    await this.#backing.put(`${escalation.remittanceId}:${randomUUID()}`, escalation);
+  }
+  async listForRemittance(remittanceId: string): Promise<readonly OperatorEscalation[]> {
+    return (await this.#backing.values()).filter((e) => e.remittanceId === remittanceId);
   }
 }
 

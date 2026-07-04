@@ -5,6 +5,7 @@
 /// append-only ledger plugs in here later.
 
 import { isGrantActive, type AuthorizationGrant, type RafiqiAction } from './rafiqi.js';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export interface GrantStore {
   save(grant: AuthorizationGrant): Promise<void>;
@@ -35,6 +36,26 @@ export class InMemoryGrantStore implements GrantStore {
   }
 }
 
+/// Durable `GrantStore` over any `DurableStore<AuthorizationGrant>`.
+export class DurableGrantStore implements GrantStore {
+  readonly #backing: DurableStore<AuthorizationGrant>;
+  constructor(backing: DurableStore<AuthorizationGrant> = new InMemoryDurableStore<AuthorizationGrant>()) {
+    this.#backing = backing;
+  }
+  async save(grant: AuthorizationGrant): Promise<void> {
+    await this.#backing.put(grant.id, grant);
+  }
+  async get(id: string): Promise<AuthorizationGrant | undefined> {
+    return this.#backing.get(id);
+  }
+  async listForMember(membershipId: string): Promise<readonly AuthorizationGrant[]> {
+    return (await this.#backing.values()).filter((g) => g.membershipId === membershipId);
+  }
+  async listActiveForMember(membershipId: string, now: Date): Promise<readonly AuthorizationGrant[]> {
+    return (await this.#backing.values()).filter((g) => g.membershipId === membershipId && isGrantActive(g, now));
+  }
+}
+
 export interface RafiqiActionStore {
   save(action: RafiqiAction): Promise<void>;
   get(id: string): Promise<RafiqiAction | undefined>;
@@ -54,5 +75,22 @@ export class InMemoryRafiqiActionStore implements RafiqiActionStore {
 
   async listForMember(membershipId: string): Promise<readonly RafiqiAction[]> {
     return [...this.#byId.values()].filter((a) => a.membershipId === membershipId);
+  }
+}
+
+/// Durable `RafiqiActionStore` over any `DurableStore<RafiqiAction>`.
+export class DurableRafiqiActionStore implements RafiqiActionStore {
+  readonly #backing: DurableStore<RafiqiAction>;
+  constructor(backing: DurableStore<RafiqiAction> = new InMemoryDurableStore<RafiqiAction>()) {
+    this.#backing = backing;
+  }
+  async save(action: RafiqiAction): Promise<void> {
+    await this.#backing.put(action.id, action);
+  }
+  async get(id: string): Promise<RafiqiAction | undefined> {
+    return this.#backing.get(id);
+  }
+  async listForMember(membershipId: string): Promise<readonly RafiqiAction[]> {
+    return (await this.#backing.values()).filter((a) => a.membershipId === membershipId);
   }
 }
