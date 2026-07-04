@@ -35,6 +35,8 @@ from scratch is **03 · Product Bible** (mined from the implementation). Launche
   and the tie-break rule when two documents disagree. Read it first.
 - [`../FOUNDER_REVIEW.md`](../FOUNDER_REVIEW.md) — the queue of open Founder decisions. Record
   questions here instead of interrupting; keep working.
+- [`../REPOSITORY_INDEX.md`](../REPOSITORY_INDEX.md) — the map of the monorepo (apps/packages/services).
+- [`../ENGINEERING_AUDIT.md`](../ENGINEERING_AUDIT.md) — grounded health snapshot + prioritized backlog.
 
 **Principle:** the manual *organises and exposes* the repository's knowledge; it does not replace
 it. Canonical content stays in its real file. Never restate an ADR — reference it.
