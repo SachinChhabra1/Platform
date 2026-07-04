@@ -46,10 +46,17 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 - ✅ **Seams** (`remittance_ledger.ts`): `RemittanceStore` (auditable by id/Member), `OperatorEscalations`
   (Operator hand-off), and `escalateIfStalled` orchestration (raises + persists on a fresh SLA breach,
   idempotent). +12 tests (wallet 54 → 66) proving all five required properties.
-- ⏭ **Next R4 slices:** the HTTP endpoint (`POST /remittances`, event transitions) + `openapi.remittance.yaml`;
-  the real rail adapter (feeds `recipient_available`) and a scheduled SLA sweep. No new OD — ADR-0013
-  covers R4. Then **R5 RafiQi** (ADR-0014), etc. — each strictly against its locked ADR; if a slice hits
-  an uncovered decision, STOP and open a new OD.
+- ✅ **Member-facing endpoint + contract DONE** — `openapi.remittance.yaml` (`POST /remittances`,
+  `GET /remittances`, `GET /remittances/{id}`; auto-gated by the glob lint) and `remittance_http.ts`:
+  initiate + read state/audit-history, default-deny 401/403, owner-only reads (404, no existence leak),
+  server-time header. **Rail-driven transitions are NOT Member-exposed** — a Member cannot self-confirm
+  (same principle as the dignity floor); tests drive confirmation through the store to prove the read
+  reflects it. +7 tests (wallet 66 → 73).
+- ⏭ **Remaining R4 (infra, no OD):** the rail webhook adapter (feeds `recipient_available`/`settled` with
+  its own service auth) and a scheduled SLA sweep calling `escalateIfStalled`.
+- ➡️ **Now: R5 RafiQi** (ADR-0014) — 24h reversibility window + scoped/capped/time-bounded/revocable
+  standing authorisation. Each strictly against its locked ADR; if a slice hits an uncovered decision,
+  STOP and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

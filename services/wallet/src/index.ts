@@ -70,3 +70,4 @@ export {
   InMemoryOperatorEscalations,
   escalateIfStalled,
 } from './remittance_ledger.js';
+export { type RemittanceRouteDeps, registerRemittanceRoutes } from './remittance_http.js';

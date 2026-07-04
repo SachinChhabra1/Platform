@@ -1,0 +1,224 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Remittance
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    Remittance completion (R4; ADR-0013 / OD-2, locked in `/ENGINEERING_LOCK.md`).
+    The Member sends money home and can see whether it **reached the family**. The
+    one rule: **"sent" is not "confirmed."** A remittance is confirmed only when
+    the funds are available to the named recipient (`confirmed_available` —
+    "Reached home"); if it stalls, it auto-escalates to the Operator after a 24h
+    SLA. Family acknowledgement is an optional signal, never the gate.
+
+    This is the MEMBER-facing surface: initiate a remittance and read its state +
+    audit history (keyed by remittance id, linked to the funding settlement). The
+    rail-driven transitions (`recipient_available`, `settled`) arrive through a
+    system/rail adapter, NOT from the Member — a Member cannot self-confirm, just
+    as they cannot set their own dignity floor. Money is integer paise.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: remittance
+    description: Remittance completion — "did the money reach the family" (ADR-0013).
+
+paths:
+  /remittances:
+    post:
+      operationId: initiateRemittance
+      tags: [remittance]
+      summary: Send money home — begin a remittance.
+      description: >
+        Begins a remittance for the signed-in Member (default-deny). It starts
+        `initiated` — not sent, and certainly not confirmed. Confirmation is a
+        later, rail-driven fact.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - $ref: "./openapi.base.yaml#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InitiateRemittanceRequest"
+      responses:
+        "201":
+          description: The remittance, in its initial state.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemittanceView"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+    get:
+      operationId: listRemittances
+      tags: [remittance]
+      summary: The Member's remittances.
+      description: The signed-in Member's remittances, for the "money sent home" surface.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The Member's remittances.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemittanceList"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /remittances/{id}:
+    get:
+      operationId: getRemittance
+      tags: [remittance]
+      summary: One remittance's state and audit history.
+      description: >
+        The remittance's current state and its append-only history, keyed by id —
+        the audit trail the Member reads ("Reached home", or "we're chasing it").
+        A remittance that is not the caller's own reads as not found (no existence
+        leak).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: id
+          in: path
+          required: true
+          description: The remittance id.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The remittance.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemittanceView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: A money amount in integer minor units (paise) — never a float.
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 1
+          description: The amount in paise. A remittance is a positive amount.
+          example: 500000
+        currency:
+          type: string
+          enum: [INR]
+
+    RemittanceState:
+      type: string
+      enum: [initiated, in_transit, confirmed_available, settled, escalated]
+      description: >
+        Lifecycle. `in_transit` is "sent" — NOT confirmed. `confirmed_available`
+        is "Reached home". `escalated` is the SLA-breach branch (Operator owns it).
+
+    RemittanceEvent:
+      type: object
+      description: One audit-trail entry. Append-only, oldest first.
+      required: [type, at]
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum: [initiated, sent, recipient_available, family_acknowledged, settled, escalated]
+        at:
+          type: string
+          format: date-time
+
+    InitiateRemittanceRequest:
+      type: object
+      required: [recipient_id, amount]
+      additionalProperties: false
+      properties:
+        recipient_id:
+          type: string
+          description: Opaque reference to the named recipient (the family member).
+        amount:
+          $ref: "#/components/schemas/Money"
+        settlement_id:
+          type: string
+          description: The wage settlement funding this remittance, if any (audit linkage).
+
+    RemittanceView:
+      type: object
+      required:
+        [id, state, amount, recipient_id, initiated_at, escalate_after, family_acknowledged, history]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        state:
+          $ref: "#/components/schemas/RemittanceState"
+        amount:
+          $ref: "#/components/schemas/Money"
+        recipient_id:
+          type: string
+        settlement_id:
+          type: string
+        initiated_at:
+          type: string
+          format: date-time
+        escalate_after:
+          type: string
+          format: date-time
+          description: The 24h SLA deadline; past this, an unconfirmed remittance escalates.
+        family_acknowledged:
+          type: boolean
+          description: An optional extra signal — never the confirmation gate.
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/RemittanceEvent"
+
+    RemittanceList:
+      type: object
+      required: [remittances]
+      additionalProperties: false
+      properties:
+        remittances:
+          type: array
+          items:
+            $ref: "#/components/schemas/RemittanceView"
+
+security:
+  - MemberSession: []
