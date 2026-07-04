@@ -14,7 +14,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { API_PREFIX, sessionFromRequest, type SessionStore } from '@nia/runtime';
 import type { FloorSource } from './floor.js';
-import { arrearsFrom, type ArrearsLedger } from './arrears.js';
+import { arrearsFrom, waiverFrom, type ArrearsLedger } from './arrears.js';
 import {
   allocateWage,
   type ShortfallCause,
@@ -209,18 +209,27 @@ export function registerWageSettlementRoutes(app: FastifyInstance, deps: WageRou
       cause: parsed.cause,
     });
 
-    // Deferred claims carry forward (ADR-0012): record them as arrears. The
-    // waived membership fee is already excluded (it is not in `arrears`).
-    // Recording only — recovery of arrears from a future wage is OD-7 and is not
-    // done here.
+    // Record the settlement's carry-forward outcomes (ADR-0012), recorded
+    // DISTINCTLY: deferred claims as arrears (the Member owes them later), and a
+    // waived fee as a waiver (Nia forgave it — never owed, on the record). The
+    // allocator already keeps the two apart, so they never double-count.
+    // Recording only — recovery of arrears from a future wage is OD-7, not done here.
     const settlementId = randomUUID();
     const arisenOn = now().toISOString().slice(0, 10);
-    await deps.arrears.record(
+    await deps.arrears.recordArrears(
       arrearsFrom(allocation, {
         membershipId: member,
         settlementId,
         arisenOn,
         id: (category) => `${settlementId}:${category}`,
+      }),
+    );
+    await deps.arrears.recordWaivers(
+      waiverFrom(allocation, {
+        membershipId: member,
+        settlementId,
+        arisenOn,
+        id: `${settlementId}:waiver:membershipFee`,
       }),
     );
 

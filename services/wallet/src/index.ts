@@ -42,7 +42,9 @@ export { type WageRouteDeps, registerWageSettlementRoutes } from './wage_http.js
 export {
   type ArrearsCategory,
   type ArrearsRecord,
+  type WaiverRecord,
   type ArrearsLedger,
   arrearsFrom,
+  waiverFrom,
   InMemoryArrearsLedger,
 } from './arrears.js';

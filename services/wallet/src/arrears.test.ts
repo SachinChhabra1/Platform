@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { allocateWage, type WageClaims } from './wage.js';
-import { arrearsFrom, InMemoryArrearsLedger, type ArrearsCategory } from './arrears.js';
+import {
+  arrearsFrom,
+  waiverFrom,
+  InMemoryArrearsLedger,
+  type ArrearsCategory,
+} from './arrears.js';
 
 const R = (rupees: number): number => rupees * 100;
 
@@ -54,6 +59,45 @@ describe('arrearsFrom — ADR-0012 carry-forward derivation', () => {
     expect(records.find((r) => r.category === 'membershipFee')).toBeUndefined();
   });
 
+  it('reconciles to the allocation: every arrears record equals the reported arrears', () => {
+    const wage = FLOOR + R(30) + R(20); // deep shortfall
+    const alloc = allocateWage({ wagePaise: wage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'member_caused' });
+    for (const r of arrearsFrom(alloc, meta())) {
+      expect(r.amount.minor).toBe(alloc.arrears[r.category]);
+    }
+  });
+});
+
+describe('waiverFrom — ADR-0012 fee waiver (recorded distinctly)', () => {
+  const shortWage = FLOOR + R(30) + R(20) + R(50) + R(15); // fee + advance unmet
+
+  it('records one waiver of the fee on an employer-caused shortfall', () => {
+    const alloc = allocateWage({ wagePaise: shortWage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'employer_caused' });
+    const waivers = waiverFrom(alloc, { membershipId: 'm-001', settlementId: 's-1', arisenOn: '2026-07-04', id: 's-1:waiver' });
+    expect(waivers).toHaveLength(1);
+    expect(waivers[0]).toMatchObject({
+      category: 'membershipFee',
+      reason: 'employer_caused_shortfall',
+      status: 'waived',
+    });
+    // Reconciles to the allocation's waived amount.
+    expect(waivers[0]!.amount.minor).toBe(alloc.waivedMembershipFeePaise);
+    expect(waivers[0]!.amount.minor).toBe(R(10));
+  });
+
+  it('records NO waiver on a member-caused shortfall (fee carries as arrears instead)', () => {
+    const alloc = allocateWage({ wagePaise: shortWage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'member_caused' });
+    expect(waiverFrom(alloc, { membershipId: 'm-001', settlementId: 's-1', arisenOn: '2026-07-04', id: 's-1:waiver' })).toEqual([]);
+  });
+
+  it('a waived fee is never both an arrears record AND a waiver (no double-count)', () => {
+    const alloc = allocateWage({ wagePaise: shortWage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'employer_caused' });
+    const arrears = arrearsFrom(alloc, meta());
+    const waivers = waiverFrom(alloc, { membershipId: 'm-001', settlementId: 's-1', arisenOn: '2026-07-04', id: 's-1:waiver' });
+    expect(arrears.some((r) => r.category === 'membershipFee')).toBe(false);
+    expect(waivers.some((w) => w.category === 'membershipFee')).toBe(true);
+  });
+
   it('a floor breach carries every unpaid claim forward', () => {
     const alloc = allocateWage({ wagePaise: R(12), dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'member_caused' });
     const records = arrearsFrom(alloc, meta());
@@ -70,18 +114,33 @@ describe('InMemoryArrearsLedger', () => {
     const wage = FLOOR + R(30) + R(20) + R(50) + R(15);
     const alloc = allocateWage({ wagePaise: wage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'member_caused' });
 
-    await ledger.record(arrearsFrom(alloc, meta({ membershipId: 'm-001' })));
-    await ledger.record(arrearsFrom(alloc, meta({ membershipId: 'm-002', settlementId: 's-2', id: (c) => `s-2:${c}` })));
+    await ledger.recordArrears(arrearsFrom(alloc, meta({ membershipId: 'm-001' })));
+    await ledger.recordArrears(arrearsFrom(alloc, meta({ membershipId: 'm-002', settlementId: 's-2', id: (c) => `s-2:${c}` })));
 
-    const mine = await ledger.listOpenForMember('m-001');
+    const mine = await ledger.listOpenArrears('m-001');
     expect(mine.map((r) => r.category)).toEqual(['membershipFee', 'advanceRepayment']);
-    expect((await ledger.listOpenForMember('m-002')).every((r) => r.membershipId === 'm-002')).toBe(true);
-    expect(await ledger.listOpenForMember('m-unknown')).toEqual([]);
+    expect((await ledger.listOpenArrears('m-002')).every((r) => r.membershipId === 'm-002')).toBe(true);
+    expect(await ledger.listOpenArrears('m-unknown')).toEqual([]);
   });
 
-  it('recording nothing is a no-op', async () => {
+  it('records waivers distinctly from arrears (separate stores)', async () => {
     const ledger = new InMemoryArrearsLedger();
-    await ledger.record([]);
-    expect(await ledger.listOpenForMember('m-001')).toEqual([]);
+    const wage = FLOOR + R(30) + R(20) + R(50) + R(15);
+    const alloc = allocateWage({ wagePaise: wage, dignityFloorPaise: FLOOR, claims: CLAIMS, cause: 'employer_caused' });
+
+    await ledger.recordArrears(arrearsFrom(alloc, meta({ membershipId: 'm-001' })));
+    await ledger.recordWaivers(waiverFrom(alloc, { membershipId: 'm-001', settlementId: 's-1', arisenOn: '2026-07-04', id: 's-1:waiver' }));
+
+    // The fee is a WAIVER, not an arrears; the advance is an arrears, not a waiver.
+    expect((await ledger.listOpenArrears('m-001')).map((r) => r.category)).toEqual(['advanceRepayment']);
+    expect((await ledger.listWaivers('m-001')).map((w) => w.category)).toEqual(['membershipFee']);
+  });
+
+  it('recording nothing is a no-op for both kinds', async () => {
+    const ledger = new InMemoryArrearsLedger();
+    await ledger.recordArrears([]);
+    await ledger.recordWaivers([]);
+    expect(await ledger.listOpenArrears('m-001')).toEqual([]);
+    expect(await ledger.listWaivers('m-001')).toEqual([]);
   });
 });

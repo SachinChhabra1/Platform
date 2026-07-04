@@ -26,10 +26,12 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   is ignored and take-home tracks the injected floor); runs `allocateWage`; returns the `WageAllocation`
   contract; default-deny 401/403, 400 validation, server-time header. **Concrete `the_floor` config NOT
   built** — it plugs into the seam with OD-6/ADR-0017.
-- ✅ **Arrears carry-forward record type + persistence DONE** — `arrears.ts` (`ArrearsRecord`, pure
-  `arrearsFrom`, `ArrearsLedger` port + in-memory seam), wired into the settlement endpoint (records
-  deferred claims; waived fee not carried). `arrears.test.ts` + endpoint arrears block, +9 tests
-  (wallet 39 → 48).
+- ✅ **Arrears carry-forward + waiver recording DONE** — `arrears.ts`: `ArrearsRecord` (owed, carried) and
+  a DISTINCT `WaiverRecord` (fee Nia forgave on an employer-caused shortfall — never owed), pure
+  `arrearsFrom`/`waiverFrom` derivations, `ArrearsLedger` port recording both kinds in separate stores +
+  in-memory seam. Wired into the settlement endpoint; policy stays in the allocator (`wage.ts` untouched).
+  Tests prove: arrears written on unpaid claims; waived fee recorded distinctly (no double-count); ledger
+  reconciles to the returned `WageAllocation`. `arrears.test.ts` + endpoint block, wallet 39 → 54.
 - 🛑 **Arrears RECOVERY is blocked on OD-7** — how recovery sits in the next wage's waterfall is NOT
   defined by ADR-0012. Per Step-5, building STOPPED and **opened OD-7**
   ([`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `FOUNDER_REVIEW.md`; `DECISIONS.md`;

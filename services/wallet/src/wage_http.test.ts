@@ -152,24 +152,56 @@ describe('Wage settlement HTTP — arrears carry forward (ADR-0012)', () => {
     server = build(20);
     const wage = R(20) + R(30) + R(20) + R(50) + R(15); // fee + advance defer
     await settle({ wage: { minor: wage, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' });
-    const open = await ledger.listOpenForMember(MEMBER);
+    const open = await ledger.listOpenArrears(MEMBER);
     expect(open.map((r) => r.category)).toEqual(['membershipFee', 'advanceRepayment']);
     expect(open.map((r) => r.amount.minor)).toEqual([R(10), R(25)]);
     expect(open.every((r) => r.status === 'open' && r.arisenOn === '2026-07-04')).toBe(true);
+    // Member-caused: the fee carried as arrears, so there is NO waiver.
+    expect(await ledger.listWaivers(MEMBER)).toEqual([]);
   });
 
-  it('does NOT record the waived membership fee on an employer-caused shortfall', async () => {
+  it('records the waived fee as a DISTINCT waiver on an employer-caused shortfall', async () => {
     server = build(20);
     const wage = R(20) + R(30) + R(20) + R(50) + R(15);
     await settle({ wage: { minor: wage, currency: 'INR' }, claims: CLAIMS, cause: 'employer_caused' });
-    const open = await ledger.listOpenForMember(MEMBER);
-    expect(open.map((r) => r.category)).toEqual(['advanceRepayment']); // fee waived, not carried
+    // The fee is NOT in arrears...
+    expect((await ledger.listOpenArrears(MEMBER)).map((r) => r.category)).toEqual(['advanceRepayment']);
+    // ...it is a waiver, recorded distinctly, with its reason and amount.
+    const waivers = await ledger.listWaivers(MEMBER);
+    expect(waivers).toHaveLength(1);
+    expect(waivers[0]).toMatchObject({
+      category: 'membershipFee',
+      reason: 'employer_caused_shortfall',
+      status: 'waived',
+    });
+    expect(waivers[0]!.amount.minor).toBe(R(10));
   });
 
-  it('records no arrears when the wage covers everything', async () => {
+  it('the ledger reconciles to the returned WageAllocation (arrears + waiver)', async () => {
+    server = build(20);
+    const wage = R(20) + R(30) + R(20) + R(50) + R(15);
+    const alloc = (await settle({ wage: { minor: wage, currency: 'INR' }, claims: CLAIMS, cause: 'employer_caused' })).json();
+
+    const arrears = await ledger.listOpenArrears(MEMBER);
+    const waivers = await ledger.listWaivers(MEMBER);
+    // Every recorded arrears amount equals the amount the response reported.
+    for (const r of arrears) {
+      expect(r.amount.minor).toBe(alloc.arrears[r.category === 'advanceRepayment' ? 'advance_repayment' : r.category].minor);
+    }
+    // The recorded waiver equals the response's waived fee.
+    expect(waivers[0]!.amount.minor).toBe(alloc.waived_membership_fee.minor);
+    // Full identity: what was not paid this cycle = recorded arrears + recorded waiver.
+    const recorded = arrears.reduce((s, r) => s + r.amount.minor, 0) + (waivers[0]?.amount.minor ?? 0);
+    const claimsTotal = CLAIMS_TOTAL;
+    const paidSum = Object.values(alloc.paid).reduce((s: number, m) => s + (m as { minor: number }).minor, 0);
+    expect(recorded).toBe(claimsTotal - paidSum);
+  });
+
+  it('records no arrears and no waiver when the wage covers everything', async () => {
     server = build(20);
     await settle({ wage: money(200), claims: CLAIMS, cause: 'none' });
-    expect(await ledger.listOpenForMember(MEMBER)).toEqual([]);
+    expect(await ledger.listOpenArrears(MEMBER)).toEqual([]);
+    expect(await ledger.listWaivers(MEMBER)).toEqual([]);
   });
 });
 

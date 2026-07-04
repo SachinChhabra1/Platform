@@ -70,30 +70,99 @@ export function arrearsFrom(allocation: WageAllocation, meta: ArrearsFromMeta): 
   return out;
 }
 
-/// The persistence seam for arrears (ports & adapters, like `WalletActivitySource`
-/// and `FloorSource`). The real, append-only, senior-reviewed ledger plugs in
-/// here later; this port defines only record + read of open arrears.
+/// A membership fee Nia FORGAVE on an employer-caused shortfall (ADR-0012).
+/// Recorded DISTINCTLY from arrears: a waiver is never owed and never recovered —
+/// it is an audit entry that Nia absorbed the fee because the employer failed
+/// ("if it is ever wrong, we fix it first"). Arrears say "the Member owes this
+/// later"; a waiver says "no one owes this — Nia ate it, on the record."
+export interface WaiverRecord {
+  readonly id: string;
+  readonly membershipId: string;
+  readonly settlementId: string;
+  /** Only the membership fee is waivable under ADR-0012. */
+  readonly category: 'membershipFee';
+  /** Waived amount, integer paise, always > 0. */
+  readonly amount: Money;
+  readonly reason: 'employer_caused_shortfall';
+  readonly arisenOn: string;
+  /** Terminal: a waiver is neither open nor recoverable. */
+  readonly status: 'waived';
+}
+
+export interface WaiverFromMeta {
+  readonly membershipId: string;
+  readonly settlementId: string;
+  readonly arisenOn: string;
+  readonly id: string;
+}
+
+/// Derive the waiver record from a settlement allocation (ADR-0012). At most one
+/// — the membership fee, and only when the allocator waived it (an employer-caused
+/// shortfall). Distinct from `arrearsFrom`: the waived fee is NOT in `arrears`
+/// (the allocator zeroed it there and reports it as `waivedMembershipFeePaise`),
+/// so the two derivations never double-count the same rupee.
+export function waiverFrom(allocation: WageAllocation, meta: WaiverFromMeta): WaiverRecord[] {
+  if (allocation.waivedMembershipFeePaise <= 0) return [];
+  return [
+    {
+      id: meta.id,
+      membershipId: meta.membershipId,
+      settlementId: meta.settlementId,
+      category: 'membershipFee',
+      amount: paise(allocation.waivedMembershipFeePaise),
+      reason: 'employer_caused_shortfall',
+      arisenOn: meta.arisenOn,
+      status: 'waived',
+    },
+  ];
+}
+
+/// The persistence seam for settlement carry-forward outcomes (ports & adapters,
+/// like `WalletActivitySource` and `FloorSource`). It RECORDS — it decides
+/// nothing (policy stays in the allocator, ADR-0012). Two DISTINCT record kinds,
+/// both from the same allocation and traceable to the same `settlementId`:
+///   • arrears — a claim the Member still owes (carried forward, status 'open')
+///   • waivers — a fee Nia forgave (status 'waived'; never owed, never recovered)
+/// The real append-only, senior-reviewed ledger plugs in here later.
 export interface ArrearsLedger {
   /** Persist carry-forward arrears from a settlement. Recording none is a no-op. */
-  record(records: readonly ArrearsRecord[]): Promise<void>;
+  recordArrears(records: readonly ArrearsRecord[]): Promise<void>;
+  /** Persist waivers from a settlement (recorded distinctly from arrears). */
+  recordWaivers(records: readonly WaiverRecord[]): Promise<void>;
   /** The Member's outstanding (open) arrears, in the order they were recorded. */
-  listOpenForMember(membershipId: string): Promise<readonly ArrearsRecord[]>;
+  listOpenArrears(membershipId: string): Promise<readonly ArrearsRecord[]>;
+  /** The Member's recorded waivers, in the order they were recorded. */
+  listWaivers(membershipId: string): Promise<readonly WaiverRecord[]>;
 }
 
 /// In-memory seam for wiring and tests. Not the durable ledger — no idempotency,
-/// no recovery, no audit; those belong to the persistent-ledger slice and OD-7.
+/// no recovery, no audit persistence; those belong to the persistent-ledger slice
+/// and OD-7. Arrears and waivers are held in separate stores (recorded distinctly).
 export class InMemoryArrearsLedger implements ArrearsLedger {
-  readonly #byMember = new Map<string, ArrearsRecord[]>();
+  readonly #arrears = new Map<string, ArrearsRecord[]>();
+  readonly #waivers = new Map<string, WaiverRecord[]>();
 
-  async record(records: readonly ArrearsRecord[]): Promise<void> {
+  async recordArrears(records: readonly ArrearsRecord[]): Promise<void> {
     for (const rec of records) {
-      const list = this.#byMember.get(rec.membershipId) ?? [];
+      const list = this.#arrears.get(rec.membershipId) ?? [];
       list.push(rec);
-      this.#byMember.set(rec.membershipId, list);
+      this.#arrears.set(rec.membershipId, list);
     }
   }
 
-  async listOpenForMember(membershipId: string): Promise<readonly ArrearsRecord[]> {
-    return [...(this.#byMember.get(membershipId) ?? [])].filter((r) => r.status === 'open');
+  async recordWaivers(records: readonly WaiverRecord[]): Promise<void> {
+    for (const rec of records) {
+      const list = this.#waivers.get(rec.membershipId) ?? [];
+      list.push(rec);
+      this.#waivers.set(rec.membershipId, list);
+    }
+  }
+
+  async listOpenArrears(membershipId: string): Promise<readonly ArrearsRecord[]> {
+    return [...(this.#arrears.get(membershipId) ?? [])].filter((r) => r.status === 'open');
+  }
+
+  async listWaivers(membershipId: string): Promise<readonly WaiverRecord[]> {
+    return [...(this.#waivers.get(membershipId) ?? [])];
   }
 }
