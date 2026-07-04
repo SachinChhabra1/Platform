@@ -70,8 +70,18 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   tests). +10 tests (wallet 86 → 96).
 - ⏭ **Remaining R5 (infra, no OD):** the RafiQi orchestrator wiring (`authorizeAction` → auto-take) and
   reversal → target money-path compensation (e.g. savings OD-5).
-- ➡️ **Now: R6 Offline** (ADR-0015) — per-record-type conflict resolution: money
-  server-authoritative-with-reconciliation, intent last-write-wins, logs merge.
+**R6 — Offline conflict resolution (ADR-0015/OD-4) — domain + endpoint DONE.**
+- ✅ `offline_sync.ts` + `openapi.sync.yaml` + `sync_http.ts`: per-record-class `reconcile` — **money
+  server-authoritative-with-reconciliation** (an offline money write is a proposal; applied only if the
+  server hasn't diverged; a diverged write → the Operator queue, **never silently overwritten**),
+  **intent last-write-wins**, **append-only merge** (union/dedup by id). `POST /v1/sync` batch endpoint
+  (default-deny, own records), reconciliation queue keyed by record id. +16 tests (wallet 96 → 112).
+- ⏭ **Remaining R6 (infra, no OD):** the real Operator reconciliation surface (works the money-conflict
+  queue) + a durable sync store.
+- ⏭ **Next:** R7 Savings (ADR-0016), R8 Floor/dignity gates (ADR-0017); R2 native (Founder go-ahead);
+  and the Founder-gated seams already surfaced — OD-7 (arrears recovery) and the concrete `the_floor`
+  config (OD-6/ADR-0017). Each strictly against its locked ADR; if a slice hits an uncovered decision,
+  STOP and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

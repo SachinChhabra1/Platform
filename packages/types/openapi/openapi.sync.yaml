@@ -1,0 +1,145 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Offline Sync
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    Offline write reconciliation (R6; ADR-0015 / OD-4, locked in
+    `/ENGINEERING_LOCK.md`). The Member works offline; writes queue and sync later.
+    On conflict, resolution is **per record class**:
+      • money       → server-authoritative-with-reconciliation. An offline money
+                      write is a PROPOSAL; it is applied only if the server has not
+                      diverged, never silently overwritten. A genuine conflict
+                      surfaces to the Operator (never lost).
+      • intent      → last-write-wins (the Member's latest preference stands).
+      • append_only → merge (union by id; an immutable fact is deduped).
+    The client submits a batch and gets a per-write outcome. Money is integer paise
+    (in the opaque payloads); this layer reconciles, it does not interpret amounts.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: sync
+    description: Offline write reconciliation, per record class (ADR-0015).
+
+paths:
+  /sync:
+    post:
+      operationId: submitOfflineWrites
+      tags: [sync]
+      summary: Reconcile a batch of queued offline writes.
+      description: >
+        Submits the Member's queued offline writes (default-deny; own records
+        only). Each is reconciled by its record class and a per-write outcome is
+        returned. Money conflicts are queued to the Operator, not applied.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - $ref: "./openapi.base.yaml#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncRequest"
+      responses:
+        "200":
+          description: The per-write reconciliation outcomes, in submission order.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncResult"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    RecordClass:
+      type: string
+      enum: [money, intent, append_only]
+      description: Determines the conflict-resolution policy (ADR-0015).
+
+    SyncRecord:
+      type: object
+      required: [id, record_class, updated_at, payload]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        record_class:
+          $ref: "#/components/schemas/RecordClass"
+        updated_at:
+          type: string
+          format: date-time
+          description: The record's version/updated-at, used for divergence and last-write-wins.
+        payload:
+          type: object
+          description: Opaque record body; this layer does not interpret it.
+          additionalProperties: true
+
+    OfflineWrite:
+      type: object
+      required: [record]
+      additionalProperties: false
+      properties:
+        record:
+          $ref: "#/components/schemas/SyncRecord"
+        base_updated_at:
+          type: string
+          format: date-time
+          description: >
+            The server version the client last saw (its base). Used to detect
+            divergence for money records; absent means the client had no server base.
+
+    SyncRequest:
+      type: object
+      required: [writes]
+      additionalProperties: false
+      properties:
+        writes:
+          type: array
+          items:
+            $ref: "#/components/schemas/OfflineWrite"
+
+    ReconcileOutcome:
+      type: string
+      enum: [applied, kept_server, merged, conflict_operator]
+      description: >
+        `applied` (the write took effect), `kept_server` (server was newer, LWW),
+        `merged` (append-only union), `conflict_operator` (money diverged — queued
+        to the Operator, server unchanged).
+
+    SyncResult:
+      type: object
+      required: [results]
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            required: [id, outcome]
+            additionalProperties: false
+            properties:
+              id:
+                type: string
+              outcome:
+                $ref: "#/components/schemas/ReconcileOutcome"
+
+security:
+  - MemberSession: []

@@ -19,6 +19,10 @@ ADRs 0012–0017). Built strictly against the lock; `services/wallet` 20 → 96 
 - **R5 RafiQi (ADR-0014):** scoped/capped/time-bounded/revocable standing authorisation with a
   per-action-confirmation fallback; 24h action reversibility. Member-facing endpoints
   (`openapi.rafiqi.yaml`: grant/revoke/list; list/read/reverse — 409 after the window).
+- **R6 Offline (ADR-0015):** per-record-class reconciliation — money
+  server-authoritative-with-reconciliation (an offline money write is a proposal; a diverged write goes
+  to the Operator queue, **never silently overwritten**), intent last-write-wins, append-only merge;
+  `POST /v1/sync` batch endpoint (`openapi.sync.yaml`).
 - **OD-7 opened** during R3 (Step-5 guardrail): arrears **recovery** ordering is not covered by ADR-0012,
   so building stopped and opened [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md)
   rather than invent it.

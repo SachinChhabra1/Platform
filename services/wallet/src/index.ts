@@ -93,3 +93,20 @@ export {
   InMemoryRafiqiActionStore,
 } from './rafiqi_ledger.js';
 export { type RafiqiRouteDeps, registerRafiqiRoutes } from './rafiqi_http.js';
+// Offline write reconciliation (R6; ADR-0015) — per record class: money
+// server-authoritative-with-reconciliation, intent last-write-wins, append merge.
+export {
+  type RecordClass,
+  type SyncRecord,
+  type OfflineWrite,
+  type ReconcileOutcome,
+  type ReconcileResult,
+  type SyncStore,
+  type ReconciliationItem,
+  type ReconciliationQueue,
+  reconcile,
+  applyOfflineWrite,
+  InMemorySyncStore,
+  InMemoryReconciliationQueue,
+} from './offline_sync.js';
+export { type SyncRouteDeps, registerSyncRoutes } from './sync_http.js';
