@@ -88,6 +88,7 @@ export {
   type OperatorEscalations,
   type SlaSweepResult,
   InMemoryRemittanceStore,
+  DurableRemittanceStore,
   InMemoryOperatorEscalations,
   escalateIfStalled,
   sweepRemittanceSla,
@@ -145,6 +146,14 @@ export {
   InMemoryReconciliationQueue,
 } from './offline_sync.js';
 export { type SyncRouteDeps, registerSyncRoutes } from './sync_http.js';
+// Durable persistence primitive (infra) — the keyed DurableStore<T> interface +
+// a dependency-free file-backed impl (survives restart) + in-memory. Production
+// durable adapter is Postgres (ADR-0006) implementing the same interface.
+export {
+  type DurableStore,
+  InMemoryDurableStore,
+  FileDurableStore,
+} from './durable_store.js';
 // Savings withdrawal mechanics (R7; ADR-0016) — instant-to-Wallet, T+n settle,
 // interest to the Member net of a disclosed fee, no early-withdrawal penalty. The
 // rate/formula is the InterestAccrualPolicy seam (Founder-owned pricing; zero

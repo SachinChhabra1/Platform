@@ -7,6 +7,7 @@
 /// carry the funding settlement id. The real append-only ledger plugs in here later.
 
 import { checkSla, type Remittance } from './remittance.js';
+import { InMemoryDurableStore, type DurableStore } from './durable_store.js';
 
 export interface RemittanceStore {
   /** Persist a remittance (upsert by id) so its state + history are auditable. */
@@ -40,6 +41,35 @@ export class InMemoryRemittanceStore implements RemittanceStore {
 
   async listUnconfirmed(): Promise<readonly Remittance[]> {
     return [...this.#byId.values()].filter((r) => r.state === 'initiated' || r.state === 'in_transit');
+  }
+}
+
+/// A DURABLE `RemittanceStore` composed over any `DurableStore<Remittance>` — pass
+/// a `FileDurableStore` (offline) or the Postgres-backed adapter (ADR-0006) and
+/// the remittance state survives restart, with no change to the rail adapter or
+/// the SLA sweep (they depend only on the `RemittanceStore` port). The list
+/// queries scan `values()`; a real Postgres adapter would push them down to SQL.
+export class DurableRemittanceStore implements RemittanceStore {
+  readonly #backing: DurableStore<Remittance>;
+
+  constructor(backing: DurableStore<Remittance> = new InMemoryDurableStore<Remittance>()) {
+    this.#backing = backing;
+  }
+
+  async save(remittance: Remittance): Promise<void> {
+    await this.#backing.put(remittance.id, remittance);
+  }
+
+  async get(id: string): Promise<Remittance | undefined> {
+    return this.#backing.get(id);
+  }
+
+  async listForMember(membershipId: string): Promise<readonly Remittance[]> {
+    return (await this.#backing.values()).filter((r) => r.membershipId === membershipId);
+  }
+
+  async listUnconfirmed(): Promise<readonly Remittance[]> {
+    return (await this.#backing.values()).filter((r) => r.state === 'initiated' || r.state === 'in_transit');
   }
 }
 
