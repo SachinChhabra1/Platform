@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app.dart';
 import 'features/auth/phone_sign_in_page.dart';
+import 'widgets/nia_error_boundary.dart';
 
 /// Developer Preview entrypoint — opens on the **whole journey**: Phone → Session
 /// issued → the app (Home → Wallet → Membership → Family), all against the
@@ -16,6 +17,7 @@ import 'features/auth/phone_sign_in_page.dart';
 /// / closed standings (see `nia preview` output). The offline Product Review
 /// Prototype is unchanged — that is still `main.dart`.
 void main() {
+  installNiaCrashBoundary();
   const String baseUrl = String.fromEnvironment(
     'NIA_API_BASE_URL',
     defaultValue: 'http://127.0.0.1:8080',

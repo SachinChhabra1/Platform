@@ -3,6 +3,29 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Founder rulings encoded; R9 → matrix; R9.0 + R9.5 categories closed
+
+- **Two Founder rulings written into governance.** (1) **Visual prototypes are design references, not
+  implementation** — the Next.js `nia-book-design-exploration` does not supersede ADR-0002; Flutter is
+  canonical; engineering may translate approved visual ideas into Flutter with no approval when
+  behaviour is unchanged (`REPOSITORY_CONSTITUTION.md` rule 7; **Q10 → Resolved**). (2) **Finish
+  categories, not files** — audit → fix → verify → close a whole category; never leave one partial if
+  it can be finished this slice (`AUTONOMOUS-LOOP.md`).
+- **R9 restructured into a category matrix** (`ROADMAP.md`): Async / Empty / Offline / Crash ✅;
+  Accessibility next; Motion / Typography audit-only (fixes to frozen screens gated); Performance gated
+  on the native build.
+- **R9.0 closed — test-count restatement.** The exact count lived in ~10 docs (churn every slice). Now
+  canonical in `PROJECT_STATUS.md` + the `NEXT_TASK` verification stamp only; peripheral docs describe
+  the suite without a number. (This slice's count update touched 2 files, not 10.)
+- **R9.5 closed — crash recovery.** No `ErrorWidget.builder` existed → a widget crash showed Flutter's
+  raw error box. Added `installNiaCrashBoundary()` (release/profile only; debug keeps the dev red
+  screen) + calm `NiaErrorScreen` ("Nia is still here — your money and your record are safe"), wired
+  into both entrypoints. +2 tests. Suite 85 → **87**.
+- **R9.2 formally complete:** confirmed by grep that no async surface was missed — there is no
+  session-refresh flow (documented N/A in the audit).
+- **Verified:** `nia verify` green, analyze clean, no drift, goldens byte-identical.
+- **Next category to close:** **R9.4 Accessibility** (whole-app audit).
+
 ## 2026-07-04 — R9.2 async state audit (complete state machines) + design-dir question
 
 - **Founder raised the bar:** don't fix one `FutureBuilder` and miss five — inventory **every** async

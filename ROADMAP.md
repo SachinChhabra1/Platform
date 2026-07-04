@@ -40,16 +40,36 @@ and work R9 — the final 10% that turns a demo into software people trust. Not 
 **repository inspection**, each item tagged by authority. The loop executes the 🔓 items; 🔒 items are
 audited and recorded, not faked. Loop rule: [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md).
 
+**Finish categories, not files** (Founder ruling): each category runs **audit → fix → verify → close**;
+never leave one partially complete if it can be finished within the slice (`docs/AUTONOMOUS-LOOP.md`).
+
+### Category matrix
+
+| Category | Audit | Fix | Tests | Complete | Notes |
+|---|:--:|:--:|:--:|:--:|---|
+| Async states | ✅ | ✅ | ✅ | ✅ | Every implemented surface — [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md) |
+| Empty states | ✅ | ✅ | ✅ | ✅ | Confirmed within the async audit (`my_family` "Nothing sent home yet"; wallet N/A) |
+| Offline | ✅ | ✅ | ✅ | ✅ | Folded into async (sign-in offline kept distinct from default-deny) |
+| Crash recovery | ✅ | ✅ | ✅ | ✅ | R9.5 — global `ErrorWidget.builder` calm fallback |
+| Housekeeping · test-count restatement | ✅ | ✅ | — | ✅ | R9.0 — consolidated to one canonical count |
+| Accessibility | ⬜ | ⬜ | ⬜ | ⬜ | Whole-app: semantic labels, tap targets ≥48px, contrast, text scale |
+| Motion | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changing a frozen screen needs a Founder-approved screen change |
+| Typography | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changes to frozen screens gated |
+| Performance (launch/low-end/battery/memory) | 🔒 | 🔒 | — | 🔒 | Gated on the native build (K1/R2) — unmeasurable web-only |
+
+Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔒 gated · — N/A. A category is **Complete** only
+when every applicable cell is ✅.
+
 **In-authority + executable now (🔓) — the loop works these:**
 
 | # | Item | Grounding (found by inspection) | Status |
 |---|------|--------------------------------|--------|
-| R9.0 | **Consolidate the restated test count** | The exact suite count is hard-restated in ~10 docs, so every code slice must bump all of them (Constitution rule 5: *never restate — reference*). Make one canonical count; point the rest at it. | 🔓 TODO |
+| R9.0 | **Consolidate the restated test count** | ✅ Canonical count now lives only in `docs/PROJECT_STATUS.md` (+ the `NEXT_TASK` per-session verification stamp); the ~6 peripheral docs describe the suite without a number. A test-adding slice updates one file, not ten. | ✅ DONE |
 | R9.1 | **Live-surface error / offline states** | ✅ `NiaAsyncView` (loading · calm error · Retry) now backs the money surfaces (`home` balance, `wallet_page`, `my_family_page`) and `profile_page`'s standing — an API failure / airplane mode / timeout shows a recoverable error, not an endless spinner. `membership_header` degrades gracefully to a placeholder by design (identity chrome). Golden-neutral; +5 tests. | ✅ DONE |
 | R9.2 | **Async state audit** — complete state machine for every async surface | ✅ Full inventory in [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md). Hardened `membership_header` (identity) and `phone_sign_in` (offline now distinct from default-deny); documented the Home-greeting graceful exception; confirmed empty states intentional (`my_family`). Every **implemented** async surface has a complete state model. +3 tests. | ✅ DONE |
-| R9.3 | **Loading states reassure** | Bare `CircularProgressIndicator`s on live surfaces — make them calm/consistent, not a raw spinner. | 🔓 TODO |
+| R9.3 | **Loading states reassure** | ✅ Loading is calm and consistent via `NiaAsyncView`/`NiaAsyncLoading` (each surface keeps its footprint); no raw uncontained spinners on the live surfaces. | ✅ DONE |
 | R9.4 | **Accessibility audit** | 16 semantics uses today; `nia_bottom_nav` is exemplary (Semantics + Tooltip). Audit icon-only controls (SOS, chevrons), `Monogram`/image semantics, tap targets ≥48px, text-scale resilience, contrast vs Book III. Semantics are golden-neutral. | 🔓 TODO |
-| R9.5 | **Crash recovery / error boundary** | No custom `ErrorWidget.builder`; a widget build error shows the raw red screen. Add a calm release fallback. | 🔓 TODO |
+| R9.5 | **Crash recovery / error boundary** | ✅ `installNiaCrashBoundary()` sets `ErrorWidget.builder` (release/profile; debug keeps the dev red screen) to a calm `NiaErrorScreen` ("Nia is still here — your money and your record are safe"); wired into both entrypoints. +2 tests. | ✅ DONE |
 
 **In-authority to AUDIT, changes gated (🟡) — a change to a frozen screen needs a Founder-approved screen change (golden-risk):**
 

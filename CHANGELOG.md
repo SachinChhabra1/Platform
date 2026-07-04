@@ -2,6 +2,18 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## R9 matrix + Founder rulings; R9.0 count + R9.5 crash recovery (2026-07-04)
+
+- **Governance:** `REPOSITORY_CONSTITUTION.md` rule 7 — visual prototypes (the Next.js exploration) are
+  design references only; Flutter stays canonical (ADR-0002); translating visual ideas needs no
+  approval when behaviour is unchanged (**Q10 resolved**). `AUTONOMOUS-LOOP.md` — "finish categories,
+  not files." R9 is now a **category matrix** (`ROADMAP.md`).
+- **R9.0** — consolidated the restated test count to one canonical home (`PROJECT_STATUS.md` + the
+  `NEXT_TASK` verification stamp); peripheral docs de-numbered.
+- **R9.5** — crash recovery: `installNiaCrashBoundary()` + calm `NiaErrorScreen` replace Flutter's raw
+  error box in release/profile (debug keeps the dev red screen), wired into both entrypoints. +2 tests;
+  suite 85 → 87. Goldens byte-identical.
+
 ## R9.2 — async state audit: complete state machines (2026-07-04)
 
 - Built [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md) — the living inventory of every async

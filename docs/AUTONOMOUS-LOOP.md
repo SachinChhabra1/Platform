@@ -48,6 +48,17 @@ no technical debt, no safe refactor, no documentation drift, no missing tests, *
 item left**, and no Founder-approved product work available. Then surface the gate — never manufacture
 make-work.
 
+**Finish categories, not files** (Founder ruling, 2026-07-04 — think like a staff engineer). Work
+production qualities as whole **categories** — async states, empty states, accessibility, offline,
+crash recovery, motion, typography, performance — each run **audit → fix → verify → close**, tracked
+as the R9 matrix in `ROADMAP.md`. **Never leave a category partially complete if it can reasonably be
+finished within the current slice** (don't fix one `FutureBuilder` and miss five; don't leave five
+surfaces at 80%). The higher-leverage move is a **whole-app audit** — walk every implemented screen
+and answer every quality question (does every async surface recover? every button carry a semantic
+label? every tap target meet the minimum? every animation terminate? every number format? every
+overflow degrade? every API failure recover? every retry work?) — then close the gaps by category.
+Finish systems, not widgets.
+
 ## Engineering authority
 
 **May do autonomously** (no Founder sign-off):

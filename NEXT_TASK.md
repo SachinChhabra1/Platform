@@ -5,22 +5,23 @@ Start from [`START_HERE.md`](START_HERE.md).
 
 ## Status: Production Readiness Lead mode — R9 in progress (in-authority work available)
 
-*Last verified: 2026-07-04 — `nia verify` green, **85 tests / 18 files**, analyze clean, no drift,
+*Last verified: 2026-07-04 — `nia verify` green, **87 tests / 19 files**, analyze clean, no drift,
 tree clean.*
 
 **Founder ruling (2026-07-04):** when the feature roadmap is gated, become **Production Readiness
 Lead** and work **R9 — Production Readiness** ([`ROADMAP.md`](ROADMAP.md)) — the final 10% that makes
 the app trustworthy, not new features. R1 is complete; the board freeze is lifted.
 
-**Done this session:** R9.1 + R9.1b + R9.2 — the **async state audit**. Every implemented async
-surface now has a complete state machine (loading → success → error → retry, offline where a network
-is involved); a calm error + Retry (`NiaAsyncView`) replaces the infinite spinner, `membership_header`
-and `phone_sign_in` are hardened (offline distinct from default-deny), and the full inventory lives in
-[`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md). Suite 77 → 85.
+**Done this session:** Founder rulings encoded (visual prototypes = design references, Constitution
+rule 7; "finish categories, not files", `AUTONOMOUS-LOOP.md`); R9 restructured into a **category
+matrix**. Closed categories: **Async / Empty / Offline** (the async audit — [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md)),
+**R9.0** test-count consolidation, **R9.5** crash recovery (calm `NiaErrorScreen` replaces the raw
+crash box). Suite 77 → 87.
 
-**Next in-authority (pick up here):** R9.0 consolidate the restated test count (kills the per-slice
-doc churn) · R9.4 accessibility audit (TalkBack/VoiceOver, tap targets ≥48px, contrast, text scale) ·
-R9.5 crash-recovery error boundary. See R9 in `ROADMAP.md`.
+**Next in-authority (pick up here) — finish the next whole category:** **R9.4 Accessibility** (whole-app
+audit → fix → verify → close: semantic labels on every control, tap targets ≥48px, contrast, text
+scale). Then the **Motion** and **Typography** audits (audit in-authority; changes to frozen screens
+need a Founder-approved screen change). See the R9 matrix in `ROADMAP.md`.
 
 **Still Founder-gated (unchanged) — these are what move the product to real production:**
 

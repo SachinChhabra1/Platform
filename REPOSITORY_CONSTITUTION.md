@@ -45,6 +45,13 @@ State docs                      docs/PROJECT_STATUS.md · ROADMAP.md · NEXT_TAS
    never copied into another document.
 6. **When unsure, don't guess.** Record the question in `FOUNDER_REVIEW.md` and keep working
    elsewhere; do not invent intent.
+7. **Visual prototypes are not implementation** (Founder ruling, 2026-07-04). React/Vercel
+   prototypes (e.g. `nia-book-design-exploration`) are **design references only** — they explore
+   visual design, motion, hierarchy, and interaction. They do **not** supersede ADR-0002:
+   **Flutter remains the canonical client architecture.** Engineering may **freely translate
+   approved visual ideas into Flutter with no Founder approval when product behaviour is
+   unchanged** (it stays inside "alter visual design within established patterns"). A change that
+   alters product behaviour still needs the Founder. There is no architecture decision open here.
 
 ## Where each thing lives (canonical homes)
 

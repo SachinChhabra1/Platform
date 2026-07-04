@@ -18,7 +18,11 @@ flutter test test/niabook_golden_test.dart --update-goldens
 Repository-wide gate: **`nia verify`** (from repo root, after `source scripts/_env.sh`) runs the
 suite plus a non-destructive codegen-drift check. It must end `nia verify passed`.
 
-## The suite (85 tests today)
+## The suite
+
+> **Canonical test count lives in one place** — [`PROJECT_STATUS.md`](PROJECT_STATUS.md) (and the
+> per-session verification stamp in `NEXT_TASK.md`). Other docs describe the suite without restating a
+> number, so a slice that adds tests updates one file, not ten (Constitution rule 5 — R9.0).
 
 - **Screen contracts** — `pillars_test.dart` (each pillar's promise, hero, benefit-led copy,
   cross-pillar tags, emotional close) and `niabook_page_test.dart`.

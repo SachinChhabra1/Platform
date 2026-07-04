@@ -35,6 +35,11 @@ loading · calm error · Retry, no alarm colour — Book III).
 | Sign-in | Session issuance (`phone_sign_in_page`) | ✓ | ✓ | N/A | ✓³ | ✓ | ✓³ | ✓ | **Complete** (R9.2) |
 | Profile | Sign-out (`profile_page._confirmSignOut`) | — | — | — | — | — | — | — | **Not live** — mock (`prototypeNoOp`); the working revoke is spec 0002 Slice C (paused). Re-audit when built. |
 
+**Session refresh / token refresh — not implemented.** There is no refresh or re-auth async flow in
+the app today (grep confirms: the only awaited fetches are the sources above + session issuance).
+Re-establishing a lost session is an in-person Operator flow (a mock — spec 0002 Slice C/D, paused).
+Add a row here and give it a complete state model when that flow is built.
+
 Non-fetch async (`openOperatorSheet`, `openNiaEmergency` in `widgets/common.dart`) are sheet
 presentations, not data boundaries — no load/error model applies. The offline board app (`main.dart`)
 uses the sample sources, which never fail; these states matter in **live/preview** mode.

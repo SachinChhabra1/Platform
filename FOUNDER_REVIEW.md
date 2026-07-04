@@ -57,25 +57,17 @@ References.
 - **Impact:** turns configured CI into enforced CI. **Urgency:** low. **Blocking?** No.
   **References:** `.github/workflows/ci.yml`, `ENGINEERING_AUDIT.md`.
 
-### Q10 — The `nia-book-design-exploration` (Next.js) UI: adopt as visual design, or change the client stack?
-- **Context:** you shared `~/Desktop/nia-book-design-exploration/` (Next.js 16 / React 19 / shadcn — a
-  NiaBook prototype in `components/niabook`) and said *"this is the UI we will use."* The production
-  client today is the **Flutter** Member app (ADR-0002), board-approved, 85 tests, five frozen goldens.
-- **Options:** (a) treat it as the **target visual design** to port progressively into the Flutter app
-  (keeps ADR-0002, the tests, and the frozen OS); (b) adopt it **and migrate the client stack** to
-  Next.js/React (supersedes ADR-0002; discards the Flutter OS + tests + goldens); (c) build a NiaBook
-  web surface in parallel with Flutter.
-- **Recommendation:** (a) — treat it as the visual target and port into Flutter, **unless** you intend
-  a deliberate stack change. A stack migration is a major architecture decision that should supersede
-  ADR-0002 via a new ADR and would restart much of the hardening/testing already done. I did **not**
-  assume; the R9 async hardening applies regardless of which stack renders it.
-- **Impact:** potentially very large (architecture). **Urgency:** medium — it decides what R9 and the
-  backend integration target. **Blocking?** No. **References:** `docs/adr/` (ADR-0002), `DESIGN_SYSTEM_LOCK.md`,
-  the design directory.
-
 ---
 
 ## Resolved
+
+- **Q10 — the `nia-book-design-exploration` (Next.js) UI.** ✅ Resolved (Founder, 2026-07-04): it is a
+  **design system / reference only** — it explores visual design, motion, hierarchy, and interaction;
+  it is **not** a candidate implementation and does **not** supersede ADR-0002. **Flutter remains the
+  canonical client.** Engineering studies the design, extracts principles, and implements them in
+  Flutter, preserving the Flutter architecture — **no Founder approval needed when product behaviour is
+  unchanged.** Written into `REPOSITORY_CONSTITUTION.md` (tie-break rule 7). No architecture decision
+  remains open.
 
 - **Q8 — per-pillar emotional register.** ✅ Approved 2026-07-04: **no colour for emotion**
   (colour stays reserved for state/success/warning/error/progress). Differentiate via typography
