@@ -18,9 +18,17 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   Co-located in the wallet money domain because the offline dev sandbox can't add a new pnpm workspace
   member (`tsx`→`esbuild` needs network metadata); **extract to `services/wage` when online** (noted in
   `wage.ts`).
-- ⏭ **Next R3 slices:** the wage-posting endpoint (calls `allocateWage`); the `arrears` ledger record type;
-  `openapi.wage.yaml` contract (auto-gated by the glob lint); the dignity-floor input wired from the Floor
-  (ADR-0017/OD-6). Each strictly against `ENGINEERING_LOCK.md`.
+- ✅ **`openapi.wage.yaml` contract DONE** — `POST /v1/wage/settlements` (`settleWage`); auto-gated by the
+  glob lint; validates clean. The dignity floor is deliberately not a request field.
+- ✅ **Wage-posting endpoint DONE** — `registerWageSettlementRoutes` (`services/wallet/src/wage_http.ts`,
+  `wage_http.test.ts`, +10 tests) on a **`FloorSource` seam** (`floor.ts`): reads the dignity floor
+  server-side through the injected port, never from the client (tests prove a smuggled `dignity_floor:0`
+  is ignored and take-home tracks the injected floor); runs `allocateWage`; returns the `WageAllocation`
+  contract; default-deny 401/403, 400 validation, server-time header. **Concrete `the_floor` config NOT
+  built** — it plugs into the seam with OD-6/ADR-0017.
+- ⏭ **Next R3 slices:** the `arrears` ledger record type (persist carried-forward arrears + the waived
+  fee); wiring settlements into the wallet activity ledger. Then R4–R8 per their locked ADRs. Each
+  strictly against `ENGINEERING_LOCK.md`; if a slice hits an uncovered decision, STOP and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

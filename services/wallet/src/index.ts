@@ -33,3 +33,7 @@ export {
   DEDUCTION_ORDER,
   allocateWage,
 } from './wage.js';
+// The dignity-floor seam (server-side; OD-6/ADR-0017 fills the concrete config later).
+export { type FloorSource, InMemoryFloorSource } from './floor.js';
+// The wage-settlement endpoint (POST /v1/wage/settlements; contract openapi.wage.yaml).
+export { type WageRouteDeps, registerWageSettlementRoutes } from './wage_http.js';
