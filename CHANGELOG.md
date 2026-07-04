@@ -34,6 +34,12 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## R1a — the ○→✓ motion (freeze lifted, 2026-07-04)
+
+- **R1a** — board freeze lifted; started the craftsmanship backlog. Added `MovementCheck` and made
+  NiaBook's signature waiting→true motion visible on load (the "unlocked" tally + each became-true
+  line, staggered). No copy/layout change; goldens byte-identical. Suite 72 → 75.
+
 ## Continuous loop — audit inputs + coverage (2026-07-04)
 
 - **E6** — `test/common_test.dart`: 4 tests for `widgets/common.dart` (Monogram, SectionLabel,

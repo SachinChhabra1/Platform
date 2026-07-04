@@ -19,9 +19,10 @@ the operating system were rebuilt to App-Store quality on a shared component set
   consistent; all five goldens regenerate byte-identical.
 - **Verification:** `nia verify` green · `flutter analyze` clean · 49 tests pass · no codegen
   drift. Recovery bundle `nia-final-integration-20260701-164454.bundle` (verified).
-- **State:** **frozen for the board meeting.** The craftsmanship backlog
-  (`docs/design/niabook/niabook-next-iteration.md`) is deferred by Founder decision until
-  after the board meeting. See [`ROADMAP.md`](../ROADMAP.md) for what is locked vs. unlocked.
+- **State:** **board freeze LIFTED (2026-07-04).** R1 (the craftsmanship backlog,
+  `docs/design/niabook/niabook-next-iteration.md`) is in progress — first slice R1a shipped: the
+  ○→✓ movement is now visible on NiaBook (`MovementCheck`), goldens byte-identical. See
+  [`ROADMAP.md`](../ROADMAP.md) for R1's remaining items and the now-unlocked E4.
 - **Demo:** the offline board build (`apps/member/lib/main.dart`) runs as a web app; a live
   demo is served locally + via a temporary tunnel (see `~/Desktop/nia-board-demo/OPEN-ME.md`).
   There is no native iOS/Android build — web only.

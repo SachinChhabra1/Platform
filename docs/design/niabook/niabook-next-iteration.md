@@ -117,6 +117,9 @@ The founder review ("does it feel like one product, and does each screen deliver
 2. **NiaBook doesn't show the ○→✓ motion.** The core idea — a line moving from waiting
    to true — is narrated in the deck but only implied on screen ("4 unlocked · 9
    waiting"). Make the movement visible; it is the most distinctive idea in the product.
+   **✅ Done (R1a, freeze lifted):** the shared `MovementCheck` plays a restrained ○→✓
+   on load — on the "unlocked" tally and on each line that became true (staggered down
+   the left column). Settles on ✓, so goldens stay byte-identical. Items 1, 3, 4 remain.
 3. **Consistency is flattening emotional register.** One shared visual language nails
    "one product" but Family doesn't yet *feel* warmer than Work — the difference is
    carried only by copy. Find a tonal shift per promise without breaking the system.

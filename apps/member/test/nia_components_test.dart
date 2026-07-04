@@ -150,6 +150,26 @@ void main() {
     });
   });
 
+  group('MovementCheck (the ○→✓ motion)', () {
+    Opacity opacityOf(WidgetTester t, IconData icon) => t.widget<Opacity>(
+        find.ancestor(of: find.byIcon(icon), matching: find.byType(Opacity)).first);
+
+    testWidgets('begins as waiting — ○ shown, ✓ hidden', (WidgetTester t) async {
+      await t.pumpWidget(const MaterialApp(
+          home: Scaffold(body: Center(child: MovementCheck(size: 16)))));
+      await t.pump(); // first frame, animation at t≈0
+      expect(opacityOf(t, Icons.radio_button_unchecked).opacity, greaterThan(0.5));
+      expect(opacityOf(t, Icons.check_circle).opacity, lessThan(0.5));
+      await t.pumpAndSettle();
+    });
+
+    testWidgets('settles on true — ✓ fully shown', (WidgetTester t) async {
+      await _pump(t, const MovementCheck(size: 16)); // pumpAndSettle
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(opacityOf(t, Icons.check_circle).opacity, 1.0);
+    });
+  });
+
   group('NiaReveal', () {
     testWidgets('settles to fully visible (opacity 1) with the child shown',
         (WidgetTester t) async {

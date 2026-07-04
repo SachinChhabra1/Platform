@@ -11,14 +11,6 @@ References.
 
 ## Open
 
-### Q1 — Lift the board freeze / start the craftsmanship backlog (R1)?
-- **Context:** the five screens are frozen for the board demo. R1 (NiaBook ○→✓ motion, per-pillar
-  emotional register, daily-return pull) and E4 (SOS/icon-chip dedup) are ready but gated by the freeze.
-- **Options:** (a) keep frozen until after the board; (b) lift now and start R1.
-- **Recommendation:** keep frozen until you confirm the board is done, then "start R1."
-- **Impact:** unlocks the largest in-authority product-quality lane. **Urgency:** high after the board.
-- **Blocking?** Yes — gates R1 + E4. **References:** `ROADMAP.md`, `docs/design/niabook/niabook-next-iteration.md`.
-
 ### Q2 — Un-pause the backend and rule the open decisions (OD-1…OD-6)?
 - **Context:** money-movement flows (Wage/Remittance/RafiQi/Offline/Savings/Floor) are paused; each is
   also blocked by an open decision needing a ruling. ODs expire 2026-07-13.
@@ -69,4 +61,5 @@ References.
 
 ## Resolved
 
-_(none yet — resolved items move here with the ruling and date.)_
+- **Q1 — Lift the board freeze / start R1?** ✅ Resolved 2026-07-04: Founder lifted the freeze
+  and said "start R1." R1 is in progress (E4 also unlocked); first slice R1a (○→✓ motion) shipped.

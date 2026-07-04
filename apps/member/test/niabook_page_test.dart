@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/niabook/niabook_page.dart';
+import 'package:member/features/pillars/nia_components.dart';
 
 /// NiaBook — the approved two-column design. Left proves what became true; right
 /// shows more you can keep, found by RafiQi. Guard the architecture and the
@@ -63,6 +64,14 @@ void main() {
     expect(find.text('Ready now'), findsOneWidget);
     expect(find.textContaining('Locked · 6 months experience'), findsOneWidget);
     expect(find.text('See all opportunities (9)'), findsOneWidget);
+  });
+
+  testWidgets('plays the ○→✓ movement (status tally + became-true lines)',
+      (WidgetTester tester) async {
+    await pump(tester);
+    // R1: the signature waiting→true motion is visible in more than one place —
+    // the "unlocked" tally and each line that became true.
+    expect(find.byType(MovementCheck), findsAtLeastNWidgets(2));
   });
 
   testWidgets('SOS reaches a human in one tap', (WidgetTester tester) async {

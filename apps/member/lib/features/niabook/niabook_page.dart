@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../pillars/nia_components.dart';
 import 'niabook_scenario.dart';
 
 /// NiaBook — the first screen and the artefact of progress. Two columns:
@@ -187,7 +188,9 @@ class NiaBookPage extends StatelessWidget {
 
   Widget _statusLine() => Row(
         children: <Widget>[
-          const Icon(Icons.check_circle, size: 16, color: NiaTokens.blue),
+          // The signature ○→✓ motion: the "unlocked" tally opens as waiting and
+          // completes to true on load — the movement made visible.
+          const MovementCheck(size: 16),
           const SizedBox(width: NiaTokens.s1),
           Text('${month.unlockedCount} unlocked',
               style: const TextStyle(
@@ -212,8 +215,12 @@ class NiaBookPage extends StatelessWidget {
           children: <Widget>[
             _columnHeading('WHAT BECAME TRUE', 'Your progress.'),
             const SizedBox(height: NiaTokens.s4),
-            for (final BecameTrueRow r in month.becameTrue) ...<Widget>[
-              _becameTrueRow(r),
+            // Each line that became true this month plays the ○→✓ motion, staggered
+            // down the column so the left side visibly fills in on open.
+            for (final MapEntry<int, BecameTrueRow> e
+                in month.becameTrue.asMap().entries) ...<Widget>[
+              _becameTrueRow(e.value,
+                  Duration(milliseconds: 420 + e.key * 140)),
               const SizedBox(height: NiaTokens.s4),
             ],
             _progressCard(),
@@ -223,10 +230,10 @@ class NiaBookPage extends StatelessWidget {
         ),
       );
 
-  Widget _becameTrueRow(BecameTrueRow r) => Row(
+  Widget _becameTrueRow(BecameTrueRow r, Duration checkMotion) => Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          _iconChip(r.icon, check: true),
+          _iconChip(r.icon, check: true, checkMotion: checkMotion),
           const SizedBox(width: NiaTokens.s3),
           Expanded(
             child: Column(
@@ -548,7 +555,10 @@ class NiaBookPage extends StatelessWidget {
       );
 
   Widget _iconChip(IconData icon,
-      {bool check = false, bool filled = false, bool muted = false}) {
+      {bool check = false,
+      bool filled = false,
+      bool muted = false,
+      Duration? checkMotion}) {
     final Color bg = filled
         ? NiaTokens.blue
         : (muted ? NiaTokens.surfaceGrey : NiaTokens.surfaceGrey);
@@ -578,8 +588,10 @@ class NiaBookPage extends StatelessWidget {
               child: Container(
                 decoration: const BoxDecoration(
                     color: NiaTokens.ground, shape: BoxShape.circle),
-                child: const Icon(Icons.check_circle,
-                    size: 16, color: NiaTokens.blue),
+                child: checkMotion != null
+                    ? MovementCheck(size: 16, duration: checkMotion)
+                    : const Icon(Icons.check_circle,
+                        size: 16, color: NiaTokens.blue),
               ),
             ),
           if (muted)

@@ -3,6 +3,17 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Board freeze lifted; R1a: the ○→✓ motion
+
+- Founder lifted the board freeze and said "start R1" (craftsmanship backlog). FOUNDER_REVIEW Q1
+  resolved; E4 also unlocked.
+- **R1a (`<this commit>`) — the most distinctive idea, made visible:** added shared `MovementCheck`
+  (a restrained one-shot ○→✓, easeOutCubic, settles on ✓). Wired into NiaBook: the "unlocked" tally
+  glyph + each became-true badge (staggered down the left column). **No copy/layout change; goldens
+  byte-identical** (settles to the same frame). +3 tests proving it begins-as-waiting and settles-to-
+  true, and that NiaBook plays it. Suite 72 → 75.
+- Backlog: R1 items #1 (Living middle), #3 (emotional register), #4 (daily-return pull) remain.
+
 ## 2026-07-04 — Continuous loop: audit inputs + coverage (E6)
 
 - Ran the continuous loop. Phase-2 scan found: analyze clean, 68 tests green, and two

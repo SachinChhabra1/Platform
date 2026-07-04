@@ -13,8 +13,8 @@ diff vs the board freeze, and a repository scan (TODOs, dead code, test gaps).
 |---|---|---|
 | Build / verify | ✅ | `nia verify` green · no codegen drift |
 | Static analysis | ✅ | `flutter analyze lib test` — no issues |
-| Tests | ✅ | 72 pass across 17 files |
-| Goldens | ✅ frozen | all 5 byte-identical to `795b0de` |
+| Tests | ✅ | 75 pass across 17 files |
+| Goldens | ✅ | all 5 byte-identical (freeze lifted 2026-07-04; R1a kept them identical) |
 | Dead code / TODOs | ✅ | 0 `TODO/FIXME` in `lib`; pillar_kit dead code removed (E1) |
 | Documentation | ✅ | manual 00–17 grounded; Product Bible from mining; links resolve |
 | Tech debt | 🟡 | one known duplication (E4) — **gated** (touches frozen NiaBook screen) |

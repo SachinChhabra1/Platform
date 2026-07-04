@@ -279,3 +279,49 @@ class NiaReveal extends StatelessWidget {
     );
   }
 }
+
+/// The signature NiaBook motion made visible: a line moving from **waiting (○)** to
+/// **true (✓)**. One-shot on mount — the hollow ○ crossfades and the ✓ scales in
+/// (easeOutCubic), settling on ✓ so goldens capture the final, true state. Colour
+/// carries state only: ○ is quiet grey, ✓ is the accent blue. Stagger multiple
+/// lines with [duration] so a column plays the movement in sequence.
+class MovementCheck extends StatelessWidget {
+  const MovementCheck({
+    super.key,
+    this.size = 16,
+    this.duration = const Duration(milliseconds: 520),
+  });
+
+  final double size;
+  final Duration duration;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: duration,
+      curve: Curves.easeOutCubic,
+      builder: (BuildContext context, double t, Widget? _) => SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Opacity(
+              opacity: (1 - t).clamp(0.0, 1.0),
+              child: Icon(Icons.radio_button_unchecked,
+                  size: size, color: NiaTokens.inkSecondary),
+            ),
+            Opacity(
+              opacity: t,
+              child: Transform.scale(
+                scale: 0.6 + 0.4 * t,
+                child: Icon(Icons.check_circle, size: size, color: NiaTokens.blue),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

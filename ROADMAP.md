@@ -23,19 +23,22 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E5 | Unit-test `formatPaise` (Indian ₹ grouping/sign/rounding) + `NiaBookMonth.sample` invariants | ✅ DONE | +8 tests (60 → 68); goldens untouched. |
 | E6 | Test `widgets/common.dart` (Monogram, SectionLabel, prototypeNoOp, SOS→Operator sheet) | ✅ DONE | +4 tests (68 → 72); goldens untouched. |
 | E7 | CI setup | ✅ ALREADY PRESENT | `.github/workflows/ci.yml` predates the loop (lint/contract/TS/Flutter gates). No work needed. Activating it on a GitHub runner is a Founder call — `FOUNDER_REVIEW.md` Q7. |
-| E4 | Unify SOS + icon-chip duplication (`niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`) into one shared control | 🔒 LOCKED | Touches the **frozen** NiaBook screen → golden-risk. Deferred until after the board (same gate as R1). |
+| E4 | Unify SOS + icon-chip duplication (`niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`) into one shared control | 🔓 UNLOCKED | Freeze lifted. Golden-verify the dedup is pixel-identical; revert if not. |
 
-## Now (frozen)
+## Now (freeze lifted — R1 in progress)
 
-The five-screen operating system is **complete and frozen for the board meeting**. Do not
-change product code, copy, or goldens before the board meeting — this is a Founder freeze
-(`docs/design/niabook/BOARD-HANDOVER.md`).
+The board freeze has been **lifted** by the Founder. R1 (the craftsmanship backlog) is active.
+Product changes are again allowed, but stay within established patterns (craftsmanship, not
+redesign — `docs/design/niabook/niabook-next-iteration.md`) and keep goldens intentional.
+
+**R1 sub-items:** ✅ #2 ○→✓ motion visible (R1a) · ⬜ #1 Living middle carries "spend less" ·
+⬜ #3 per-pillar emotional register (Family warmer than Work) · ⬜ #4 uneven daily-return pull.
 
 ## Next — all GATED (nothing is unlocked right now)
 
 | # | Task | Status | Gate / blocker |
 |---|------|--------|----------------|
-| R1 | Craftsmanship backlog — NiaBook ○→✓ motion visible; per-pillar emotional register; even daily-return pull (`docs/design/niabook/niabook-next-iteration.md`) | 🔒 LOCKED | Founder deferred until **after the board meeting**. |
+| R1 | Craftsmanship backlog (`docs/design/niabook/niabook-next-iteration.md`) — 4 items | 🔓 IN PROGRESS | Freeze lifted. #2 ○→✓ motion **done** (R1a); #1 Living middle, #3 emotional register, #4 daily-return pull remain. |
 | R2 | Native packaging — get the app onto a phone as an installable (Android APK, then iOS/TestFlight) | 🔒 LOCKED | Founder decision: web-only was chosen for the demo; native needs accounts/signing + a "do this" from the Founder. See [`KNOWN_BUGS.md`](KNOWN_BUGS.md) K1. |
 | R3 | Wage Flow slice (backend) | 🔒 LOCKED | Backend paused **and** OD-1 ruling required (`DECISIONS.md`). |
 | R4 | Remittance completion (backend) | 🔒 LOCKED | Backend paused **and** OD-2 ruling required. |
