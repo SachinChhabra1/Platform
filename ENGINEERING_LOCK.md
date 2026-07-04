@@ -35,12 +35,23 @@ commit can't contain its own hash).
 | OD-4 | Offline conflict resolution | **C** — per-type: money server-authoritative-with-reconciliation, intent last-write-wins, logs merge | Founder | 2026-07-04 | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) | `f885800` | — | 🔒 **Locked** |
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `f885800` | — | 🔒 **Locked** |
 | OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `f885800` | — | 🔒 **Locked** |
-| OD-7 | Arrears recovery ordering | — (rec: B — current cycle first, recover from surplus oldest-first capped, Nia last) | Founder | — | ADR-0018 | — | — | ⏳ **Pending ruling** |
+| OD-7 | Arrears recovery ordering | **B** — current-cycle claims first; recover arrears from surplus only, oldest-first, capped at 50% of surplus per cycle; Nia's own fee/advance recovered last; cap is Founder-owned config | Founder | 2026-07-04 | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) | _(this commit)_ | — | 🔒 **Locked** |
 
-**⏳ OD-7 was opened during R3 implementation** (the Step-5 rule working): recording carry-forward arrears
-is locked and built (ADR-0012), but *recovering* them is an uncovered decision, so building stopped and
-opened OD-7 rather than invent a recovery order. Recording is safe to ship; recovery stays unbuilt until
-OD-7 is ruled. Brief: [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
+**✅ OD-7 was opened during R3 implementation** (the Step-5 rule working) and **ruled 2026-07-04**:
+recording carry-forward arrears was already locked and built (ADR-0012); *recovering* them was the
+uncovered decision, so building stopped and opened OD-7 rather than invent a recovery order. Now ruled
+**Option B** ([ADR-0018](docs/adr/0018-arrears-recovery-ordering.md)) — the current-cycle waterfall runs
+unchanged and first, then only surplus above the dignity floor recovers arrears, oldest-first, capped
+(Founder-owned config, ruled at 50%), Nia's own fee/advance last. Brief:
+[`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
+
+**🔒 R3 arrears recovery — recorded implementation judgment (2026-07-04, Founder-ratified).** ADR-0018
+locks the recovery *ordering* (current cycle first · surplus-above-floor only · oldest-first · Nia last).
+The **recovery cap is Founder-owned configuration, injected — never a constant baked into the recovery
+algorithm** (`planArrearsRecovery` takes the cap as a parameter; the ruled 50% is supplied at composition,
+0 = recovery off is the honest default until wired). Reordering the recovery waterfall, recovering Nia's
+own arrears before the Member's, or dipping into the dignity floor to recover arrears are changes to locked
+behaviour and **require Founder review** — they are not engineering calls.
 
 **🔒 R7 Savings — recorded implementation judgment (2026-07-04, Founder-ratified).** ADR-0016 / OD-5
 locks the savings *behaviour*: **instant-to-Wallet, T+n settlement, interest to the Member net of a

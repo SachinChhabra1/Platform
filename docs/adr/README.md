@@ -41,3 +41,4 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0015](0015-offline-conflict-resolution.md) | Offline conflict-resolution per record type (OD-4) | Accepted |
 | [0016](0016-savings-withdrawal-mechanics.md) | Savings withdrawal mechanics: settlement + interest (OD-5) | Accepted |
 | [0017](0017-the-floor-authoritative-source.md) | The Floor: authoritative enumeration source (OD-6) | Accepted |
+| [0018](0018-arrears-recovery-ordering.md) | Arrears recovery ordering (OD-7) | Accepted |

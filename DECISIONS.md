@@ -28,12 +28,8 @@ consequences, or materially change how Nia is built. Keep ADRs rare so they stay
 
 ## Open decisions
 
-Newly opened during implementation (Step-5 rule: an uncovered product decision surfaced while building
-stops work and opens an OD rather than inventing behaviour):
-
-| OD | Decision needed | Blocks | Opened | Brief |
-|----|-----------------|--------|--------|-------|
-| OD-7 | **Arrears recovery ordering** — where recovering prior arrears sits in the next wage's waterfall, and the order among arrears | Arrears recovery (2nd half of R3; recording is done) | 2026-07-04, during R3 | [`/OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md) |
+**None.** OD-7 (arrears recovery ordering), opened during R3 under the Step-5 rule, was ruled by the
+Founder on 2026-07-04 — see the resolved table below. No backend product decision is currently open.
 
 ## Open decisions — the OD-1…OD-6 batch: ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
 
@@ -48,3 +44,4 @@ locked in [`/ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md).
 | OD-4 | Offline conflict-resolution per record type | **C** — money server-authoritative, intent last-write-wins | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) |
 | OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, T+n settle, interest to the Member | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) |
 | OD-6 | The Floor — authoritative source | **B** — one versioned, Founder-owned `the_floor` config | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) |
+| OD-7 | Arrears recovery ordering (opened during R3) | **B** — current cycle first; recover from surplus above the floor, oldest-first, capped (Founder config, 50%); Nia last | [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md) |
