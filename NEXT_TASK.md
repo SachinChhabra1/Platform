@@ -2,10 +2,17 @@
 
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 
-## Status: BLOCKED — awaiting a Founder gate
+## Status: UNLOCKED — engineering-quality work (in-authority)
 
-There is **no unlocked task** right now. The five-screen OS is complete and **frozen for the
-board meeting**, and every forward task is gated:
+Per [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md), when no product task is unlocked the
+loop works behaviour-preserving engineering quality (dead code, tests, docs, safe refactors)
+that keeps the five goldens byte-identical. Current queue: **ROADMAP E1 → E2 → E3.** These
+need no Founder decision.
+
+## Product tasks remain gated
+
+The five-screen OS is complete and **frozen for the board meeting**; every *product* task is
+gated:
 
 - **R1 (craftsmanship backlog)** — deferred by the Founder until *after* the board meeting.
   This is the most likely next task. It unlocks the moment the Founder says the board meeting

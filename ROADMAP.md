@@ -8,6 +8,18 @@ failure — it is the queue correctly reporting a gate).
 Canonical references: [`PRODUCT_ARCHITECTURE.md`](PRODUCT_ARCHITECTURE.md) (what Nia is),
 [`DESIGN_SYSTEM_LOCK.md`](DESIGN_SYSTEM_LOCK.md) (the locked screens), [`DECISIONS.md`](DECISIONS.md)
 (ADRs + open decisions), [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) (current state).
+Loop rules + what may be done without a Founder decision: [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md).
+
+## Engineering quality — UNLOCKED (in-authority, behaviour-preserving)
+
+These need no Founder decision and keep the five goldens byte-identical (they don't touch the
+frozen screens' renders). The loop works these when no product task is unlocked.
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| E1 | Remove dead code in `pillar_kit.dart` (`niaCard`, `niaListRow`, `niaBookStrip`, `sectionTitle` — superseded by `nia_components.dart`, zero callers) | 🔓 UNLOCKED | Golden-neutral. |
+| E2 | Add direct tests for the shared component surface `nia_components.dart` (InfoCard styles, ListRow semantics/trailing, SummaryCard icon param, SectionHeader, OpportunityCard, NiaReveal) | 🔓 UNLOCKED | Purely additive coverage. |
+| E3 | Further debt as found by audit (grounded only) | 🔓 OPEN | Next audit pass. |
 
 ## Now (frozen)
 
