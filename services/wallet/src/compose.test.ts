@@ -19,6 +19,8 @@ function baseConfig(over: Partial<WalletConfig> = {}): WalletConfig {
   return {
     host: '127.0.0.1',
     port: 0,
+    store: 'file',
+    databaseUrl: undefined,
     dataDir: dir,
     serviceTokens: [],
     recoveryCapBps: 0,

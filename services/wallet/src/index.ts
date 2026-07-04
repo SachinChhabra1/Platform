@@ -258,3 +258,6 @@ export {
   loadWalletConfig,
 } from './config.js';
 export { type ComposeOptions, composeWalletApp } from './compose.js';
+// Deploy bootstrap (infra) — env-only config → durable backing (file or Postgres,
+// connecting pg + running migrations) → fully-wired app, with a dispose() handle.
+export { type BootstrappedWalletApp, bootstrapWalletApp } from './deploy.js';

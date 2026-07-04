@@ -26,6 +26,12 @@ export interface FloorSeed {
 export interface WalletConfig {
   readonly host: string;
   readonly port: number;
+  /** Durable-store backing: 'file' (offline reference persistence) or 'postgres'
+   *  (production, ADR-0006). Deploy config, not a product value. */
+  readonly store: 'file' | 'postgres';
+  /** Postgres connection string when store='postgres'; empty ⇒ node-postgres reads
+   *  the PG* env vars itself. Never a product value. */
+  readonly databaseUrl?: string | undefined;
   /** Directory for the file-backed durable stores (offline reference persistence). */
   readonly dataDir: string;
   /** Service secrets for the rail/ops surfaces (empty ⇒ deny all). */
@@ -68,9 +74,17 @@ export function loadWalletConfig(
     throw new RangeError(`NIA_RECOVERY_CAP_BPS must be ≤ 10000, got ${recoveryCapBps}`);
   }
 
+  const store = (env.NIA_STORE ?? 'file').trim();
+  if (store !== 'file' && store !== 'postgres') {
+    throw new RangeError(`NIA_STORE must be 'file' or 'postgres', got ${JSON.stringify(store)}`);
+  }
+  const databaseUrl = env.DATABASE_URL ?? env.NIA_DATABASE_URL ?? undefined;
+
   return {
     host: env.HOST ?? '127.0.0.1',
     port: intEnv(env.PORT, 8081, 'PORT'),
+    store,
+    databaseUrl: databaseUrl === '' ? undefined : databaseUrl,
     dataDir: env.NIA_DATA_DIR ?? '.nia-data',
     serviceTokens,
     recoveryCapBps,

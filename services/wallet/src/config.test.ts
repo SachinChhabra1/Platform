@@ -20,6 +20,22 @@ describe('loadWalletConfig — honest-empty defaults, no invented value', () => 
     });
     expect(c.floorSeed).toBeUndefined(); // no floor → registry stays empty
     expect(c.operatorCredentials).toEqual({}); // no operators → resolution denies all
+    expect(c.store).toBe('file'); // file-backed by default
+    expect(c.databaseUrl).toBeUndefined();
+  });
+
+  it('selects the Postgres backing and reads the connection string from the env', () => {
+    const c = loadWalletConfig({ NIA_STORE: 'postgres', DATABASE_URL: 'postgres://h/db' });
+    expect(c.store).toBe('postgres');
+    expect(c.databaseUrl).toBe('postgres://h/db');
+  });
+
+  it('accepts postgres with no URL (node-postgres reads PG* itself)', () => {
+    expect(loadWalletConfig({ NIA_STORE: 'postgres' }).databaseUrl).toBeUndefined();
+  });
+
+  it('rejects an unknown store backing', () => {
+    expect(() => loadWalletConfig({ NIA_STORE: 'sqlite' })).toThrow(/NIA_STORE/);
   });
 
   it('loads operator credentials from a config file', () => {

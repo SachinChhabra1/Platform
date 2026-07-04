@@ -13,11 +13,10 @@
 ///
 /// Session issuance is a separate slice, so `sessions` is injected (default empty).
 
-import { join } from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import { createServer, InMemorySessionStore, type SessionStore } from '@nia/runtime';
 import type { WalletConfig } from './config.js';
-import { FileDurableStore } from './durable_store.js';
+import { FileDurableStoreFactory, type DurableStoreFactory } from './durable_factory.js';
 import { InMemoryWalletActivitySource } from './source.js';
 import { registerWalletOverviewRoutes } from './http.js';
 import { DurableFloorRegistry, RegistryFloorSource } from './the_floor_registry.js';
@@ -48,21 +47,29 @@ export interface ComposeOptions {
   /** Injected clock (tests); defaults to the real clock. */
   readonly now?: () => Date;
   readonly serviceName?: string;
+  /** The durable-store backing. If omitted, it is chosen from `config.store`:
+   *  'file' ⇒ FileDurableStoreFactory; 'postgres' ⇒ throws (a live SqlExecutor
+   *  must be connected first — use `bootstrapWalletApp`, which injects it). */
+  readonly stores?: DurableStoreFactory;
 }
 
 /// Build the fully-wired wallet app from config. Async because seeding the Floor
-/// (if configured) publishes the first version.
+/// (if configured) publishes the first version. The durable backing is chosen once
+/// here (file or an injected factory) and every store opens by logical name — the
+/// domain is identical across backings.
 export async function composeWalletApp(config: WalletConfig, opts: ComposeOptions = {}): Promise<FastifyInstance> {
   const now = opts.now ?? (() => new Date());
   const sessions = opts.sessions ?? new InMemorySessionStore();
   const app = createServer({ serviceName: opts.serviceName ?? 'nia-wallet' });
 
-  // --- Shared stores — all durable, file-backed under the data dir ----------
-  // Each composes a FileDurableStore (the offline reference persistence); swap in
-  // the Postgres adapter (ADR-0006) online with no change to these lines.
-  const fds = <T,>(name: string): FileDurableStore<T> => new FileDurableStore<T>(join(config.dataDir, name));
+  // --- Shared stores — all durable, opened by logical name via the factory ----
+  // 'file' is the offline reference; 'postgres' is injected by bootstrapWalletApp
+  // (which connects the live SqlExecutor). Swapping the backing changes nothing
+  // below — the stores compose over the DurableStore interface, not a concrete impl.
+  const stores = opts.stores ?? defaultStoreFactory(config);
+  const fds = stores.open.bind(stores);
 
-  const floorRegistry = new DurableFloorRegistry(fds<FloorVersion>('floor.json'));
+  const floorRegistry = new DurableFloorRegistry(fds<FloorVersion>('floor'));
   if (config.floorSeed && (await floorRegistry.current()) === undefined) {
     // The Founder-provided values (from the config file) become Floor version 1
     // (idempotent across restart — only seeded if no version exists yet).
@@ -73,16 +80,16 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
   const floor = new RegistryFloorSource(floorRegistry);
   const serviceAuth = new SecretServiceAuthenticator(config.serviceTokens);
 
-  const remittanceStore = new DurableRemittanceStore(fds<Remittance>('remittances.json'));
-  const operatorEscalations = new DurableOperatorEscalations(fds<OperatorEscalation>('escalations.json'));
-  const arrears = new DurableArrearsLedger(fds<ArrearsRecord>('arrears.json'), fds<WaiverRecord>('waivers.json'));
-  const savingsAccounts = new DurableSavingsAccountStore(fds<SavingsAccount>('savings-accounts.json'));
-  const withdrawals = new DurableWithdrawalStore(fds<Withdrawal>('withdrawals.json'));
+  const remittanceStore = new DurableRemittanceStore(fds<Remittance>('remittances'));
+  const operatorEscalations = new DurableOperatorEscalations(fds<OperatorEscalation>('escalations'));
+  const arrears = new DurableArrearsLedger(fds<ArrearsRecord>('arrears'), fds<WaiverRecord>('waivers'));
+  const savingsAccounts = new DurableSavingsAccountStore(fds<SavingsAccount>('savings-accounts'));
+  const withdrawals = new DurableWithdrawalStore(fds<Withdrawal>('withdrawals'));
   const interestPolicy = new NoInterestAccrualPolicy();
-  const syncStore = new DurableSyncStore(fds<SyncRecord>('sync.json'));
-  const reconciliation = new DurableReconciliationQueue(fds<ReconciliationItem>('reconciliation.json'));
-  const grants = new DurableGrantStore(fds<AuthorizationGrant>('grants.json'));
-  const rafiqiActions = new DurableRafiqiActionStore(fds<RafiqiAction>('rafiqi-actions.json'));
+  const syncStore = new DurableSyncStore(fds<SyncRecord>('sync'));
+  const reconciliation = new DurableReconciliationQueue(fds<ReconciliationItem>('reconciliation'));
+  const grants = new DurableGrantStore(fds<AuthorizationGrant>('grants'));
+  const rafiqiActions = new DurableRafiqiActionStore(fds<RafiqiAction>('rafiqi-actions'));
 
   // Each route group is mounted in its own ENCAPSULATED Fastify scope, so its
   // onSend hook + error handler stay local (no cross-group override) — the routes
@@ -117,4 +124,18 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
 
   await app.ready();
   return app;
+}
+
+/// The default durable backing when none is injected. 'file' composes the offline
+/// reference persistence directly; 'postgres' cannot be built here because it needs
+/// a live SqlExecutor (an async connect + migration) — the caller must connect one
+/// and inject a PostgresDurableStoreFactory via `opts.stores`. `bootstrapWalletApp`
+/// (deploy.ts) does exactly that, so production never hits this throw.
+function defaultStoreFactory(config: WalletConfig): DurableStoreFactory {
+  if (config.store === 'postgres') {
+    throw new Error(
+      "NIA_STORE=postgres requires a live SqlExecutor — use bootstrapWalletApp(env) (deploy.ts), which connects pg and injects the Postgres store factory, instead of composeWalletApp() directly",
+    );
+  }
+  return new FileDurableStoreFactory(config.dataDir);
 }
