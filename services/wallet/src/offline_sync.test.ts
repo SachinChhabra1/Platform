@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyOfflineWrite,
+  resolveConflict,
   InMemoryReconciliationQueue,
   InMemorySyncStore,
   reconcile,
@@ -99,9 +100,48 @@ describe('applyOfflineWrite — orchestration + audit', () => {
     expect(queued[0]).toMatchObject({
       recordId: 'm-1',
       recordClass: 'money',
-      proposedUpdatedAt: '2026-07-04T11:00:00.000Z',
       serverUpdatedAt: '2026-07-04T10:30:00.000Z',
       at: NOW.toISOString(),
+      status: 'pending',
     });
+    expect(queued[0]!.proposed.updatedAt).toBe('2026-07-04T11:00:00.000Z'); // full proposal retained
+    expect(typeof queued[0]!.id).toBe('string');
+  });
+});
+
+describe('resolveConflict — OD-8 / ADR-0019 (pure)', () => {
+  const item = {
+    id: 'cf-1',
+    recordId: 'm-1',
+    recordClass: 'money' as const,
+    proposed: rec('m-1', 'money', 't3', { balance: 999 }),
+    serverUpdatedAt: 't2',
+    at: NOW.toISOString(),
+    status: 'pending' as const,
+  };
+  const at = new Date('2026-07-05T00:00:00.000Z');
+
+  it('accept_proposal persists the proposed payload as a fresh authoritative version', () => {
+    const r = resolveConflict(item, { choice: 'accept_proposal', operatorId: 'op-1', reason: 'ok', now: at });
+    expect(r.persist).toEqual({ id: 'm-1', recordClass: 'money', updatedAt: at.toISOString(), payload: { balance: 999 } });
+    expect(r.item.status).toBe('resolved');
+    expect(r.item.resolution).toMatchObject({ choice: 'accept_proposal', operatorId: 'op-1', persisted: true });
+  });
+
+  it('keep_server persists nothing', () => {
+    const r = resolveConflict(item, { choice: 'keep_server', operatorId: 'op-1', reason: 'stale', now: at });
+    expect(r.persist).toBeUndefined();
+    expect(r.item.resolution?.persisted).toBe(false);
+  });
+
+  it('manual persists the corrected payload', () => {
+    const r = resolveConflict(item, { choice: 'manual', operatorId: 'op-1', reason: 'fixed', now: at, manualPayload: { balance: 750 } });
+    expect(r.persist?.payload).toEqual({ balance: 750 });
+  });
+
+  it('throws on manual with no payload, and on an already-resolved item', () => {
+    expect(() => resolveConflict(item, { choice: 'manual', operatorId: 'op-1', reason: 'x', now: at })).toThrow();
+    const resolved = { ...item, status: 'resolved' as const };
+    expect(() => resolveConflict(resolved, { choice: 'keep_server', operatorId: 'op-1', reason: 'x', now: at })).toThrow(/already resolved/);
   });
 });

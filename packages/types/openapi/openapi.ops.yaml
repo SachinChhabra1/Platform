@@ -154,6 +154,57 @@ paths:
         "500":
           $ref: "./openapi.base.yaml#/components/responses/InternalError"
 
+  /ops/reconciliation/{id}/resolve:
+    post:
+      operationId: resolveReconciliationConflict
+      tags: [ops]
+      summary: Resolve a money conflict (OD-8 / ADR-0019).
+      description: >
+        The Operator resolves a pending money conflict as `accept_proposal`
+        (the client's write becomes authoritative), `keep_server` (the server
+        value stands), or `manual` (a corrected authoritative amount, in
+        `payload`). Every resolution is an authoritative ledger write recording
+        the operator + reason. Gated by the per-operator credential
+        (`X-Nia-Operator-Token`), not the service token. 409 if already resolved.
+      security:
+        - OperatorCredential: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveRequest"
+      responses:
+        "200":
+          description: The resolved conflict.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReconciliationConflict"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid operator credential.
+          content:
+            application/json:
+              schema:
+                $ref: "./openapi.base.yaml#/components/schemas/Error"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "409":
+          $ref: "./openapi.base.yaml#/components/responses/Conflict"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
 components:
   responses:
     Unauthorized:
@@ -169,6 +220,11 @@ components:
       in: header
       name: X-Nia-Service-Token
       description: A Founder/ops-owned shared service secret (constant-time verified).
+    OperatorCredential:
+      type: apiKey
+      in: header
+      name: X-Nia-Operator-Token
+      description: A per-operator credential resolved to an operator identity (OD-8).
 
   schemas:
     SlaSweepResult:
@@ -223,10 +279,13 @@ components:
 
     ReconciliationConflict:
       type: object
-      description: A queued offline money conflict awaiting Operator resolution (OD-8).
-      required: [record_id, record_class, proposed_updated_at, at]
+      description: A queued offline money conflict and, once worked, its audited resolution (OD-8).
+      required: [id, record_id, record_class, proposed_updated_at, at, status]
       additionalProperties: false
       properties:
+        id:
+          type: string
+          description: The conflict id (the resolve target).
         record_id:
           type: string
         record_class:
@@ -244,6 +303,46 @@ components:
           type: string
           format: date-time
           description: When the conflict was queued.
+        status:
+          type: string
+          enum: [pending, resolved]
+        resolution:
+          $ref: "#/components/schemas/ConflictResolution"
+
+    ConflictResolution:
+      type: object
+      description: How the Operator resolved the conflict (present once status is resolved).
+      required: [choice, operator_id, reason, resolved_at, persisted]
+      additionalProperties: false
+      properties:
+        choice:
+          type: string
+          enum: [accept_proposal, keep_server, manual]
+        operator_id:
+          type: string
+        reason:
+          type: string
+        resolved_at:
+          type: string
+          format: date-time
+        persisted:
+          type: boolean
+          description: Whether the resolution wrote an authoritative record (keep_server does not).
+
+    ResolveRequest:
+      type: object
+      required: [choice, reason]
+      additionalProperties: false
+      properties:
+        choice:
+          type: string
+          enum: [accept_proposal, keep_server, manual]
+        reason:
+          type: string
+          minLength: 1
+          description: The audit note — why the Operator resolved it this way.
+        payload:
+          description: The corrected authoritative payload — required for and only used by `manual`.
 
 security:
   - ServiceToken: []

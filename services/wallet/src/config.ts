@@ -36,6 +36,8 @@ export interface WalletConfig {
   readonly savingsSettleMs: number;
   /** The Founder-owned Floor seed, if a config file was provided (else the registry stays empty). */
   readonly floorSeed?: FloorSeed | undefined;
+  /** Per-operator credentials (credential → operatorId) for conflict resolution (OD-8); empty ⇒ deny. */
+  readonly operatorCredentials: Readonly<Record<string, string>>;
 }
 
 /** A thin fs reader, injectable so the loader is testable without touching disk. */
@@ -74,7 +76,25 @@ export function loadWalletConfig(
     recoveryCapBps,
     savingsSettleMs: intEnv(env.NIA_SAVINGS_SETTLE_MS, 0, 'NIA_SAVINGS_SETTLE_MS'),
     floorSeed: loadFloorSeed(env.NIA_FLOOR_CONFIG_PATH, readFile),
+    operatorCredentials: loadOperatorCredentials(env.NIA_OPERATOR_CONFIG_PATH, readFile),
   };
+}
+
+/// Load the per-operator credential directory (credential → operatorId) from a
+/// JSON file, if configured. No path ⇒ empty ⇒ conflict resolution denies all
+/// (operators must be provisioned). Values are ops-owned, never invented.
+function loadOperatorCredentials(path: string | undefined, readFile: FileReader): Readonly<Record<string, string>> {
+  if (path === undefined || path === '') return {};
+  const parsed = JSON.parse(readFile(path)) as unknown;
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    throw new RangeError('operator config must be a JSON object of credential → operatorId');
+  }
+  for (const [credential, operatorId] of Object.entries(parsed)) {
+    if (typeof operatorId !== 'string' || operatorId.length === 0 || credential.length === 0) {
+      throw new RangeError('operator config entries must be non-empty credential → operatorId strings');
+    }
+  }
+  return { ...(parsed as Record<string, string>) };
 }
 
 /// Load the Founder-owned Floor seed from a JSON file, if configured. The file

@@ -18,6 +18,8 @@
 /// sandbox cannot add a new pnpm workspace member). Extract to `services/edge`
 /// (the sync boundary) when online.
 
+import { randomUUID } from 'node:crypto';
+
 export type RecordClass = 'money' | 'intent' | 'append_only';
 
 export interface SyncRecord {
@@ -97,62 +99,142 @@ export class InMemorySyncStore implements SyncStore {
   }
 }
 
-/// A money conflict handed to the Operator (never lost). Keyed by record id.
+/// How the Operator resolved a money conflict (OD-8 / ADR-0019).
+export type ResolutionChoice = 'accept_proposal' | 'keep_server' | 'manual';
+
+/// The audited resolution of a conflict: the choice, the deciding operator, the
+/// reason, when, and whether it produced a server write (keep-server does not).
+export interface ConflictResolution {
+  readonly choice: ResolutionChoice;
+  readonly operatorId: string;
+  readonly reason: string;
+  readonly resolvedAt: string;
+  readonly persisted: boolean;
+}
+
+/// A money conflict handed to the Operator (never lost, ADR-0015). Carries the
+/// full `proposed` record so the Operator can accept it, and a lifecycle
+/// (`pending → resolved`) with the audited `resolution` once worked (OD-8).
 export interface ReconciliationItem {
+  readonly id: string;
   readonly recordId: string;
   readonly recordClass: 'money';
-  readonly proposedUpdatedAt: string;
+  /** The client's proposed write (needed to accept-proposal). */
+  readonly proposed: SyncRecord;
+  /** The diverged server version at conflict time (display/audit). */
   readonly serverUpdatedAt?: string | undefined;
   readonly at: string;
+  readonly status: 'pending' | 'resolved';
+  readonly resolution?: ConflictResolution | undefined;
+}
+
+export interface ResolveDecision {
+  readonly choice: ResolutionChoice;
+  readonly operatorId: string;
+  readonly reason: string;
+  readonly now: Date;
+  /** The corrected authoritative payload — REQUIRED for and only used by `manual`. */
+  readonly manualPayload?: unknown;
+}
+
+export interface ResolveResult {
+  /** The authoritative record to write (undefined for keep-server — server stands). */
+  readonly persist?: SyncRecord | undefined;
+  readonly item: ReconciliationItem;
+}
+
+/// Resolve a pending money conflict per the Operator's decision (OD-8 / ADR-0019,
+/// pure). Produces the authoritative record to persist (except keep-server) and
+/// the resolved item carrying the audit trail. Throws if the item is already
+/// resolved, or if `manual` is chosen without a corrected payload.
+export function resolveConflict(item: ReconciliationItem, decision: ResolveDecision): ResolveResult {
+  if (item.status !== 'pending') {
+    throw new Error(`conflict ${item.id} is already resolved`);
+  }
+  const resolvedAt = decision.now.toISOString();
+  let persist: SyncRecord | undefined;
+  switch (decision.choice) {
+    case 'accept_proposal':
+      // The client's offline write becomes authoritative, as a fresh server version.
+      persist = { id: item.recordId, recordClass: 'money', updatedAt: resolvedAt, payload: item.proposed.payload };
+      break;
+    case 'manual':
+      if (decision.manualPayload === undefined) {
+        throw new Error('a manual resolution requires a corrected payload');
+      }
+      persist = { id: item.recordId, recordClass: 'money', updatedAt: resolvedAt, payload: decision.manualPayload };
+      break;
+    case 'keep_server':
+      persist = undefined; // the server value stands; no write.
+      break;
+  }
+  const resolution: ConflictResolution = {
+    choice: decision.choice,
+    operatorId: decision.operatorId,
+    reason: decision.reason,
+    resolvedAt,
+    persisted: persist !== undefined,
+  };
+  return { persist, item: { ...item, status: 'resolved', resolution } };
 }
 
 export interface ReconciliationQueue {
   enqueue(item: ReconciliationItem): Promise<void>;
   listForRecord(recordId: string): Promise<readonly ReconciliationItem[]>;
   /**
-   * Every queued money conflict, oldest-first — the Operator reconciliation
-   * surface reads this so a conflict is visibly "never lost" (ADR-0015). Items
-   * stay listed until a resolution model closes them; that model is a Founder
-   * decision (OD-8), so nothing is dequeued here yet.
+   * Every PENDING money conflict, oldest-first — the Operator reconciliation
+   * surface reads this so a conflict is visibly "never lost" (ADR-0015). Resolved
+   * items drop out (OD-8).
    */
   listPending(): Promise<readonly ReconciliationItem[]>;
+  /** One item by its id (the resolve target). */
+  get(id: string): Promise<ReconciliationItem | undefined>;
+  /** Upsert an item (used to record a resolution). */
+  save(item: ReconciliationItem): Promise<void>;
 }
 
 export class InMemoryReconciliationQueue implements ReconciliationQueue {
-  readonly #byRecord = new Map<string, ReconciliationItem[]>();
-  readonly #order: ReconciliationItem[] = [];
+  // Insertion-ordered by id (Map preserves order → listPending is oldest-first).
+  readonly #byId = new Map<string, ReconciliationItem>();
+
   async enqueue(item: ReconciliationItem): Promise<void> {
-    const list = this.#byRecord.get(item.recordId) ?? [];
-    list.push(item);
-    this.#byRecord.set(item.recordId, list);
-    this.#order.push(item);
+    this.#byId.set(item.id, item);
   }
   async listForRecord(recordId: string): Promise<readonly ReconciliationItem[]> {
-    return [...(this.#byRecord.get(recordId) ?? [])];
+    return [...this.#byId.values()].filter((i) => i.recordId === recordId);
   }
   async listPending(): Promise<readonly ReconciliationItem[]> {
-    return [...this.#order];
+    return [...this.#byId.values()].filter((i) => i.status === 'pending');
+  }
+  async get(id: string): Promise<ReconciliationItem | undefined> {
+    return this.#byId.get(id);
+  }
+  async save(item: ReconciliationItem): Promise<void> {
+    this.#byId.set(item.id, item);
   }
 }
 
 /// Apply one offline write: reconcile it, persist the result if any, and queue a
 /// money conflict to the Operator (never overwriting the server). Returns the
-/// outcome for the client.
+/// outcome for the client. `newId` stamps a stable id on a queued conflict.
 export async function applyOfflineWrite(
   write: OfflineWrite,
   now: Date,
-  deps: { readonly store: SyncStore; readonly operator: ReconciliationQueue },
+  deps: { readonly store: SyncStore; readonly operator: ReconciliationQueue; readonly newId?: () => string },
 ): Promise<ReconcileOutcome> {
   const server = await deps.store.get(write.record.id);
   const result = reconcile(write, server);
   if (result.persist !== undefined) await deps.store.put(result.persist);
   if (result.outcome === 'conflict_operator') {
+    const newId = deps.newId ?? (() => randomUUID());
     await deps.operator.enqueue({
+      id: newId(),
       recordId: write.record.id,
       recordClass: 'money',
-      proposedUpdatedAt: write.record.updatedAt,
+      proposed: write.record,
       ...(server !== undefined ? { serverUpdatedAt: server.updatedAt } : {}),
       at: now.toISOString(),
+      status: 'pending',
     });
   }
   return result.outcome;

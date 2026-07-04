@@ -2,6 +2,26 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend OD-8 — Operator conflict resolution ruled + implemented (ADR-0019) (2026-07-04)
+
+OD-8, opened during integration hardening, was **ruled by the Founder** (Option B) and implemented,
+completing the write half of the reconciliation surface. `services/wallet` 214 → 224 tests.
+
+- **Governance** (`5f358ba`): ADR-0019; ENGINEERING_LOCK OD-8 **Locked**; DECISIONS + FOUNDER_REVIEW moved
+  to Resolved (no open ODs).
+- **Resolution domain** (`offline_sync.ts`): `resolveConflict(item, decision)` — **accept_proposal** (the
+  client write becomes a fresh authoritative version), **keep_server** (no write), **manual** (a corrected
+  authoritative payload); `ReconciliationItem` gains an id, the retained proposed record, a `pending →
+  resolved` lifecycle, and audited `resolution` provenance (operator, choice, reason). Throws on
+  already-resolved or manual-without-payload.
+- **Operator identity** (`operator_auth.ts`): `OperatorAuthenticator` — a per-operator credential
+  (`X-Nia-Operator-Token`) resolved to an `operatorId`, distinct from the Member session and the service
+  token. Empty directory ⇒ deny-all; credentials are ops-owned config (`NIA_OPERATOR_CONFIG_PATH`), never
+  invented.
+- **Resolve endpoint** (`ops_http.ts` + `openapi.ops.yaml`): `POST /v1/ops/reconciliation/{id}/resolve`,
+  operator-authed, writes the authoritative record and records who + why; 400 on bad choice / missing
+  reason / manual-without-payload, 404 unknown, 409 already resolved. Wired through `composeWalletApp`.
+
 ## Backend integration hardening (2026-07-04)
 
 The in-authority infra that turns the policy spine into a runnable service.

@@ -19,6 +19,12 @@ describe('loadWalletConfig — honest-empty defaults, no invented value', () => 
       savingsSettleMs: 0, // T+0 until set
     });
     expect(c.floorSeed).toBeUndefined(); // no floor → registry stays empty
+    expect(c.operatorCredentials).toEqual({}); // no operators → resolution denies all
+  });
+
+  it('loads operator credentials from a config file', () => {
+    const c = loadWalletConfig({ NIA_OPERATOR_CONFIG_PATH: '/ops.json' }, () => JSON.stringify({ 'cred-1': 'op-neha' }));
+    expect(c.operatorCredentials).toEqual({ 'cred-1': 'op-neha' });
   });
 
   it('parses service tokens (trimmed, blanks dropped)', () => {

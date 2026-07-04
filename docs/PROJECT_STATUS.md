@@ -26,12 +26,15 @@ first, then surplus-above-floor recovers arrears oldest-first, capped (Founder c
 webhook adapter, the scheduled SLA sweep, savings accrual + settlement jobs, the read-only Operator
 reconciliation surface, the durable-store primitive (`FileDurableStore`) + a durable `RemittanceStore`,
 and the production config loader + `composeWalletApp` (every Founder value read from the environment, none
-invented). **OD-8 is now open** — opened during hardening (Step-5): how the Operator RESOLVES a money
-conflict (ADR-0015 covers detection/queueing, not resolution); the read-only surface shipped, the resolve
-action waits on the ruling (rec. B). All un-ruled numbers (savings interest rate/fee + horizon `n`; the
-concrete Floor values; the recovery cap) are Founder-owned config behind seams (recorded judgments in
-[`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: rule OD-8, then extend the durable-store pattern
-to the remaining ports (Postgres online). R2/native untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+invented). **OD-8 is ruled + built** — opened during hardening (Step-5), ruled Option B on 2026-07-04
+([ADR-0019](../docs/adr/0019-operator-conflict-resolution.md)): the Operator resolves each money conflict
+as accept-proposal / keep-server / manual, every resolution an authoritative ledger write recording the
+operator + reason, operators on a per-operator credential. **No backend product decision is open.** All
+un-ruled numbers (savings interest rate/fee + horizon `n`; the concrete Floor values; the recovery cap) and
+credentials (service, operator) are Founder/ops-owned config behind seams — read from the environment, none
+invented (recorded judgments in [`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). `services/wallet` at
+224 tests. Next: extend the durable-store pattern to the remaining ports (Postgres online); RafiQi
+orchestrator auto-take/compensation. R2/native untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
 rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
 *Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).

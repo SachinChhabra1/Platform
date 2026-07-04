@@ -37,6 +37,7 @@ import { registerRafiqiRoutes } from './rafiqi_http.js';
 import { InMemorySyncStore, InMemoryReconciliationQueue } from './offline_sync.js';
 import { registerSyncRoutes } from './sync_http.js';
 import { SecretServiceAuthenticator } from './service_auth.js';
+import { InMemoryOperatorDirectory } from './operator_auth.js';
 import { registerOpsRoutes } from './ops_http.js';
 
 export interface ComposeOptions {
@@ -104,7 +105,7 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
         auth: serviceAuth,
         remittance: { store: remittanceStore, operator: operatorEscalations },
         savings: { accounts: savingsAccounts, withdrawals, policy: interestPolicy },
-        reconciliation,
+        reconciliation: { queue: reconciliation, store: syncStore, operators: new InMemoryOperatorDirectory(config.operatorCredentials) },
         now,
       }),
     ),

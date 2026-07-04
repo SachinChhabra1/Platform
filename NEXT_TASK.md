@@ -3,7 +3,7 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Policy spine R3–R8 done; integration hardening done. NEXT: rule OD-8, then durable-adapter fan-out.
+## Status: Policy spine R3–R8 + hardening + OD-8 all done. No open decision. NEXT: durable-adapter fan-out.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -15,17 +15,15 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 Member-facing endpoints; `services/wallet` 20 → 161 tests, nine OpenAPI contracts gated; `nia verify`
 green). **The backend policy spine R3–R8 is complete.**
 
-### ▶ NEXT: rule OD-8 (Founder), then the durable-adapter fan-out
-The policy spine R3–R8 and the first round of integration hardening are done. One decision is open and a
-bounded infra fan-out remains.
+### ▶ NEXT: the durable-adapter fan-out (no OD, in-authority)
+The policy spine R3–R8, integration hardening, **and OD-8 (Operator conflict resolution, ruled + built)**
+are done. **No backend product decision is open.** What remains is bounded in-authority infra.
 
-- **▶ OD-8 — Operator money-conflict resolution model (Founder decision).** The one open backend decision,
-  opened during integration hardening per Step-5. The read-only reconciliation surface is built; the
-  RESOLVE action (which value wins on a money conflict, its money effect, operator identity) stays unbuilt
-  until ruled. Recommendation B. Brief:
-  [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md). Rule it → ADR-0019 →
-  build the resolve endpoint + operator identity.
-- **Integration hardening — DONE this round (in-authority):** service auth; remittance rail webhooks;
+- **OD-8 — DONE (ruled Option B → ADR-0019, Locked).** `resolveConflict` (accept-proposal / keep-server /
+  manual, each an authoritative write recording operator + reason) + per-operator identity
+  (`operator_auth.ts`, `X-Nia-Operator-Token`) + `POST /v1/ops/reconciliation/{id}/resolve`, wired through
+  `composeWalletApp` (credentials from `NIA_OPERATOR_CONFIG_PATH`, empty ⇒ deny). +10 tests.
+- **Integration hardening — DONE (in-authority):** service auth; remittance rail webhooks;
   scheduled SLA sweep; savings accrual + settlement jobs; the read-only Operator reconciliation surface;
   the durable-store primitive (`FileDurableStore`) + a durable `RemittanceStore`; the production config
   loader + `composeWalletApp`. See CHANGELOG "Backend integration hardening".

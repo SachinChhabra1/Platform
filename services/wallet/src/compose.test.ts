@@ -24,6 +24,7 @@ function baseConfig(over: Partial<WalletConfig> = {}): WalletConfig {
     recoveryCapBps: 0,
     savingsSettleMs: 0,
     floorSeed: undefined,
+    operatorCredentials: {},
     ...over,
   };
 }

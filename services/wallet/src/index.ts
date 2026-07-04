@@ -140,12 +140,24 @@ export {
   type SyncStore,
   type ReconciliationItem,
   type ReconciliationQueue,
+  type ResolutionChoice,
+  type ConflictResolution,
+  type ResolveDecision,
+  type ResolveResult,
   reconcile,
   applyOfflineWrite,
+  resolveConflict,
   InMemorySyncStore,
   InMemoryReconciliationQueue,
 } from './offline_sync.js';
 export { type SyncRouteDeps, registerSyncRoutes } from './sync_http.js';
+// Operator identity (OD-8/ADR-0019) — per-operator credential for conflict resolution.
+export {
+  OPERATOR_TOKEN_HEADER,
+  type OperatorIdentity,
+  type OperatorAuthenticator,
+  InMemoryOperatorDirectory,
+} from './operator_auth.js';
 // Durable persistence primitive (infra) — the keyed DurableStore<T> interface +
 // a dependency-free file-backed impl (survives restart) + in-memory. Production
 // durable adapter is Postgres (ADR-0006) implementing the same interface.
