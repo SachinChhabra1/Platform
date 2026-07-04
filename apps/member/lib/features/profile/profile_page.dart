@@ -4,6 +4,7 @@ import 'package:nia_api/api.dart';
 import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
+import '../../widgets/nia_async.dart';
 import '../membership/member_standing.dart';
 import '../membership/membership_header.dart';
 import '../membership/membership_source.dart';
@@ -38,9 +39,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late final Future<MembershipView> _membership =
-      widget.membershipSource.currentMembership();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -58,15 +56,13 @@ class _ProfilePageState extends State<ProfilePage> {
           // copy for Paused/Closed.
           const SectionLabel('Your standing'),
           const SizedBox(height: NiaTokens.s2),
-          FutureBuilder<MembershipView>(
-            future: _membership,
-            builder: (BuildContext context, AsyncSnapshot<MembershipView> snap) {
-              if (!snap.hasData) return const SizedBox(height: 44);
-              return MemberStanding(
-                state: snap.data!.state,
-                onOperator: () => openOperatorSheet(context),
-              );
-            },
+          NiaAsyncView<MembershipView>(
+            load: widget.membershipSource.currentMembership,
+            loading: const SizedBox(height: 44),
+            builder: (BuildContext context, MembershipView m) => MemberStanding(
+              state: m.state,
+              onOperator: () => openOperatorSheet(context),
+            ),
           ),
           const SizedBox(height: NiaTokens.s7),
 

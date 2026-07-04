@@ -8,10 +8,10 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   the stop condition in `docs/AUTONOMOUS-LOOP.md`; created **R9 — Production Readiness** in `ROADMAP.md`
   (grounded from repository inspection, tagged by authority).
 - **R9.1 — live-surface error/offline states.** New `NiaAsyncView` (loading · calm error · Retry)
-  replaces the infinite spinner that six live `FutureBuilder`s showed on any API failure (airplane
-  mode / 4xx-5xx / timeout). Wired the three Wallet-Overview surfaces (home, wallet, my_family);
-  `wallet_page`/`my_family_page` simplified to stateless. `async_states_test.dart` (+4); suite 77 → 81.
-  Goldens byte-identical.
+  replaces the infinite spinner that live `FutureBuilder`s showed on any API failure (airplane mode /
+  4xx-5xx / timeout). Wired the money surfaces (home, wallet, my_family) and `profile_page`'s standing;
+  `wallet_page`/`my_family_page` simplified to stateless; `membership_header` degrades gracefully by
+  design. `async_states_test.dart` (+5); suite 77 → 82. Goldens byte-identical.
 
 ## Docs: reconcile state to verified reality (2026-07-04)
 

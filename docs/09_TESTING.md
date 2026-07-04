@@ -18,7 +18,7 @@ flutter test test/niabook_golden_test.dart --update-goldens
 Repository-wide gate: **`nia verify`** (from repo root, after `source scripts/_env.sh`) runs the
 suite plus a non-destructive codegen-drift check. It must end `nia verify passed`.
 
-## The suite (81 tests today)
+## The suite (82 tests today)
 
 - **Screen contracts** — `pillars_test.dart` (each pillar's promise, hero, benefit-led copy,
   cross-pillar tags, emotional close) and `niabook_page_test.dart`.

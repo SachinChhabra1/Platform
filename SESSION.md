@@ -15,9 +15,10 @@ Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
   (home ×2, wallet, my_family, profile, membership_header) that handled loading but **not `hasError`**
   → an API failure / airplane mode / timeout left the UI spinning forever. Added `NiaAsyncView`
   (loading · calm error · Retry, no alarm colour per Book III) and wired the three Wallet-Overview
-  surfaces (home balance, wallet, my_family). Golden-neutral (frozen screens render synchronously).
-  Suite **77 → 81**. A real retry bug (`setState` callback returning a `Future`) was caught by the new
-  tests and fixed before commit — the system working as intended.
+  money surfaces (home balance, wallet, my_family) **and** `profile_page`'s standing; `membership_header`
+  degrades gracefully to a placeholder by design. Golden-neutral (frozen screens render synchronously).
+  Suite **77 → 82** (+5). A real retry bug (`setState` callback returning a `Future`) was caught by the
+  new tests and fixed before commit — the system working as intended.
 - **Verified:** `nia verify` green, analyze clean, no drift, goldens byte-identical.
 - **Next in-authority:** R9.1b membership-surface error states · R9.2 empty states · R9.4 accessibility
   audit · R9.5 crash-recovery boundary. **Founder-gated (unchanged):** R2 native, R3–R8 backend

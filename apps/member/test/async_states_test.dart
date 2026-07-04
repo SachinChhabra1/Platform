@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/family/my_family_page.dart';
 import 'package:member/features/home/home_page.dart';
 import 'package:member/features/membership/membership_source.dart';
+import 'package:member/features/profile/profile_page.dart';
 import 'package:member/features/wallet/wallet_overview_source.dart';
 import 'package:member/features/wallet/wallet_page.dart';
 import 'package:nia_api/api.dart';
@@ -31,6 +32,14 @@ class _FlakyWallet implements WalletOverviewSource {
     calls++;
     if (calls == 1) throw StateError('offline');
     return const SampleWalletOverviewSource().currentOverview();
+  }
+}
+
+/// Always fails — for the membership-backed surfaces.
+class _ThrowingMembership implements MembershipSource {
+  @override
+  Future<MembershipView> currentMembership() async {
+    throw StateError('offline');
   }
 }
 
@@ -79,6 +88,21 @@ void main() {
     expect(find.textContaining('reach Nia just now'), findsOneWidget);
     expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Profile: a failed standing fetch shows the error state, not a silent gap',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: ProfilePage(membershipSource: _ThrowingMembership())),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('reach Nia just now'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
+    // The rest of the profile still renders.
+    expect(find.text('Your Operator'), findsOneWidget);
   });
 
   testWidgets('Retry recovers: tapping Try again re-fetches and renders the data',

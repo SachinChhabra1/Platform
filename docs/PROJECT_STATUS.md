@@ -6,7 +6,7 @@ current state of the repository. The repository, not any conversation, is the me
 ## Current phase — Product Polish (frontend); board freeze lifted, R1 complete
 
 **Current state (2026-07-04, HEAD `d3bd715`):** the board freeze is lifted, R1 (the craftsmanship
-backlog) is complete, and the suite is at **81 tests** — `nia verify` green, `flutter analyze`
+backlog) is complete, and the suite is at **82 tests** — `nia verify` green, `flutter analyze`
 clean, no codegen drift, goldens deterministic. **R9 — Production Readiness** is now the active phase
 (Founder ruling, 2026-07-04). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).
 

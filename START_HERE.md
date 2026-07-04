@@ -18,5 +18,5 @@ that are the Founder's to decide go in [`FOUNDER_REVIEW.md`](FOUNDER_REVIEW.md) 
 record and keep working.
 
 Reality check: the app is **real** — the Flutter Member app is in [`apps/member/`](apps/member)
-(five hardened screens, 81 tests; the board freeze has been lifted and R1 is complete). Any doc
+(five hardened screens, 82 tests; the board freeze has been lifted and R1 is complete). Any doc
 claiming "no app exists" is stale.

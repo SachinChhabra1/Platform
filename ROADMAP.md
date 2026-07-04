@@ -44,7 +44,8 @@ audited and recorded, not faked. Loop rule: [`docs/AUTONOMOUS-LOOP.md`](docs/AUT
 
 | # | Item | Grounding (found by inspection) | Status |
 |---|------|--------------------------------|--------|
-| R9.1 | **Live-surface error / offline states** | 6 `FutureBuilder`s on the live surfaces (`home_page` ×2, `wallet_page`, `my_family_page`, `profile_page`, `membership_header`) handle `!hasData` (spinner) but **not `hasError`** → an API failure / airplane mode / 4xx-5xx / timeout / the source's own `StateError` leaves the UI spinning forever. Golden-neutral (frozen screens render synchronously). | 🔓 IN PROGRESS |
+| R9.0 | **Consolidate the restated test count** | The exact suite count is hard-restated in ~10 docs, so every code slice must bump all of them (Constitution rule 5: *never restate — reference*). Make one canonical count; point the rest at it. | 🔓 TODO |
+| R9.1 | **Live-surface error / offline states** | ✅ `NiaAsyncView` (loading · calm error · Retry) now backs the money surfaces (`home` balance, `wallet_page`, `my_family_page`) and `profile_page`'s standing — an API failure / airplane mode / timeout shows a recoverable error, not an endless spinner. `membership_header` degrades gracefully to a placeholder by design (identity chrome). Golden-neutral; +5 tests. | ✅ DONE |
 | R9.2 | **Empty-state review** | Confirm every zero/empty case is intentional (wallet empty story; `my_family` "Nothing sent home yet"; zero-savings). | 🔓 TODO |
 | R9.3 | **Loading states reassure** | Bare `CircularProgressIndicator`s on live surfaces — make them calm/consistent, not a raw spinner. | 🔓 TODO |
 | R9.4 | **Accessibility audit** | 16 semantics uses today; `nia_bottom_nav` is exemplary (Semantics + Tooltip). Audit icon-only controls (SOS, chevrons), `Monogram`/image semantics, tap targets ≥48px, text-scale resilience, contrast vs Book III. Semantics are golden-neutral. | 🔓 TODO |
