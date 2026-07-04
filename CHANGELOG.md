@@ -2,6 +2,32 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend infra — durable fan-out, Postgres seam, RafiQi orchestrator (2026-07-04)
+
+In-authority infra completing the persistence story and the RafiQi wiring.
+`services/wallet` 228 → 245 tests; `nia verify` green. No dependency added, no
+locked policy touched, no new product decision.
+
+- **PostgreSQL durable seam** (`6cb4a69`): `PostgresDurableStore<T>` implements the
+  same `DurableStore<T>` interface over a node-postgres-shaped `SqlExecutor` port —
+  no `pg` dependency here; the real `pg.Pool` satisfies the port online. One
+  key-value table per store (`pgKeyValueSchema`); parameterised, table names
+  validated. Tested via a functional fake executor (real round-trip + SQL shape).
+- **Durable adapters for every remaining port** (`7d0d699`): `Durable*` adapters
+  for savings (accounts, withdrawals), RafiQi (grants, actions), sync, the
+  reconciliation queue, operator escalations, arrears (two backing stores), and the
+  Floor registry (append-only monotonic invariant preserved). Each composes a
+  `DurableStore<T>` behind the unchanged bespoke port. `composeWalletApp` now wires
+  ALL stores durable + file-backed under the data dir (swap to Postgres online with
+  no domain change).
+- **RafiQi orchestrator** (`c363626`): `autoTake` (take automatically only under an
+  active covering grant + apply the money effect; else `needs_confirmation`, taking
+  nothing), `confirmedTake`, and `reverseWithCompensation` (the 24h reversal undoes
+  the money effect — the mandated inverse). The money movement is an injected
+  `MoneyEffect` seam (`NoMoneyEffect` default), never invented; the Member reverse
+  endpoint now compensates when a path is wired. RafiQi *taking* an action stays the
+  orchestrator boundary (ADR-0004).
+
 ## Backend OD-8 — Operator conflict resolution ruled + implemented (ADR-0019) (2026-07-04)
 
 OD-8, opened during integration hardening, was **ruled by the Founder** (Option B) and implemented,

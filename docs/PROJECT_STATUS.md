@@ -33,8 +33,12 @@ operator + reason, operators on a per-operator credential. **No backend product 
 un-ruled numbers (savings interest rate/fee + horizon `n`; the concrete Floor values; the recovery cap) and
 credentials (service, operator) are Founder/ops-owned config behind seams — read from the environment, none
 invented (recorded judgments in [`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). `services/wallet` at
-224 tests. Next: extend the durable-store pattern to the remaining ports (Postgres online); RafiQi
-orchestrator auto-take/compensation. R2/native untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+245 tests. **The remaining in-authority infra is done too:** the PostgreSQL durable seam
+(`PostgresDurableStore` over an `SqlExecutor` port, no `pg` dependency added), durable adapters for **every**
+wallet port (compose is now fully persistent, file-backed; swap to Postgres online with no domain change),
+and the RafiQi orchestrator (auto-take under an active grant + 24h reversal compensation via an injected
+`MoneyEffect` seam). What's left needs the online environment (the real `pg` driver + a database) or is a
+separate Founder call. R2/native untouched (separate Founder go-ahead). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
 rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
 *Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).

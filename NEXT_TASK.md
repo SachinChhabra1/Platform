@@ -3,7 +3,7 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Policy spine R3–R8 + hardening + OD-8 all done. No open decision. NEXT: durable-adapter fan-out.
+## Status: Backend complete offline — spine + hardening + OD-7/8 + durable fan-out + Postgres seam + RafiQi orchestrator. NEXT: online-only work (real pg + DB), or R2/native on Founder go-ahead.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -15,23 +15,31 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 Member-facing endpoints; `services/wallet` 20 → 161 tests, nine OpenAPI contracts gated; `nia verify`
 green). **The backend policy spine R3–R8 is complete.**
 
-### ▶ NEXT: the durable-adapter fan-out (no OD, in-authority)
-The policy spine R3–R8, integration hardening, **and OD-8 (Operator conflict resolution, ruled + built)**
-are done. **No backend product decision is open.** What remains is bounded in-authority infra.
+### ▶ NEXT: online-only infra + Founder-gated work
+The backend is **complete for everything buildable offline**: the policy spine R3–R8, integration
+hardening, OD-7 and OD-8 (both ruled + built), the durable-store fan-out across every port, the PostgreSQL
+adapter seam, and the RafiQi orchestrator. **No backend product decision is open.** What remains needs the
+online environment or a Founder go-ahead:
 
-- **OD-8 — DONE (ruled Option B → ADR-0019, Locked).** `resolveConflict` (accept-proposal / keep-server /
-  manual, each an authoritative write recording operator + reason) + per-operator identity
-  (`operator_auth.ts`, `X-Nia-Operator-Token`) + `POST /v1/ops/reconciliation/{id}/resolve`, wired through
-  `composeWalletApp` (credentials from `NIA_OPERATOR_CONFIG_PATH`, empty ⇒ deny). +10 tests.
-- **Integration hardening — DONE (in-authority):** service auth; remittance rail webhooks;
-  scheduled SLA sweep; savings accrual + settlement jobs; the read-only Operator reconciliation surface;
-  the durable-store primitive (`FileDurableStore`) + a durable `RemittanceStore`; the production config
-  loader + `composeWalletApp`. See CHANGELOG "Backend integration hardening".
-- **Remaining infra (no OD, in-authority):** extend the durable-store pattern to the other ports (savings,
-  arrears, rafiqi, sync, escalations, reconciliation, floor registry) — same `DurableStore<T>` seam; the
-  real Postgres adapter (ADR-0006) when online; RafiQi orchestrator auto-take + reversal compensation (R5);
-  extract the co-located domains into their own `services/*` packages when the workspace can grow.
+- **Online-only (needs the sandbox's network / a database):** implement the `SqlExecutor` with the real
+  `pg` driver (a one-liner over `pg.Pool`), run `pgKeyValueSchema` migrations, and point `composeWalletApp`
+  at `PostgresDurableStore` instead of `FileDurableStore`; add the missing durable indexes / push the list
+  scans down to SQL. Extract the co-located domains into their own `services/*` packages once the workspace
+  can grow (the offline sandbox cannot add a pnpm workspace member).
+- **Founder values (config, not engineering):** the concrete `the_floor` values
+  (`NIA_FLOOR_CONFIG_PATH`), the savings interest rate/fee/formula + horizon `n`, the recovery cap
+  (`NIA_RECOVERY_CAP_BPS`, ruled 50%), and the service + operator credentials. Seams read them from config;
+  never invent them.
+- **Wire concrete money paths behind the seams:** a real `InterestAccrualPolicy`, and concrete RafiQi
+  `MoneyEffect`s per action type (each `reverse` the exact inverse of `apply`). If a specific money path's
+  behaviour turns out to be undefined by an ADR, STOP and open an OD.
 - **Do NOT start R2/native** — separate Founder go-ahead.
+
+**DONE this round (in-authority infra):** service auth; remittance rail webhooks; scheduled SLA sweep;
+savings accrual + settlement jobs; the Operator reconciliation surface (read + resolve, OD-8); the
+durable-store primitive + adapters for **every** port; the PostgreSQL seam; the production config loader +
+`composeWalletApp` (fully persistent); the RafiQi orchestrator (auto-take + reversal compensation). See the
+CHANGELOG.
 
 Seams awaiting Founder *values* (not engineering), all now readable from config without any invented
 number: the concrete `the_floor` config values (via `NIA_FLOOR_CONFIG_PATH`), the savings interest
