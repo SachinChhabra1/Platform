@@ -171,3 +171,23 @@ describe('RafiQi HTTP — access control', () => {
     expect((await server.inject({ method: 'POST', url: '/v1/rafiqi/actions/a-x/reverse', headers: other })).statusCode).toBe(404);
   });
 });
+
+describe('RafiQi HTTP — reversal compensates the money path (ADR-0014)', () => {
+  it('undoes the money effect when reversing within the window', async () => {
+    const reversed: string[] = [];
+    const acts = new InMemoryRafiqiActionStore();
+    await acts.save(takeAction({ id: 'a-1', membershipId: MEMBER, actionType: 'store_swap', amountPaise: 30_000, now: ASOF, via: { kind: 'confirmed' } }));
+    const app = createServer({ serviceName: 'rafiqi-effect-test' });
+    registerRafiqiRoutes(app, {
+      sessions: new InMemorySessionStore({ [SESSION]: { membershipId: MEMBER, deviceId: 'dev-1' } }),
+      grants: new InMemoryGrantStore(),
+      actions: acts,
+      effect: { async apply() {}, async reverse(a) { reversed.push(a.id); } },
+      now: () => new Date(ASOF.getTime() + HOURS(5)),
+    });
+    const res = await app.inject({ method: 'POST', url: '/v1/rafiqi/actions/a-1/reverse', headers: { authorization: `Bearer ${SESSION}` } });
+    expect(res.statusCode).toBe(200);
+    expect(reversed).toEqual(['a-1']); // compensation ran
+    await app.close();
+  });
+});

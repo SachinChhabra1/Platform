@@ -18,11 +18,18 @@ import {
   type RafiqiAction,
 } from './rafiqi.js';
 import type { GrantStore, RafiqiActionStore } from './rafiqi_ledger.js';
+import type { MoneyEffect } from './rafiqi_orchestrator.js';
 
 export interface RafiqiRouteDeps {
   readonly sessions: SessionStore;
   readonly grants: GrantStore;
   readonly actions: RafiqiActionStore;
+  /**
+   * The money path a reversal compensates (ADR-0014 reversibility). Optional; when
+   * wired, reversing an action within its window undoes its money effect (the
+   * inverse of the action's apply). Absent ⇒ state-only reversal (no money path yet).
+   */
+  readonly effect?: MoneyEffect;
   readonly now?: () => Date;
   readonly newId?: () => string;
 }
@@ -175,6 +182,8 @@ export function registerRafiqiRoutes(app: FastifyInstance, deps: RafiqiRouteDeps
     try {
       const reversed = reverseAction(action, now());
       await deps.actions.save(reversed);
+      // Compensate the money path within the window (the inverse of apply), if wired.
+      await deps.effect?.reverse(action);
       return reply.code(200).send(actionView(reversed));
     } catch {
       // Not reversible / window closed (the domain guards). The Member's undo is

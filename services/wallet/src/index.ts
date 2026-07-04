@@ -134,6 +134,19 @@ export {
   DurableRafiqiActionStore,
 } from './rafiqi_ledger.js';
 export { type RafiqiRouteDeps, registerRafiqiRoutes } from './rafiqi_http.js';
+// RafiQi orchestrator (R5 infra; ADR-0014) — auto-take under an active grant +
+// 24h reversal compensation, over an injected MoneyEffect seam (no money semantics
+// invented). RafiQi taking an action stays the orchestrator boundary (ADR-0004).
+export {
+  type MoneyEffect,
+  type OrchestratorDeps,
+  type ProposedAction,
+  type AutoTakeResult,
+  NoMoneyEffect,
+  autoTake,
+  confirmedTake,
+  reverseWithCompensation,
+} from './rafiqi_orchestrator.js';
 // Offline write reconciliation (R6; ADR-0015) — per record class: money
 // server-authoritative-with-reconciliation, intent last-write-wins, append merge.
 export {

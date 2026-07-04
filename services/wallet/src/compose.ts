@@ -35,6 +35,7 @@ import { registerRemittanceRailRoutes } from './rail_http.js';
 import { DurableGrantStore, DurableRafiqiActionStore } from './rafiqi_ledger.js';
 import type { AuthorizationGrant, RafiqiAction } from './rafiqi.js';
 import { registerRafiqiRoutes } from './rafiqi_http.js';
+import { NoMoneyEffect } from './rafiqi_orchestrator.js';
 import { DurableSyncStore, DurableReconciliationQueue, type SyncRecord, type ReconciliationItem } from './offline_sync.js';
 import { registerSyncRoutes } from './sync_http.js';
 import { SecretServiceAuthenticator } from './service_auth.js';
@@ -99,7 +100,7 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
     mount((s) => registerWageSettlementRoutes(s, { sessions, floor, arrears, recoveryCapBps: config.recoveryCapBps, now })),
     mount((s) => registerSavingsRoutes(s, { sessions, accounts: savingsAccounts, withdrawals, policy: interestPolicy, settleAfterMs: config.savingsSettleMs, now })),
     mount((s) => registerRemittanceRoutes(s, { sessions, store: remittanceStore, now })),
-    mount((s) => registerRafiqiRoutes(s, { sessions, grants, actions: rafiqiActions, now })),
+    mount((s) => registerRafiqiRoutes(s, { sessions, grants, actions: rafiqiActions, effect: new NoMoneyEffect(), now })),
     mount((s) => registerSyncRoutes(s, { sessions, store: syncStore, operator: reconciliation, now })),
     // Service-authed surfaces (rail webhooks + ops triggers).
     mount((s) => registerRemittanceRailRoutes(s, { store: remittanceStore, auth: serviceAuth, now })),
