@@ -36,9 +36,20 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   defined by ADR-0012. Per Step-5, building STOPPED and **opened OD-7**
   ([`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `FOUNDER_REVIEW.md`; `DECISIONS.md`;
   pending row in `ENGINEERING_LOCK.md`). Recording is safe to ship; recovery stays unbuilt until ruled.
-- ⏭ **Next:** rule OD-7 to finish R3, or proceed to **R4 Remittance** (ADR-0013), **R5 RafiQi**
-  (ADR-0014), etc. — each strictly against its locked ADR; if a slice hits an uncovered decision, STOP
-  and open a new OD.
+
+**R4 — Remittance completion (ADR-0013/OD-2) — domain DONE.**
+- ✅ **State machine** (`remittance.ts`): `initiated → in_transit ("sent") → confirmed_available
+  ("Reached home") → settled`, plus `escalated`. **"Sent" is never confirmed**; confirmation is ONLY
+  `markRecipientAvailable`; family acknowledgement is an optional flag, never the gate; 24h SLA
+  (`escalateAfter`) with a pure `checkSla`. Every transition appends an append-only audit `history`,
+  keyed by remittance id + funding `settlementId`.
+- ✅ **Seams** (`remittance_ledger.ts`): `RemittanceStore` (auditable by id/Member), `OperatorEscalations`
+  (Operator hand-off), and `escalateIfStalled` orchestration (raises + persists on a fresh SLA breach,
+  idempotent). +12 tests (wallet 54 → 66) proving all five required properties.
+- ⏭ **Next R4 slices:** the HTTP endpoint (`POST /remittances`, event transitions) + `openapi.remittance.yaml`;
+  the real rail adapter (feeds `recipient_available`) and a scheduled SLA sweep. No new OD — ADR-0013
+  covers R4. Then **R5 RafiQi** (ADR-0014), etc. — each strictly against its locked ADR; if a slice hits
+  an uncovered decision, STOP and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

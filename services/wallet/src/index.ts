@@ -48,3 +48,25 @@ export {
   waiverFrom,
   InMemoryArrearsLedger,
 } from './arrears.js';
+// Remittance completion (R4; ADR-0013) — "sent" is not "confirmed"; confirmed =
+// recipient-available; 24h SLA → Operator; family ack optional.
+export {
+  type RemittanceState,
+  type RemittanceEvent,
+  type Remittance,
+  isConfirmed,
+  initiateRemittance,
+  markSent,
+  markRecipientAvailable,
+  acknowledgeByFamily,
+  markSettled,
+  checkSla,
+} from './remittance.js';
+export {
+  type RemittanceStore,
+  type OperatorEscalation,
+  type OperatorEscalations,
+  InMemoryRemittanceStore,
+  InMemoryOperatorEscalations,
+  escalateIfStalled,
+} from './remittance_ledger.js';
