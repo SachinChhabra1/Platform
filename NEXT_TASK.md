@@ -3,13 +3,44 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: OD-1…OD-6 RULED + LOCKED (2026-07-04). Backend un-paused. R3–R8 UNLOCKED — implementing R3 (Wage Flow).
+## Status: R3–R7 DONE (domains + endpoints). NEXT: R8 Floor (ADR-0017). Then decide OD-7 (arrears recovery).
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
 (locking commit `f885800`). Backend un-paused. **R3–R8 are UNLOCKED** — build each strictly against its
 locked decision. **If implementation reveals an uncovered product decision, STOP and open a new OD — do
 not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
+
+**R3 Wage · R4 Remittance · R5 RafiQi · R6 Offline · R7 Savings are DONE** (domains + Member-facing
+endpoints; `services/wallet` 20 → 144 tests, eight OpenAPI contracts gated; `nia verify` green). The
+backend policy spine is complete through R7.
+
+### ▶ NEXT: R8 — Dignity gates / The Floor (ADR-0017 / OD-6)
+Build the concrete, versioned, Founder-owned `the_floor` config + a read-only `GET /v1/floor` + a shared
+accessor, and **plug it into the existing `FloorSource` seam** (replacing `InMemoryFloorSource`, which R3
+Wage already consumes server-side). Contract → domain → HTTP → tests → `nia verify` green → commit-if-green
+→ update the four state docs. Strictly against ADR-0017; if a slice exposes an uncovered decision, STOP and
+open a new OD. **Do not open R2/native yet** — finish R8 first so the backend policy spine is complete, then
+decide OD-7 (arrears recovery). The concrete Floor *values* are a Founder input (like R7's interest rate);
+build the mechanism + seam, don't invent the numbers.
+
+**R7 Savings — DONE (ADR-0016 / OD-5).**
+- ✅ **Withdrawal mechanics** (`savings.ts`): instant-to-Wallet (the withdrawal is returned already
+  `available` — no requested-limbo), T+n settlement (`settleWithdrawal`, rail-driven, kept off the Member
+  API), **interest to the Member net of a disclosed fee** (drawn from net interest first, then principal;
+  money conserved), **no early-withdrawal penalty** (available == requested; a locked account is refused,
+  not penalised). Stores in `savings_ledger.ts`.
+- ✅ **Member-facing endpoints + contract** — `openapi.savings.yaml` + `savings_http.ts`: read the account
+  (interest accrued-to-now), request/list/read withdrawals; default-deny 401/403, owner-only (404, no
+  leak), 409 on insufficient balance / locked, server-time header. +32 tests (wallet 112 → 144).
+- 🔒 **Recorded judgment (Founder-ratified):** the interest **rate/formula/fee** and settlement horizon
+  **`n`** are **Founder-owned config** behind the `InterestAccrualPolicy` seam (zero default) and
+  `settleAfterMs` — like the Floor's values behind `FloorSource`; **no number invented in code**. Changing
+  the Member-owned-yield principle or hard-coding a rate requires Founder review
+  ([`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)).
+- ⏭ **Remaining R7 (infra, no OD):** the interest-accrual job, the rail settlement adapter (drives
+  `available → settled`), a durable store, and wiring the wage waterfall's `savings` deposit into the
+  account.
 
 **Implementing R3 — Wage Flow** (critical path, ADR-0012/OD-1).
 - ✅ **Shortfall waterfall allocator DONE** — pure, exhaustively tested (`services/wallet/src/wage.ts`,

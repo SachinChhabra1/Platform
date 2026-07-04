@@ -110,3 +110,28 @@ export {
   InMemoryReconciliationQueue,
 } from './offline_sync.js';
 export { type SyncRouteDeps, registerSyncRoutes } from './sync_http.js';
+// Savings withdrawal mechanics (R7; ADR-0016) — instant-to-Wallet, T+n settle,
+// interest to the Member net of a disclosed fee, no early-withdrawal penalty. The
+// rate/formula is the InterestAccrualPolicy seam (Founder-owned pricing; zero
+// default until supplied), `n` is settleAfterMs config — neither invented here.
+export {
+  type SavingsAccount,
+  type InterestAccrualPolicy,
+  type WithdrawalState,
+  type WithdrawalEvent,
+  type Withdrawal,
+  NoInterestAccrualPolicy,
+  openAccount,
+  balancePaise,
+  deposit,
+  accrueInterest,
+  requestWithdrawal,
+  settleWithdrawal,
+} from './savings.js';
+export {
+  type SavingsAccountStore,
+  type WithdrawalStore,
+  InMemorySavingsAccountStore,
+  InMemoryWithdrawalStore,
+} from './savings_ledger.js';
+export { type SavingsRouteDeps, registerSavingsRoutes } from './savings_http.js';

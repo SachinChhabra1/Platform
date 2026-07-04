@@ -12,9 +12,13 @@ clean, no codegen drift, goldens deterministic. **R9 — Production Hardening is
 (native build R2/K1, or a Founder-approved frozen-screen change Q11). R9 is now a **parallel** hardening
 stream, not the terminal gate. **OD-1…OD-6 were ruled + Locked (2026-07-04)** and the backend un-paused;
 implementation is underway strictly against the lock: **R3 Wage** (allocator · endpoint · arrears+waiver),
-**R4 Remittance**, **R5 RafiQi**, and **R6 Offline** (per-record-class reconciliation) — domains +
-endpoints all done (`services/wallet` 20 → 112 tests, seven OpenAPI contracts gated). **OD-7 was opened**
-during R3 (arrears recovery ordering — Step-5 guardrail). Next: R7 Savings (ADR-0016), R8 Floor (ADR-0017). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
+**R4 Remittance**, **R5 RafiQi**, **R6 Offline** (per-record-class reconciliation), and **R7 Savings**
+(withdrawal mechanics: instant-to-Wallet, T+n settle, interest to the Member net of a disclosed fee, no
+early-withdrawal penalty) — domains + endpoints all done (`services/wallet` 20 → 144 tests, eight OpenAPI
+contracts gated). **OD-7 was opened** during R3 (arrears recovery ordering — Step-5 guardrail). R7's
+un-ruled numbers (interest rate/formula/fee + settlement horizon `n`) are Founder-owned config behind the
+`InterestAccrualPolicy` seam / `settleAfterMs`, not invented in code (recorded judgment in
+[`../ENGINEERING_LOCK.md`](../ENGINEERING_LOCK.md)). Next: R8 Floor (ADR-0017). *(Earlier: the R9 engineering-quality loop ran and was exhausted before the OD
 rulings reopened backend coding.)* Founder-gated remainders: R2 native, Q11 frozen-screen change, OD-7.
 *Historical framing of the pre-ruling bottleneck (OD-1 critical, expired
 2026-07-13). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).

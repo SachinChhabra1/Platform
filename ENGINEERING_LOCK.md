@@ -42,6 +42,22 @@ is locked and built (ADR-0012), but *recovering* them is an uncovered decision, 
 opened OD-7 rather than invent a recovery order. Recording is safe to ship; recovery stays unbuilt until
 OD-7 is ruled. Brief: [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
 
+**🔒 R7 Savings — recorded implementation judgment (2026-07-04, Founder-ratified).** ADR-0016 / OD-5
+locks the savings *behaviour*: **instant-to-Wallet, T+n settlement, interest to the Member net of a
+disclosed fee, no early-withdrawal penalty.** ADR-0016 does **not** fix the *numbers*. The ruling on how
+the un-ruled numbers are handled:
+
+- The interest **rate**, accrual **formula**, disclosed **fee amount**, and the settlement horizon **`n`**
+  are **Founder-owned configuration**, supplied behind the `InterestAccrualPolicy` seam (rate/formula/fee)
+  and the `settleAfterMs` config (`n`) — the same pattern as the Floor's concrete values behind
+  `FloorSource`. They are **not** a new OD.
+- **No product number is invented in code.** The default seam (`NoInterestAccrualPolicy`) yields zero
+  until the Founder supplies the pricing input; the domain enforces only the *ownership* rule (yield to
+  the Member, net of fee) and refuses a fee that exceeds interest (a penalty by another name).
+- If a future implementation tries to **hard-code a rate/fee/formula/`n` in code**, or to **change the
+  Member-owned-yield principle** (interest to anyone but the Member, or a penalty on withdrawal), that is
+  a change to locked behaviour and **requires Founder review** — it is not an engineering call.
+
 **Reversibility at a glance** (from the briefs — drives how carefully each must be ruled):
 
 | OD | Reversible? | Why it matters |

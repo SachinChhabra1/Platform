@@ -2,6 +2,28 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend R7 Savings — implementation against ADR-0016 (2026-07-04)
+
+R7 built strictly against the locked OD-5 ([ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md));
+`services/wallet` 112 → 144 tests, eight OpenAPI contracts gated.
+
+- **R7 Savings (ADR-0016):** withdrawal mechanics (`savings.ts`) — on withdrawal the amount is
+  **immediately available in the Wallet** (the withdrawal is returned already `available`, no
+  requested-limbo), rail **settlement is T+n** (`settleWithdrawal`, rail-driven, kept off the Member
+  API — same principle as remittance confirmation), **interest accrues to the Member net of a single
+  disclosed fee** (drawn from net interest first, then principal; money conserved), and there is **no
+  early-withdrawal penalty** (available == requested; a locked account is *refused*, never penalised).
+  Member-facing endpoints (`openapi.savings.yaml`: read the account with interest accrued-to-now,
+  request/list/read withdrawals) in `savings_http.ts`; stores in `savings_ledger.ts`; default-deny
+  401/403, owner-only reads (404, no leak), 409 on insufficient balance / locked, server-time header.
+- **Recorded judgment (Founder-ratified):** ADR-0016 locks the *behaviour* but not the *numbers*. The
+  interest **rate/formula/fee** and the settlement horizon **`n`** are **Founder-owned config** behind
+  the `InterestAccrualPolicy` seam (zero default, `NoInterestAccrualPolicy`) and `settleAfterMs` — the
+  same pattern as the Floor's values behind `FloorSource`. **No product number is invented in code**; the
+  domain enforces only the ownership rule (yield to the Member, net of fee) and refuses a fee exceeding
+  interest. Hard-coding a rate or altering the Member-owned-yield principle requires Founder review. Full
+  record in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md).
+
 ## Backend R3–R5 — implementation against the locked ODs (2026-07-04)
 
 Backend un-paused after OD-1…OD-6 were ruled + Locked ([`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md),

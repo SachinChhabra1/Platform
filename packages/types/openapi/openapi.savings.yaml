@@ -1,0 +1,293 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Savings withdrawal
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    Savings withdrawal mechanics (R7; ADR-0016 / OD-5, Option B, locked in
+    `/ENGINEERING_LOCK.md`). "Their money, their yield, available on demand." On
+    withdrawal the amount is IMMEDIATELY available in the Wallet; the rail
+    SETTLEMENT is T+n (disclosed); INTEREST accrues to the Member, net of a single
+    disclosed fee if any; there is NO early-withdrawal penalty on the default
+    product. This is the MEMBER-facing surface: read the savings account (principal,
+    accrued interest, disclosed fee, withdrawable balance) and request/read
+    withdrawals. Rail settlement (available → settled) is rail-driven, not a Member
+    action (same principle as remittance confirmation). Deposits arrive server-side
+    via the wage waterfall (ADR-0012), not this surface. Money is integer paise.
+
+    The concrete interest RATE / accrual formula and the settlement horizon `n` are
+    Founder-owned config supplied through the accrual-policy seam — not fixed here
+    (ADR-0016: "settlement timing is tunable later"; the rate is a pricing input,
+    like the Floor's concrete values).
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: savings
+    description: Savings account + withdrawals (ADR-0016).
+
+paths:
+  /savings/account:
+    get:
+      operationId: getSavingsAccount
+      tags: [savings]
+      summary: The Member's savings account (principal, accrued interest, balance).
+      description: >
+        Returns the Member's default savings account with interest accrued to the
+        current server time. `accrued_interest` is gross; `fee_charged` is the
+        single disclosed fee netted from it; `net_interest` and `balance` are what
+        the Member can actually withdraw. 404 if the Member has no savings yet.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The savings account.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /savings/withdrawals:
+    post:
+      operationId: requestSavingsWithdrawal
+      tags: [savings]
+      summary: Withdraw from savings — immediately available in the Wallet.
+      description: >
+        Requests a withdrawal of `amount` from the savings balance. The funds are
+        IMMEDIATELY available in the Wallet (the returned withdrawal is already in
+        `available`); rail settlement follows at T+n (`settle_due_at`, disclosed).
+        There is NO early-withdrawal penalty — the available amount equals the
+        requested amount. 409 if the amount exceeds the withdrawable balance or the
+        account is locked.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - $ref: "./openapi.base.yaml#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalRequest"
+      responses:
+        "201":
+          description: The withdrawal, already available in the Wallet.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalView"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "409":
+          $ref: "./openapi.base.yaml#/components/responses/Conflict"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+    get:
+      operationId: listSavingsWithdrawals
+      tags: [savings]
+      summary: The Member's savings withdrawals (audit).
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The Member's withdrawals.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalList"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /savings/withdrawals/{id}:
+    get:
+      operationId: getSavingsWithdrawal
+      tags: [savings]
+      summary: One withdrawal's state and audit history.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The withdrawal.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: A money amount in integer minor units (paise) — never a float. May be zero (balances).
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 0
+          example: 200000
+        currency:
+          type: string
+          enum: [INR]
+
+    PositiveMoney:
+      type: object
+      description: A strictly positive money amount in integer paise (a withdrawal amount).
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 1
+          example: 50000
+        currency:
+          type: string
+          enum: [INR]
+
+    AccountView:
+      type: object
+      required:
+        [id, principal, accrued_interest, fee_charged, net_interest, balance, locked, opened_at, last_accrued_at]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        principal:
+          $ref: "#/components/schemas/Money"
+        accrued_interest:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: Gross interest accrued to date (before the disclosed fee).
+        fee_charged:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: The single disclosed fee netted from interest to date (transparency).
+        net_interest:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: accrued_interest − fee_charged; the Member's yield, withdrawable.
+        balance:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: principal + net_interest; the withdrawable balance.
+        locked:
+          type: boolean
+          description: >
+            The default savings product is unlocked (no penalty). A locked-term
+            product is not part of this ruling; withdrawal from a locked account is
+            refused, not penalised.
+        opened_at:
+          type: string
+          format: date-time
+        last_accrued_at:
+          type: string
+          format: date-time
+
+    WithdrawalRequest:
+      type: object
+      required: [amount]
+      additionalProperties: false
+      properties:
+        amount:
+          $ref: "#/components/schemas/PositiveMoney"
+
+    WithdrawalView:
+      type: object
+      required: [id, account_id, amount, state, requested_at, available_at, settle_due_at, history]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        account_id:
+          type: string
+        amount:
+          $ref: "#/components/schemas/PositiveMoney"
+        state:
+          type: string
+          enum: [requested, available, settled]
+          description: >
+            requested → available (immediate, funds usable in the Wallet) → settled
+            (rail cleared at T+n). Rail-driven after `available`.
+        requested_at:
+          type: string
+          format: date-time
+        available_at:
+          type: string
+          format: date-time
+        settle_due_at:
+          type: string
+          format: date-time
+          description: When rail settlement is expected (T+n, disclosed).
+        settled_at:
+          type: string
+          format: date-time
+        history:
+          type: array
+          items:
+            type: object
+            required: [type, at]
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                enum: [requested, available, settled]
+              at:
+                type: string
+                format: date-time
+
+    WithdrawalList:
+      type: object
+      required: [withdrawals]
+      additionalProperties: false
+      properties:
+        withdrawals:
+          type: array
+          items:
+            $ref: "#/components/schemas/WithdrawalView"
+
+security:
+  - MemberSession: []
