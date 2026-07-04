@@ -11,18 +11,22 @@ References.
 
 ## Open
 
-### OD-7 — Arrears recovery ordering (opened during R3 implementation)
-- **Context:** ADR-0012/OD-1 defines the single-cycle waterfall and that deferred claims carry forward as
-  arrears (now recorded). It does **not** define how arrears are **recovered** from a future wage — where
-  recovery sits in the waterfall, and the order among arrears. Implementation stopped and opened this OD
-  rather than invent it (Step-5 rule).
-- **Options:** A recover-first (rejected — re-creates the debt trap) · **B** current-cycle-first, recover
-  from surplus oldest-first, capped, Nia's own arrears last (recommended) · C per-category interleave.
+### OD-8 — Operator money-conflict resolution model (opened during integration hardening)
+- **Context:** ADR-0015/OD-4 defines how an offline **money** conflict is detected and queued to the
+  Operator ("never silently overwritten"). It does **not** define how the Operator **resolves** it — which
+  value becomes the Member's money. The read-only reconciliation surface (list/view the queue) is built;
+  the resolve action stopped and opened this OD rather than invent it (Step-5 rule).
+- **Options:** A keep-server-only (rejected — silently loses a legitimate offline write) · **B** Operator
+  adjudicates: accept-proposal / keep-server / manual, each an authoritative ledger write recording
+  operator + reason (recommended) · C auto-resolve by rule (rejected — a blind rule on money is the risk
+  ADR-0015 forbids).
 - **Recommendation:** **B** — full brief with the exact ruling shortcut in
-  [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
-- **Impact:** un-gates arrears recovery (2nd half of R3). **Urgency:** low — recovery only bites on a
-  Member's *second* short settlement; R4–R8 don't depend on it. **Blocking?** Blocks completing R3 only.
-- **References:** [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md); `services/wallet/src/arrears.ts`.
+  [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md).
+- **Impact:** un-gates the write half of reconciliation. **Urgency:** low — conflicts only arise once
+  offline money writes are live, and they queue safely meanwhile. **Blocking?** Blocks conflict resolution
+  only; the rest of the backend is unaffected.
+- **References:** [`OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md);
+  `services/wallet/src/offline_sync.ts`, `services/wallet/src/ops_http.ts`.
 
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,
@@ -78,6 +82,10 @@ References.
 
 ## Resolved
 
+- **OD-7 — Arrears recovery ordering.** ✅ Resolved (Founder, 2026-07-04): **Option B** —
+  current-cycle claims first, recover from surplus above the floor oldest-first, capped (config, 50%),
+  Nia's own arrears last. [ADR-0018](docs/adr/0018-arrears-recovery-ordering.md), **Locked** in
+  [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md); built (R3 fully closed).
 - **Q2 — Un-pause the backend and rule OD-1…OD-6.** ✅ Resolved (Founder, 2026-07-04): all six ODs ruled
   (ratified as recommended), each an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in
   [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md). **Backend un-paused** (OD-1). The forward path R2–R8 is

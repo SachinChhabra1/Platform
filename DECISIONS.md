@@ -28,8 +28,15 @@ consequences, or materially change how Nia is built. Keep ADRs rare so they stay
 
 ## Open decisions
 
-**None.** OD-7 (arrears recovery ordering), opened during R3 under the Step-5 rule, was ruled by the
-Founder on 2026-07-04 — see the resolved table below. No backend product decision is currently open.
+Newly opened during implementation (Step-5 rule: an uncovered product decision surfaced while building
+stops work and opens an OD rather than inventing behaviour):
+
+| OD | Decision needed | Blocks | Opened | Brief |
+|----|-----------------|--------|--------|-------|
+| OD-8 | **Operator money-conflict resolution model** — how the Operator RESOLVES a queued offline money conflict (which value wins, its money effect, operator identity). ADR-0015 defines detection/queueing, not resolution | Conflict resolution (write half of the reconciliation surface; read-only listing is built) | 2026-07-04, during integration hardening | [`/OD-8_RECONCILIATION_RESOLUTION_BRIEF.md`](OD-8_RECONCILIATION_RESOLUTION_BRIEF.md) |
+
+*(OD-7, arrears recovery ordering, was opened under this same rule during R3 and ruled 2026-07-04 — see
+the resolved table below.)*
 
 ## Open decisions — the OD-1…OD-6 batch: ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
 
