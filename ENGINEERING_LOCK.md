@@ -22,17 +22,17 @@ decision**: add it to the Decision Book and stop; do not invent product behaviou
 
 ## Locked decisions
 
-**All six ruled by the Founder on 2026-07-04 (ratified as recommended).** Locking commit hash filled in
-the immediate follow-up commit (the batch commit can't contain its own hash).
+**All six ruled by the Founder on 2026-07-04 (ratified as recommended).** Locked by commit `f885800`
+(hash recorded here in the immediate follow-up commit, since a commit can't contain its own hash).
 
 | OD | Decision | Approved option | Owner | Ruling date | ADR | Locking commit | Supersedes | Status |
 |----|----------|-----------------|-------|-------------|-----|----------------|-----------|--------|
-| OD-1 | Wage-flow shortfall priority | **B** — dignity floor → rent → curry → remittance → savings → fee → advance; arrears carry forward, fee waived on employer-caused shortfall; backend un-paused | Founder | 2026-07-04 | [ADR-0012](docs/adr/0012-wage-flow-shortfall-priority.md) | `pending` | — | 🔒 **Locked** |
-| OD-2 | Remittance confirmed + SLA | **B** — confirmed = recipient-available ("Reached home"); 24h SLA → Operator; family ack optional | Founder | 2026-07-04 | [ADR-0013](docs/adr/0013-remittance-confirmed-and-sla.md) | `pending` | — | 🔒 **Locked** |
-| OD-3 | RafiQi reversibility + consent | **B** — 24h reversible; scoped/capped/time-bounded/revocable standing consent, logged; per-action fallback | Founder | 2026-07-04 | [ADR-0014](docs/adr/0014-rafiqi-reversibility-and-consent.md) | `pending` | — | 🔒 **Locked** |
-| OD-4 | Offline conflict resolution | **C** — per-type: money server-authoritative-with-reconciliation, intent last-write-wins, logs merge | Founder | 2026-07-04 | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) | `pending` | — | 🔒 **Locked** |
-| OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `pending` | — | 🔒 **Locked** |
-| OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `pending` | — | 🔒 **Locked** |
+| OD-1 | Wage-flow shortfall priority | **B** — dignity floor → rent → curry → remittance → savings → fee → advance; arrears carry forward, fee waived on employer-caused shortfall; backend un-paused | Founder | 2026-07-04 | [ADR-0012](docs/adr/0012-wage-flow-shortfall-priority.md) | `f885800` | — | 🔒 **Locked** |
+| OD-2 | Remittance confirmed + SLA | **B** — confirmed = recipient-available ("Reached home"); 24h SLA → Operator; family ack optional | Founder | 2026-07-04 | [ADR-0013](docs/adr/0013-remittance-confirmed-and-sla.md) | `f885800` | — | 🔒 **Locked** |
+| OD-3 | RafiQi reversibility + consent | **B** — 24h reversible; scoped/capped/time-bounded/revocable standing consent, logged; per-action fallback | Founder | 2026-07-04 | [ADR-0014](docs/adr/0014-rafiqi-reversibility-and-consent.md) | `f885800` | — | 🔒 **Locked** |
+| OD-4 | Offline conflict resolution | **C** — per-type: money server-authoritative-with-reconciliation, intent last-write-wins, logs merge | Founder | 2026-07-04 | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) | `f885800` | — | 🔒 **Locked** |
+| OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, settles T+n; interest to the Member net of disclosed fee; no early-withdrawal penalty | Founder | 2026-07-04 | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) | `f885800` | — | 🔒 **Locked** |
+| OD-6 | The Floor — source of truth | **B** — one versioned, Founder-owned `the_floor` config, consumed via shared lib, read-only to app, audited | Founder | 2026-07-04 | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) | `f885800` | — | 🔒 **Locked** |
 
 **Reversibility at a glance** (from the briefs — drives how carefully each must be ruled):
 
