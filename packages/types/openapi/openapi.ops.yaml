@@ -43,15 +43,71 @@ paths:
               schema:
                 $ref: "#/components/schemas/SlaSweepResult"
         "401":
-          description: Missing or invalid service token.
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /ops/savings-accrual:
+    post:
+      operationId: runSavingsAccrual
+      tags: [ops]
+      summary: Accrue interest on every savings account up to now (ADR-0016).
+      description: >
+        Runs the interest-accrual job across all accounts via the Founder-owned
+        interest policy. Idempotent per instant (accrual is a no-op when now is not
+        after an account's last accrual).
+      security:
+        - ServiceToken: []
+      responses:
+        "200":
+          description: The accrual summary.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
           content:
             application/json:
               schema:
-                $ref: "./openapi.base.yaml#/components/schemas/Error"
+                $ref: "#/components/schemas/AccrualResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /ops/savings-settle-withdrawals:
+    post:
+      operationId: runSavingsSettlement
+      tags: [ops]
+      summary: Settle savings withdrawals past their T+n settlement time (ADR-0016).
+      description: >
+        Moves every `available` withdrawal whose disclosed settlement time has
+        passed to `settled`. The Member already had the cash on withdrawal; this
+        clears the rail leg. Idempotent.
+      security:
+        - ServiceToken: []
+      responses:
+        "200":
+          description: The settlement summary.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettlementResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "./openapi.base.yaml#/components/responses/InternalError"
 
 components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid service token.
+      content:
+        application/json:
+          schema:
+            $ref: "./openapi.base.yaml#/components/schemas/Error"
+
   securitySchemes:
     ServiceToken:
       type: apiKey
@@ -72,6 +128,31 @@ components:
         escalated:
           type: array
           description: The remittance ids freshly escalated to the Operator this sweep.
+          items:
+            type: string
+
+    AccrualResult:
+      type: object
+      required: [scanned, accrued]
+      additionalProperties: false
+      properties:
+        scanned:
+          type: integer
+          minimum: 0
+          description: How many savings accounts were examined.
+        accrued:
+          type: integer
+          minimum: 0
+          description: How many accounts had interest accrued this run.
+
+    SettlementResult:
+      type: object
+      required: [settled]
+      additionalProperties: false
+      properties:
+        settled:
+          type: array
+          description: The withdrawal ids moved available → settled this run.
           items:
             type: string
 

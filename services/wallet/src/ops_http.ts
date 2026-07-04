@@ -14,12 +14,29 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { API_PREFIX } from '@nia/runtime';
 import { sweepRemittanceSla, type OperatorEscalations, type RemittanceStore } from './remittance_ledger.js';
+import {
+  accrueAllSavings,
+  settleDueWithdrawals,
+  type SavingsAccountStore,
+  type WithdrawalStore,
+} from './savings_ledger.js';
+import type { InterestAccrualPolicy } from './savings.js';
 import { SERVICE_TOKEN_HEADER, type ServiceAuthenticator } from './service_auth.js';
 
 export interface OpsRouteDeps {
   readonly auth: ServiceAuthenticator;
   /** Remittance SLA sweep dependencies (R4). */
   readonly remittance: { readonly store: RemittanceStore; readonly operator: OperatorEscalations };
+  /**
+   * Savings-job dependencies (R7). Optional so the ops surface can be composed
+   * incrementally — the savings routes are only registered when provided. `policy`
+   * is the Founder-owned interest seam (zero default until wired).
+   */
+  readonly savings?: {
+    readonly accounts: SavingsAccountStore;
+    readonly withdrawals: WithdrawalStore;
+    readonly policy: InterestAccrualPolicy;
+  };
   readonly now?: () => Date;
 }
 
@@ -58,4 +75,22 @@ export function registerOpsRoutes(app: FastifyInstance, deps: OpsRouteDeps): voi
     const result = await sweepRemittanceSla(now(), deps.remittance);
     return reply.code(200).send({ scanned: result.scanned, escalated: [...result.escalated] });
   });
+
+  // Savings jobs — registered only when the savings deps are wired (ADR-0016).
+  const savings = deps.savings;
+  if (savings) {
+    // Accrue interest on every account up to now, via the Founder-owned policy.
+    app.post(`${API_PREFIX}/ops/savings-accrual`, async (request, reply) => {
+      if (!serviceOrDeny(request, reply)) return reply;
+      const result = await accrueAllSavings(now(), { accounts: savings.accounts, policy: savings.policy });
+      return reply.code(200).send({ scanned: result.scanned, accrued: result.accrued });
+    });
+
+    // Settle every `available` withdrawal past its T+n settlement time.
+    app.post(`${API_PREFIX}/ops/savings-settle-withdrawals`, async (request, reply) => {
+      if (!serviceOrDeny(request, reply)) return reply;
+      const result = await settleDueWithdrawals(now(), { withdrawals: savings.withdrawals });
+      return reply.code(200).send({ settled: [...result.settled] });
+    });
+  }
 }

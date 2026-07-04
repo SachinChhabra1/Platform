@@ -166,7 +166,11 @@ export {
 export {
   type SavingsAccountStore,
   type WithdrawalStore,
+  type AccrualJobResult,
+  type SettlementJobResult,
   InMemorySavingsAccountStore,
   InMemoryWithdrawalStore,
+  accrueAllSavings,
+  settleDueWithdrawals,
 } from './savings_ledger.js';
 export { type SavingsRouteDeps, registerSavingsRoutes } from './savings_http.js';
