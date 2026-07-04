@@ -17,13 +17,14 @@ R9 is signed off, the program runs three streams at once, like a real engineerin
 
 | Stream | Owner | Scope |
 |---|---|---|
-| **Backend** — R2 native packaging · R3 Wage Flow · R4 Membership · R5 Ledger · R6 Integration · R7 Production data · R8 Release | **Claude** | The forward path. Every item is currently **Founder-gated** (OD rulings + backend un-pause). |
+| **Backend** — R3 Wage Flow · R4 Remittance · R5 RafiQi · R6 Offline · R7 Savings · R8 Floor/dignity gates (R2 native packaging is separate) | **Claude** | The forward path — **now UNLOCKED** (OD-1…OD-6 ruled + Locked, backend un-paused). Build strictly against `ENGINEERING_LOCK.md`; R3 first. |
 | **Design evolution** — motion, typography, micro-interactions | **Vercel / design** | Visual refinement in parallel; lands in Flutter as Founder-approved screen changes (Q11). |
-| **Business decisions** — OD-1…OD-6, business rules, real API contracts | **Founder** | The current bottleneck. OD-1 (Wage Flow) is the critical path; ODs expire **2026-07-13**. |
+| **Business decisions** — OD-1…OD-6 (✅ ruled 2026-07-04), business rules, real API contracts | **Founder** | OD-1…OD-6 resolved and Locked. Remaining Founder calls: R2 native go-ahead, Q11 frozen-screen change. |
 
 **R9 — Production Hardening: ✅ SIGNED OFF (2026-07-04)** — [`R9_SIGNOFF.md`](R9_SIGNOFF.md). In-authority
 scope complete; residual items are gated (native build R2/K1, or a frozen-screen change Q11) and do not
-hold R9 open. The forward path is now **backend (R2–R8)**, all Founder-gated — see the stream table above.
+hold R9 open. The forward path is now **backend (R3–R8), UNLOCKED** as of 2026-07-04 (OD-1…OD-6 ruled +
+Locked) — see the stream table above. R2 native packaging remains a separate Founder go-ahead.
 
 ## Engineering quality — UNLOCKED (in-authority, behaviour-preserving)
 
@@ -124,12 +125,12 @@ work done; any remainder genuinely gated). No category is 🟡 or ⬜ — R9 is 
 |---|------|--------|----------------|
 | R1 | Craftsmanship backlog (`docs/design/niabook/niabook-next-iteration.md`) — 4 items | 🔓 IN PROGRESS | Freeze lifted. #2 ○→✓ motion **done** (R1a); #1 Living middle, #3 emotional register, #4 daily-return pull remain. |
 | R2 | Native packaging — get the app onto a phone as an installable (Android APK, then iOS/TestFlight) | 🔒 LOCKED | Founder decision: web-only was chosen for the demo; native needs accounts/signing + a "do this" from the Founder. See [`KNOWN_BUGS.md`](KNOWN_BUGS.md) K1. |
-| R3 | Wage Flow slice (backend) | 🔒 LOCKED | Backend paused **and** OD-1 ruling required (`DECISIONS.md`). |
-| R4 | Remittance completion (backend) | 🔒 LOCKED | Backend paused **and** OD-2 ruling required. |
-| R5 | RafiQi orchestration (backend) | 🔒 LOCKED | Backend paused **and** OD-3 ruling required. |
-| R6 | Offline write paths | 🔒 LOCKED | Backend paused **and** OD-4 ruling required. |
-| R7 | Savings Flow (backend) | 🔒 LOCKED | Backend paused **and** OD-5 ruling required. |
-| R8 | Dignity gates / The Floor | 🔒 LOCKED | Backend paused **and** OD-6 ruling required. |
+| R3 | Wage Flow slice (backend) | 🔓 UNLOCKED | Backend un-paused; **OD-1 ruled** ([ADR-0012](docs/adr/0012-wage-flow-shortfall-priority.md), Locked). Build strictly against `ENGINEERING_LOCK.md`. **Critical path — start here.** |
+| R4 | Remittance completion (backend) | 🔓 UNLOCKED | Backend un-paused; **OD-2 ruled** ([ADR-0013](docs/adr/0013-remittance-confirmed-and-sla.md), Locked). |
+| R5 | RafiQi orchestration (backend) | 🔓 UNLOCKED | Backend un-paused; **OD-3 ruled** ([ADR-0014](docs/adr/0014-rafiqi-reversibility-and-consent.md), Locked). |
+| R6 | Offline write paths | 🔓 UNLOCKED | Backend un-paused; **OD-4 ruled** ([ADR-0015](docs/adr/0015-offline-conflict-resolution.md), Locked). |
+| R7 | Savings Flow (backend) | 🔓 UNLOCKED | Backend un-paused; **OD-5 ruled** ([ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md), Locked). |
+| R8 | Dignity gates / The Floor | 🔓 UNLOCKED | Backend un-paused; **OD-6 ruled** ([ADR-0017](docs/adr/0017-the-floor-authoritative-source.md), Locked). |
 
 ## How the loop unlocks a task
 
@@ -137,8 +138,10 @@ work done; any remainder genuinely gated). No category is 🟡 or ⬜ — R9 is 
   backlog"). It touches only the frozen screens, so it cannot start before then.
 - **R2** unlocks when the Founder says to build a native install and confirms the target
   (Android first is fastest) — it needs their device/accounts.
-- **R3–R8** unlock when (a) the backend is un-paused and (b) the matching OD-# is ruled
-  (a ruling becomes an ADR). OD-1…OD-6 expire 2026-07-13.
+- **R3–R8** are **UNLOCKED** (2026-07-04): backend un-paused and OD-1…OD-6 ruled + Locked
+  ([`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md), ADRs 0012–0017). Build each strictly against its locked
+  decision; if implementation reveals an uncovered product decision, **stop and open a new OD** — do not
+  invent behaviour (`docs/AUTONOMOUS-LOOP.md`). **R3 (Wage Flow) is the critical path — start there.**
 
 ## Done
 

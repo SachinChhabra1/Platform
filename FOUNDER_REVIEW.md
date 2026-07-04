@@ -11,18 +11,6 @@ References.
 
 ## Open
 
-### Q2 — Un-pause the backend and rule the open decisions (OD-1…OD-6)?
-- **Context:** money-movement flows (Wage/Remittance/RafiQi/Offline/Savings/Floor) are paused; each is
-  also blocked by an open decision needing a ruling. ODs expire 2026-07-13.
-- **Options:** rule each OD (becomes an ADR) and un-pause, or keep paused through Product Polish.
-- **Recommendation:** rule all six in one sitting from the **Founder Decision Book —
-  [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md)** — six one-page briefs (decision · why · options · rec ·
-  cost of delay · APIs/data/services). Rule **OD-1 first** (critical path) and **OD-6 early** (the Floor
-  is a root the others reference); each has a one-line ruling shortcut.
-- **Impact:** unlocks R2–R8. **Urgency:** medium (OD expiry 2026-07-13). **Blocking?** Yes — gates backend.
-- **References:** [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md); `DECISIONS.md` (OD-1…OD-6);
-  per-OD briefs `OD-1_…` through `OD-6_…`.
-
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,
   `profile`, `membership`, `promise`, `clusters`, `family/my_family`). `wallet` uses retired "wallet" language.
@@ -77,6 +65,11 @@ References.
 
 ## Resolved
 
+- **Q2 — Un-pause the backend and rule OD-1…OD-6.** ✅ Resolved (Founder, 2026-07-04): all six ODs ruled
+  (ratified as recommended), each an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in
+  [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md). **Backend un-paused** (OD-1). The forward path R2–R8 is
+  now unblocked and built strictly against the locked decisions; `DECISIONS.md` open-decisions section is
+  cleared.
 - **Q10 — the `nia-book-design-exploration` (Next.js) UI.** ✅ Resolved (Founder, 2026-07-04): it is a
   **design system / reference only** — it explores visual design, motion, hierarchy, and interaction;
   it is **not** a candidate implementation and does **not** supersede ADR-0002. **Flutter remains the

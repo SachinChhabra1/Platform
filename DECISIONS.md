@@ -26,15 +26,16 @@ consequences, or materially change how Nia is built. Keep ADRs rare so they stay
 | [0010](docs/adr/0010-i18n-architecture.md) | i18n architecture |
 | [0011](docs/adr/0011-typescript-testing-and-shared-libs.md) | TypeScript test runner and shared backend libraries |
 
-## Open decisions — ruling required (expire 2026-07-13)
+## Open decisions — ✅ ALL RESOLVED (Founder ruling, 2026-07-04)
 
-These do not block the foundation. Each blocks the slice named. A ruling becomes an ADR.
+OD-1…OD-6 were ruled by the Founder on 2026-07-04 (ratified as recommended), each becoming an ADR and
+locked in [`/ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md). No open decisions remain.
 
-| OD | Decision needed | Blocks | Books |
-|----|-----------------|--------|-------|
-| OD-1 | Wage-flow **deduction priority on shortfall** (Member-impacting; Product/ops to rule) | Wage Flow | IV §4.2, II §2.4 |
-| OD-2 | Remittance **"destination-confirmed" mechanism + escalation SLA** | Remittance completion | I §4.9, IV §4.3 |
-| OD-3 | RafiQi **reversibility window** + standing-authorisation format | RafiQi | IX §5, VIII §3.8 |
-| OD-4 | Offline **conflict-resolution policies** per record type | Offline write paths | V §3.4 |
-| OD-5 | Savings **withdrawal mechanics** (settlement time, interest treatment) | Savings Flow | IV §4.4 |
-| OD-6 | **The Floor** enumeration authoritative source | Dignity gates | I (Art. I) → V |
+| OD | Decision | Ruling | ADR |
+|----|----------|--------|-----|
+| OD-1 | Wage-flow deduction priority on shortfall | **B** — Member-&-family-first waterfall; Nia's fee/advance last; backend un-paused | [ADR-0012](docs/adr/0012-wage-flow-shortfall-priority.md) |
+| OD-2 | Remittance "destination-confirmed" + escalation SLA | **B** — recipient-available; 24h SLA → Operator | [ADR-0013](docs/adr/0013-remittance-confirmed-and-sla.md) |
+| OD-3 | RafiQi reversibility window + standing authorisation | **B** — 24h reversible; scoped/capped/revocable consent | [ADR-0014](docs/adr/0014-rafiqi-reversibility-and-consent.md) |
+| OD-4 | Offline conflict-resolution per record type | **C** — money server-authoritative, intent last-write-wins | [ADR-0015](docs/adr/0015-offline-conflict-resolution.md) |
+| OD-5 | Savings withdrawal mechanics | **B** — instant-to-Wallet, T+n settle, interest to the Member | [ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md) |
+| OD-6 | The Floor — authoritative source | **B** — one versioned, Founder-owned `the_floor` config | [ADR-0017](docs/adr/0017-the-floor-authoritative-source.md) |

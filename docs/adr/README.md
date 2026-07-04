@@ -35,3 +35,9 @@ in [`/DECISIONS.md`](../../DECISIONS.md).
 | [0009](0009-process-frozen-v1.md) | Development Methodology Freeze | Accepted |
 | [0010](0010-i18n-architecture.md) | i18n architecture | Accepted |
 | [0011](0011-typescript-testing-and-shared-libs.md) | TypeScript test runner and shared backend libraries | Accepted |
+| [0012](0012-wage-flow-shortfall-priority.md) | Wage-flow deduction priority on shortfall (OD-1) | Accepted |
+| [0013](0013-remittance-confirmed-and-sla.md) | Remittance "destination-confirmed" + escalation SLA (OD-2) | Accepted |
+| [0014](0014-rafiqi-reversibility-and-consent.md) | RafiQi reversibility window + standing authorisation (OD-3) | Accepted |
+| [0015](0015-offline-conflict-resolution.md) | Offline conflict-resolution per record type (OD-4) | Accepted |
+| [0016](0016-savings-withdrawal-mechanics.md) | Savings withdrawal mechanics: settlement + interest (OD-5) | Accepted |
+| [0017](0017-the-floor-authoritative-source.md) | The Floor: authoritative enumeration source (OD-6) | Accepted |
