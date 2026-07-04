@@ -14,6 +14,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { API_PREFIX, sessionFromRequest, type SessionStore } from '@nia/runtime';
 import type { FloorSource } from './floor.js';
+import { arrearsFrom, type ArrearsLedger } from './arrears.js';
 import {
   allocateWage,
   type ShortfallCause,
@@ -30,7 +31,13 @@ export interface WageRouteDeps {
    * (ADR-0017) plugs in here later.
    */
   readonly floor: FloorSource;
-  /** Clock for the server-time header. Injectable for tests. */
+  /**
+   * The arrears seam. Deferred claims carry forward (ADR-0012) — the settlement
+   * records them here. Recording only; RECOVERY of arrears from a future wage is
+   * an uncovered decision (OD-7) and is deliberately not done.
+   */
+  readonly arrears: ArrearsLedger;
+  /** Clock for the server-time header and the arrears `arisenOn` date. Injectable for tests. */
   readonly now?: () => Date;
 }
 
@@ -201,6 +208,21 @@ export function registerWageSettlementRoutes(app: FastifyInstance, deps: WageRou
       claims: parsed.claims,
       cause: parsed.cause,
     });
+
+    // Deferred claims carry forward (ADR-0012): record them as arrears. The
+    // waived membership fee is already excluded (it is not in `arrears`).
+    // Recording only — recovery of arrears from a future wage is OD-7 and is not
+    // done here.
+    const settlementId = randomUUID();
+    const arisenOn = now().toISOString().slice(0, 10);
+    await deps.arrears.record(
+      arrearsFrom(allocation, {
+        membershipId: member,
+        settlementId,
+        arisenOn,
+        id: (category) => `${settlementId}:${category}`,
+      }),
+    );
 
     return reply.code(200).send(allocationDto(allocation));
   });

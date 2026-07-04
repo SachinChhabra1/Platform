@@ -37,3 +37,12 @@ export {
 export { type FloorSource, InMemoryFloorSource } from './floor.js';
 // The wage-settlement endpoint (POST /v1/wage/settlements; contract openapi.wage.yaml).
 export { type WageRouteDeps, registerWageSettlementRoutes } from './wage_http.js';
+// Arrears — the ADR-0012 carry-forward record type + persistence seam (recording
+// only; recovery ordering is OD-7).
+export {
+  type ArrearsCategory,
+  type ArrearsRecord,
+  type ArrearsLedger,
+  arrearsFrom,
+  InMemoryArrearsLedger,
+} from './arrears.js';

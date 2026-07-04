@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { createServer, InMemorySessionStore } from '@nia/runtime';
 import { InMemoryFloorSource } from './floor.js';
+import { InMemoryArrearsLedger } from './arrears.js';
 import { registerWageSettlementRoutes } from './wage_http.js';
 
 // Amounts in paise via a rupee helper.
@@ -26,10 +27,13 @@ const SESSION_PROSPECT = 'sess-prospect';
 const BEARER = { authorization: `Bearer ${SESSION}`, 'content-type': 'application/json' };
 
 let server: FastifyInstance | undefined;
+let ledger: InMemoryArrearsLedger;
 
 // Default injected floor ₹20 unless a test overrides it. This is the seam — the
-// value lives server-side, never in the request.
+// value lives server-side, never in the request. A fresh arrears ledger is wired
+// each build and exposed via the module-level `ledger` for assertions.
 function build(floorRupees = 20): FastifyInstance {
+  ledger = new InMemoryArrearsLedger();
   const app = createServer({ serviceName: 'wage-test' });
   registerWageSettlementRoutes(app, {
     sessions: new InMemorySessionStore({
@@ -37,6 +41,7 @@ function build(floorRupees = 20): FastifyInstance {
       [SESSION_PROSPECT]: { membershipId: PROSPECT, deviceId: 'dev-2', scope: 'pre_membership' },
     }),
     floor: new InMemoryFloorSource({ default: R(floorRupees) }),
+    arrears: ledger,
     now: () => new Date('2026-07-04T00:00:00.000Z'),
   });
   return app;
@@ -139,6 +144,32 @@ describe('Wage settlement HTTP — the client CANNOT lower the dignity floor (OD
     expect(b.shortfall).toBe(true);
     expect(b.take_home).toEqual({ minor: R(12), currency: 'INR' }); // Member keeps all there was
     expect(b.paid.rent).toEqual({ minor: 0, currency: 'INR' }); // no claim paid ahead of the floor
+  });
+});
+
+describe('Wage settlement HTTP — arrears carry forward (ADR-0012)', () => {
+  it('records the deferred claims as open arrears for the Member', async () => {
+    server = build(20);
+    const wage = R(20) + R(30) + R(20) + R(50) + R(15); // fee + advance defer
+    await settle({ wage: { minor: wage, currency: 'INR' }, claims: CLAIMS, cause: 'member_caused' });
+    const open = await ledger.listOpenForMember(MEMBER);
+    expect(open.map((r) => r.category)).toEqual(['membershipFee', 'advanceRepayment']);
+    expect(open.map((r) => r.amount.minor)).toEqual([R(10), R(25)]);
+    expect(open.every((r) => r.status === 'open' && r.arisenOn === '2026-07-04')).toBe(true);
+  });
+
+  it('does NOT record the waived membership fee on an employer-caused shortfall', async () => {
+    server = build(20);
+    const wage = R(20) + R(30) + R(20) + R(50) + R(15);
+    await settle({ wage: { minor: wage, currency: 'INR' }, claims: CLAIMS, cause: 'employer_caused' });
+    const open = await ledger.listOpenForMember(MEMBER);
+    expect(open.map((r) => r.category)).toEqual(['advanceRepayment']); // fee waived, not carried
+  });
+
+  it('records no arrears when the wage covers everything', async () => {
+    server = build(20);
+    await settle({ wage: money(200), claims: CLAIMS, cause: 'none' });
+    expect(await ledger.listOpenForMember(MEMBER)).toEqual([]);
   });
 });
 
