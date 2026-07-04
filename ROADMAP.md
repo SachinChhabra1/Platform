@@ -23,7 +23,7 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E5 | Unit-test `formatPaise` (Indian ₹ grouping/sign/rounding) + `NiaBookMonth.sample` invariants | ✅ DONE | +8 tests (60 → 68); goldens untouched. |
 | E6 | Test `widgets/common.dart` (Monogram, SectionLabel, prototypeNoOp, SOS→Operator sheet) | ✅ DONE | +4 tests (68 → 72); goldens untouched. |
 | E7 | CI setup | ✅ ALREADY PRESENT | `.github/workflows/ci.yml` predates the loop (lint/contract/TS/Flutter gates). No work needed. Activating it on a GitHub runner is a Founder call — `FOUNDER_REVIEW.md` Q7. |
-| E4 | Unify SOS + icon-chip duplication (`niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`) into one shared control | 🔓 UNLOCKED | Freeze lifted. Golden-verify the dedup is pixel-identical; revert if not. |
+| E4 | Unify SOS + icon-chip duplication | ✅ DONE (scoped) | SOS deduped — NiaBook now uses `niaSosButton` (byte-identical; goldens unchanged). Icon-chip **kept separate by design:** NiaBook's chip carries the R1a ○→✓ motion + a lock badge the pillar chip lacks, and merging would create a circular `pillar_kit ↔ nia_components` import for marginal gain. Engineering call, documented. |
 
 ## Now (freeze lifted — R1 in progress)
 

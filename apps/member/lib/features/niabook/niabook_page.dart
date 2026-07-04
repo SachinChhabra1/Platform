@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
 import '../pillars/nia_components.dart';
+import '../pillars/pillar_kit.dart';
 import 'niabook_scenario.dart';
 
 /// NiaBook — the first screen and the artefact of progress. Two columns:
@@ -117,36 +118,10 @@ class NiaBookPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: NiaTokens.s2),
-          _sosButton(context),
+          // Shared SOS control (E4): one implementation for every screen. Opens Nia
+          // Emergency — an abstract route (today the Operator), never red.
+          niaSosButton(context),
         ],
-      );
-
-  // SOS — visible but not alarming: a quiet blue outline pill. It opens Nia
-  // Emergency, an abstract route that today reaches a human (the Operator) but is
-  // not permanently the Operator (see openNiaEmergency). Never red.
-  Widget _sosButton(BuildContext context) => InkWell(
-        onTap: () => openNiaEmergency(context),
-        borderRadius: BorderRadius.circular(999),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: NiaTokens.s3, vertical: NiaTokens.s2),
-          decoration: BoxDecoration(
-            border: Border.all(color: NiaTokens.blue),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const <Widget>[
-              Icon(Icons.shield_outlined, size: 16, color: NiaTokens.blue),
-              SizedBox(width: 4),
-              Text('SOS',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: NiaTokens.blue)),
-            ],
-          ),
-        ),
       );
 
   Widget _monthDropdown(BuildContext context) => InkWell(
