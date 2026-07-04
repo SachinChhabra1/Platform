@@ -18,7 +18,7 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | # | Task | Status | Notes |
 |---|------|--------|-------|
 | E1 | Remove dead code in `pillar_kit.dart` (`niaCard`, `niaListRow`, `niaBookStrip`, `sectionTitle` — superseded by `nia_components.dart`, zero callers) | ✅ DONE | Golden-neutral; analyze/49 tests green. |
-| E2 | Add direct tests for the shared component surface `nia_components.dart` (InfoCard styles, ListRow semantics/trailing, SummaryCard icon param, SectionHeader, OpportunityCard, NiaReveal) | 🔓 UNLOCKED | Purely additive coverage. |
+| E2 | Add direct tests for the shared component surface `nia_components.dart` (InfoCard styles, ListRow semantics/trailing, SummaryCard icon param, SectionHeader, OpportunityCard, NiaReveal) | ✅ DONE | +11 tests (49 → 60); goldens untouched. |
 | E3 | Further debt as found by audit (grounded only) | 🔓 OPEN | Next audit pass. |
 
 ## Now (frozen)
