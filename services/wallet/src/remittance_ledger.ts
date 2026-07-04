@@ -15,6 +15,12 @@ export interface RemittanceStore {
   get(id: string): Promise<Remittance | undefined>;
   /** All of a Member's remittances, in save order. */
   listForMember(membershipId: string): Promise<readonly Remittance[]>;
+  /**
+   * The unconfirmed remittances (`initiated`/`in_transit`) — the only ones that
+   * can still breach the SLA. The SLA sweep reads these so it never rescans
+   * confirmed/settled/escalated records.
+   */
+  listUnconfirmed(): Promise<readonly Remittance[]>;
 }
 
 export class InMemoryRemittanceStore implements RemittanceStore {
@@ -30,6 +36,10 @@ export class InMemoryRemittanceStore implements RemittanceStore {
 
   async listForMember(membershipId: string): Promise<readonly Remittance[]> {
     return [...this.#byId.values()].filter((r) => r.membershipId === membershipId);
+  }
+
+  async listUnconfirmed(): Promise<readonly Remittance[]> {
+    return [...this.#byId.values()].filter((r) => r.state === 'initiated' || r.state === 'in_transit');
   }
 }
 
@@ -83,4 +93,32 @@ export async function escalateIfStalled(
     await deps.store?.save(next);
   }
   return next;
+}
+
+export interface SlaSweepResult {
+  /** How many unconfirmed remittances were examined. */
+  readonly scanned: number;
+  /** The ids freshly escalated to the Operator this sweep. */
+  readonly escalated: readonly string[];
+}
+
+/// The scheduled SLA sweep (R4 infra): scan every unconfirmed remittance and
+/// escalate the ones whose 24h SLA has breached (ADR-0013). Idempotent — a
+/// remittance already escalated is not re-raised (`escalateIfStalled` guards it),
+/// so running the sweep repeatedly is safe. The *schedule* is external (an ops
+/// scheduler triggers it, e.g. via the service-authed endpoint); this is the pure
+/// batch operation over the store.
+export async function sweepRemittanceSla(
+  now: Date,
+  deps: { readonly store: RemittanceStore; readonly operator: OperatorEscalations },
+): Promise<SlaSweepResult> {
+  const candidates = await deps.store.listUnconfirmed();
+  const escalated: string[] = [];
+  for (const remittance of candidates) {
+    const next = await escalateIfStalled(remittance, now, { operator: deps.operator, store: deps.store });
+    if (next.state === 'escalated' && remittance.state !== 'escalated') {
+      escalated.push(next.id);
+    }
+  }
+  return { scanned: candidates.length, escalated };
 }

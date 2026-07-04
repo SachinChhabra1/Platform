@@ -86,9 +86,11 @@ export {
   type RemittanceStore,
   type OperatorEscalation,
   type OperatorEscalations,
+  type SlaSweepResult,
   InMemoryRemittanceStore,
   InMemoryOperatorEscalations,
   escalateIfStalled,
+  sweepRemittanceSla,
 } from './remittance_ledger.js';
 export { type RemittanceRouteDeps, registerRemittanceRoutes } from './remittance_http.js';
 // Service-to-service auth (rails, jobs, tooling) — a Founder/ops-owned shared
@@ -101,6 +103,9 @@ export {
 // Remittance rail webhook adapter (R4 infra) — service-authed, idempotent
 // sent/recipient_available/settled transitions over the same RemittanceStore.
 export { type RemittanceRailRouteDeps, registerRemittanceRailRoutes } from './rail_http.js';
+// Service-authed ops/scheduler triggers (infra) — external scheduler → HTTP; the
+// remittance SLA sweep now, savings jobs as they land.
+export { type OpsRouteDeps, registerOpsRoutes } from './ops_http.js';
 // RafiQi authorization + reversibility (R5; ADR-0014) — scoped/capped/time-bounded/
 // revocable standing consent, 24h reversibility, per-action confirmation fallback.
 export {

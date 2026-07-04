@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Ops / scheduler triggers (service-to-service)
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    Service-authed triggers for Nia's scheduled background work. Nia runs its jobs
+    by having an EXTERNAL scheduler (cron/queue) call these endpoints, so the batch
+    operations stay pure and runnable anywhere — there is no in-process timer.
+    Every endpoint uses the SERVICE token (`X-Nia-Service-Token`, a Founder/ops
+    secret), never a Member session, and every job is IDEMPOTENT (safe to call on
+    any cadence). Currently: the remittance SLA sweep (ADR-0013).
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: ops
+    description: Service-authed scheduler triggers for background jobs.
+
+paths:
+  /ops/remittance-sla-sweep:
+    post:
+      operationId: runRemittanceSlaSweep
+      tags: [ops]
+      summary: Escalate every remittance whose 24h SLA has breached (ADR-0013).
+      description: >
+        Scans all unconfirmed remittances and escalates the ones past their 24h
+        SLA to the Operator. Idempotent — an already-escalated remittance is not
+        re-raised, so this is safe to run on any schedule.
+      security:
+        - ServiceToken: []
+      responses:
+        "200":
+          description: The sweep summary.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaSweepResult"
+        "401":
+          description: Missing or invalid service token.
+          content:
+            application/json:
+              schema:
+                $ref: "./openapi.base.yaml#/components/schemas/Error"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    ServiceToken:
+      type: apiKey
+      in: header
+      name: X-Nia-Service-Token
+      description: A Founder/ops-owned shared service secret (constant-time verified).
+
+  schemas:
+    SlaSweepResult:
+      type: object
+      required: [scanned, escalated]
+      additionalProperties: false
+      properties:
+        scanned:
+          type: integer
+          minimum: 0
+          description: How many unconfirmed remittances were examined.
+        escalated:
+          type: array
+          description: The remittance ids freshly escalated to the Operator this sweep.
+          items:
+            type: string
+
+security:
+  - ServiceToken: []
