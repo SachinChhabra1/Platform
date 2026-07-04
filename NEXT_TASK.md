@@ -3,7 +3,30 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: R9 — Production Hardening ✅ SIGNED OFF (2026-07-04). Forward path = backend (R2–R8), all Founder-gated.
+## Status: OD-1…OD-6 RULED + LOCKED (2026-07-04). Backend un-paused. R3–R8 UNLOCKED — implementing R3 (Wage Flow).
+
+**OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
+an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
+(locking commit `f885800`). Backend un-paused. **R3–R8 are UNLOCKED** — build each strictly against its
+locked decision. **If implementation reveals an uncovered product decision, STOP and open a new OD — do
+not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
+
+**Implementing R3 — Wage Flow** (critical path, ADR-0012/OD-1).
+- ✅ **Shortfall waterfall allocator DONE** — pure, exhaustively tested (`services/wallet/src/wage.ts`,
+  `wage.test.ts`, +9 tests): dignity floor → rent → curry → remittance → savings → fee → advance; arrears
+  carry forward; membership fee waived on employer-caused shortfall; money-conservation invariant asserted.
+  Co-located in the wallet money domain because the offline dev sandbox can't add a new pnpm workspace
+  member (`tsx`→`esbuild` needs network metadata); **extract to `services/wage` when online** (noted in
+  `wage.ts`).
+- ⏭ **Next R3 slices:** the wage-posting endpoint (calls `allocateWage`); the `arrears` ledger record type;
+  `openapi.wage.yaml` contract (auto-gated by the glob lint); the dignity-floor input wired from the Floor
+  (ADR-0017/OD-6). Each strictly against `ENGINEERING_LOCK.md`.
+
+R2 (native packaging) remains a separate Founder go-ahead.
+
+---
+*(historical) Prior status: R9 — Production Hardening ✅ SIGNED OFF (2026-07-04); the engineering-quality
+loop ran and was exhausted before the OD rulings reopened backend coding.*
 
 *Last verified: 2026-07-04 — `nia verify` green, **92 tests / 21 files**, analyze clean, no drift,
 tree clean.*
