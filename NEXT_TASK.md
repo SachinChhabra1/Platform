@@ -5,7 +5,7 @@ Start from [`START_HERE.md`](START_HERE.md).
 
 ## Status: Production Readiness Lead mode — R9 in progress (in-authority work available)
 
-*Last verified: 2026-07-04 — `nia verify` green, **87 tests / 19 files**, analyze clean, no drift,
+*Last verified: 2026-07-04 — `nia verify` green, **90 tests / 20 files**, analyze clean, no drift,
 tree clean.*
 
 **Founder ruling (2026-07-04):** when the feature roadmap is gated, become **Production Readiness
@@ -18,10 +18,16 @@ matrix**. Closed categories: **Async / Empty / Offline** (the async audit — [`
 **R9.0** test-count consolidation, **R9.5** crash recovery (calm `NiaErrorScreen` replaces the raw
 crash box). Suite 77 → 87.
 
-**Next in-authority (pick up here) — finish the next whole category:** **R9.4 Accessibility** (whole-app
-audit → fix → verify → close: semantic labels on every control, tap targets ≥48px, contrast, text
-scale). Then the **Motion** and **Typography** audits (audit in-authority; changes to frozen screens
-need a Founder-approved screen change). See the R9 matrix in `ROADMAP.md`.
+**R9.4 Accessibility done (in-authority)** — whole-app audit ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)):
+SOS is a labelled button, NiaBook language/month toggles are buttons, `Monogram` is excluded,
+`SectionLabel`s are headers, the Profile call button has a tooltip; contrast passes WCAG AA. Gated on a
+Founder-approved screen change (Q11): sub-48px tap targets + text-scale reflow on the frozen screens.
+
+**Next in-authority (pick up here) — the last two in-authority categories:** the **Motion** and
+**Typography** audits (audit is in-authority; *changing* a frozen screen needs a Founder-approved screen
+change, so those fixes may be gated). After that the in-authority R9 lane is largely exhausted
+(Performance is gated on the native build) — surface the gate: **OD-1 / backend un-pause** is the
+critical path. See the R9 matrix in `ROADMAP.md`.
 
 **Still Founder-gated (unchanged) — these are what move the product to real production:**
 

@@ -57,10 +57,10 @@ class PillarScaffold extends StatelessWidget {
     this.coaching,
     this.blockGap = NiaTokens.s4,
   }) : assert(
-          body.map((PillarBlock b) => b.role).toSet().length == 3,
-          'A pillar must contain all three body roles: reality, opportunity, '
-          'and supporting. Consistency is part of the product.',
-        );
+         body.map((PillarBlock b) => b.role).toSet().length == 3,
+         'A pillar must contain all three body roles: reality, opportunity, '
+         'and supporting. Consistency is part of the product.',
+       );
 
   /// Identity — the pillar name in the header (e.g. "Work").
   final String pillar;
@@ -112,21 +112,34 @@ class PillarScaffold extends StatelessWidget {
 /// Page header: the pillar name on the left, SOS on the right. SOS opens Nia
 /// Emergency (abstract routing; today the Operator), never red.
 Widget pillarHeader(BuildContext context, String title) => Row(
-      children: <Widget>[
-        Text(title,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
-        const Spacer(),
-        niaSosButton(context),
-      ],
-    );
+  children: <Widget>[
+    Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: NiaTokens.ink,
+      ),
+    ),
+    const Spacer(),
+    niaSosButton(context),
+  ],
+);
 
-Widget niaSosButton(BuildContext context) => InkWell(
-      onTap: () => openNiaEmergency(context),
-      borderRadius: BorderRadius.circular(999),
+Widget niaSosButton(BuildContext context) => Semantics(
+  button: true,
+  label: 'SOS',
+  child: InkWell(
+    onTap: () => openNiaEmergency(context),
+    borderRadius: BorderRadius.circular(999),
+    // The visual is excluded so the control announces just "SOS, button"
+    // (not "shield SOS"); the Semantics above carries the accessible name.
+    child: ExcludeSemantics(
       child: Container(
         padding: const EdgeInsets.symmetric(
-            horizontal: NiaTokens.s3, vertical: NiaTokens.s2),
+          horizontal: NiaTokens.s3,
+          vertical: NiaTokens.s2,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: NiaTokens.blue),
           borderRadius: BorderRadius.circular(999),
@@ -136,47 +149,66 @@ Widget niaSosButton(BuildContext context) => InkWell(
           children: const <Widget>[
             Icon(Icons.shield_outlined, size: 16, color: NiaTokens.blue),
             SizedBox(width: 4),
-            Text('SOS',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: NiaTokens.blue)),
+            Text(
+              'SOS',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: NiaTokens.blue,
+              ),
+            ),
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
 
 /// The big headline + quiet subcopy under the header.
 Widget pillarHeadline(String headline, String sub) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(headline,
-            style: const TextStyle(
-                fontSize: 24, fontWeight: FontWeight.w700, color: NiaTokens.ink)),
-        const SizedBox(height: 2),
-        Text(sub,
-            style: const TextStyle(fontSize: 14, color: NiaTokens.inkSecondary)),
-      ],
-    );
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+    Text(
+      headline,
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        color: NiaTokens.ink,
+      ),
+    ),
+    const SizedBox(height: 2),
+    Text(
+      sub,
+      style: const TextStyle(fontSize: 14, color: NiaTokens.inkSecondary),
+    ),
+  ],
+);
 
 /// A small-caps label, blue by default (grey when muted).
 Widget capsLabel(String s, {Color color = NiaTokens.blue}) => Text(
-      s,
-      style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-          color: color),
-    );
+  s,
+  style: TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.5,
+    color: color,
+  ),
+);
 
 /// A rounded icon chip. Grey by default; [filled] paints solid blue with a white
 /// icon (the hero chip); [muted] greys the icon; [check] adds a small blue check
 /// badge (a gain that became true).
-Widget niaIconChip(IconData icon,
-    {bool filled = false, bool muted = false, bool check = false, double size = 40}) {
+Widget niaIconChip(
+  IconData icon, {
+  bool filled = false,
+  bool muted = false,
+  bool check = false,
+  double size = 40,
+}) {
   final Color bg = filled ? NiaTokens.blue : NiaTokens.surfaceGrey;
-  final Color fg =
-      filled ? NiaTokens.ground : (muted ? NiaTokens.inkSecondary : NiaTokens.blue);
+  final Color fg = filled
+      ? NiaTokens.ground
+      : (muted ? NiaTokens.inkSecondary : NiaTokens.blue);
   return SizedBox(
     width: size,
     height: size,
@@ -188,7 +220,9 @@ Widget niaIconChip(IconData icon,
           height: size,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: bg, borderRadius: BorderRadius.circular(10)),
+            color: bg,
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Icon(icon, size: size * 0.5, color: fg),
         ),
         if (check)
@@ -196,8 +230,10 @@ Widget niaIconChip(IconData icon,
             right: -3,
             bottom: -3,
             child: DecoratedBox(
-              decoration:
-                  BoxDecoration(color: NiaTokens.ground, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: NiaTokens.ground,
+                shape: BoxShape.circle,
+              ),
               child: Icon(Icons.check_circle, size: 16, color: NiaTokens.blue),
             ),
           ),
@@ -208,100 +244,126 @@ Widget niaIconChip(IconData icon,
 
 /// A stat cell (label, value, sub) — used in pairs.
 Widget statCard(String label, String value, String sub) => Container(
-      padding: const EdgeInsets.all(NiaTokens.s3),
-      decoration: BoxDecoration(
-        color: NiaTokens.surfaceGrey,
-        borderRadius: BorderRadius.circular(NiaTokens.radius),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          capsLabel(label, color: NiaTokens.inkSecondary),
-          const SizedBox(height: NiaTokens.s1),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(value,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: NiaTokens.ink)),
+  padding: const EdgeInsets.all(NiaTokens.s3),
+  decoration: BoxDecoration(
+    color: NiaTokens.surfaceGrey,
+    borderRadius: BorderRadius.circular(NiaTokens.radius),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      capsLabel(label, color: NiaTokens.inkSecondary),
+      const SizedBox(height: NiaTokens.s1),
+      FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: NiaTokens.ink,
           ),
-          const SizedBox(height: 2),
-          Text(sub,
-              style:
-                  const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary)),
-        ],
+        ),
       ),
-    );
+      const SizedBox(height: 2),
+      Text(
+        sub,
+        style: const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary),
+      ),
+    ],
+  ),
+);
 
 /// An icon tile (icon over label over status) — the 4-across grids. [statusColor]
 /// tints the status line (e.g. blue for "Included" on Living's utilities).
-Widget iconTile(IconData icon, String label, String status,
-        {Color statusColor = NiaTokens.inkSecondary}) =>
-    Column(
-      children: <Widget>[
-        Icon(icon, size: 20, color: NiaTokens.blue),
-        const SizedBox(height: NiaTokens.s1),
-        Text(label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w600, color: NiaTokens.ink)),
-        Text(status,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 11, color: statusColor)),
-      ],
-    );
+Widget iconTile(
+  IconData icon,
+  String label,
+  String status, {
+  Color statusColor = NiaTokens.inkSecondary,
+}) => Column(
+  children: <Widget>[
+    Icon(icon, size: 20, color: NiaTokens.blue),
+    const SizedBox(height: NiaTokens.s1),
+    Text(
+      label,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: NiaTokens.ink,
+      ),
+    ),
+    Text(
+      status,
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 11, color: statusColor),
+    ),
+  ],
+);
 
 /// A small pill tag (e.g. "Work", "Store") used on cross-pillar RafiQi lines.
 Widget pillarTag(String s) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: NiaTokens.blueTint,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(s,
-          style: const TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w600, color: NiaTokens.blue)),
-    );
+  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+  decoration: BoxDecoration(
+    color: NiaTokens.blueTint,
+    borderRadius: BorderRadius.circular(999),
+  ),
+  child: Text(
+    s,
+    style: const TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+      color: NiaTokens.blue,
+    ),
+  ),
+);
 
 /// A quiet blue text link with a chevron (no behaviour in the prototype).
 Widget niaLink(BuildContext context, String label, {String? action}) => InkWell(
-      onTap: () => prototypeNoOp(context, action ?? label),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Flexible(
-            child: Text(label,
-                style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: NiaTokens.blue)),
+  onTap: () => prototypeNoOp(context, action ?? label),
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      Flexible(
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: NiaTokens.blue,
           ),
-          const Icon(Icons.chevron_right, size: 16, color: NiaTokens.blue),
-        ],
+        ),
       ),
-    );
+      const Icon(Icons.chevron_right, size: 16, color: NiaTokens.blue),
+    ],
+  ),
+);
 
 /// A hairline divider used between list rows.
-Widget niaHairline() => const Divider(
-    height: 1, thickness: 1, color: NiaTokens.hairline);
+Widget niaHairline() =>
+    const Divider(height: 1, thickness: 1, color: NiaTokens.hairline);
 
 /// A "<label> · found by RafiQi" line (RafiQi in blue). RafiQi is the finder of
 /// opportunity across every pillar — named, never the hero.
 Widget foundByRafiqi(String label) => Text.rich(
-      TextSpan(
-        style: const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary),
-        children: <InlineSpan>[
-          TextSpan(text: '$label · found by '),
-          const TextSpan(
-              text: 'RafiQi',
-              style:
-                  TextStyle(fontWeight: FontWeight.w600, color: NiaTokens.blue)),
-        ],
+  TextSpan(
+    style: const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary),
+    children: <InlineSpan>[
+      TextSpan(text: '$label · found by '),
+      const TextSpan(
+        text: 'RafiQi',
+        style: TextStyle(fontWeight: FontWeight.w600, color: NiaTokens.blue),
       ),
-    );
+    ],
+  ),
+);
 
 /// Standard scroll padding for a pillar page body.
 const EdgeInsets pillarPadding = EdgeInsets.fromLTRB(
-    NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s7);
+  NiaTokens.s5,
+  NiaTokens.s5,
+  NiaTokens.s5,
+  NiaTokens.s7,
+);

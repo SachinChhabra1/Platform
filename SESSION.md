@@ -3,6 +3,24 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — R9.4 Accessibility (whole-app category)
+
+- **Whole-app accessibility audit** ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)) — every
+  implemented screen, by inspection. Fixed all **golden-neutral** (semantics don't paint, so safe even
+  on the frozen screens): SOS is now a labelled `button`; the NiaBook language + month toggles are
+  buttons (language carries an explicit label — a globe icon is silent to a screen reader); the
+  decorative `Monogram` is excluded (no lone "R" announced); `SectionLabel`s are headers; the Profile
+  call `IconButton` has a tooltip. `nia_bottom_nav` was already exemplary; pillar heroes already
+  labelled. Contrast confirmed WCAG AA (Book III palette). +3 tests. Suite 87 → **90**;
+  **goldens byte-identical** (verified — the frozen screens changed zero pixels).
+- **Honestly gated (recorded, not skipped):** sub-48px tap targets (SOS pill ~32px, NiaBook toggles,
+  icon chips) and text-scale reflow on the five **frozen** screens would move the goldens →
+  `FOUNDER_REVIEW.md` **Q11** (a small, low-urgency screen change). This is the "finish the category"
+  discipline: in-authority work complete, gated remainder documented.
+- **Verified:** `nia verify` green, analyze clean, no drift, goldens byte-identical.
+- **Next in-authority:** Motion + Typography audits (audit in-authority; frozen-screen fixes gated).
+  After that the in-authority R9 lane is largely exhausted — **OD-1 / backend un-pause is the gate.**
+
 ## 2026-07-04 — Founder rulings encoded; R9 → matrix; R9.0 + R9.5 categories closed
 
 - **Two Founder rulings written into governance.** (1) **Visual prototypes are design references, not

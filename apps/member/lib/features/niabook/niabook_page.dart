@@ -28,7 +28,11 @@ class NiaBookPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-          NiaTokens.s5, NiaTokens.s5, NiaTokens.s5, NiaTokens.s7),
+        NiaTokens.s5,
+        NiaTokens.s5,
+        NiaTokens.s5,
+        NiaTokens.s7,
+      ),
       children: <Widget>[
         _titleRow(context),
         const SizedBox(height: NiaTokens.s4),
@@ -51,7 +55,10 @@ class NiaBookPage extends StatelessWidget {
             children: <Widget>[
               Expanded(flex: 45, child: _leftColumn(context)),
               const VerticalDivider(
-                  width: NiaTokens.s5, thickness: 1, color: NiaTokens.hairline),
+                width: NiaTokens.s5,
+                thickness: 1,
+                color: NiaTokens.hairline,
+              ),
               Expanded(flex: 55, child: _rightColumn(context)),
             ],
           ),
@@ -70,282 +77,346 @@ class NiaBookPage extends StatelessWidget {
 
   // ── Top area ───────────────────────────────────────────────────────────
   Widget _titleRow(BuildContext context) => Row(
-        children: <Widget>[
-          const Text('NiaBook',
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: NiaTokens.blue)),
-          const Spacer(),
-          InkWell(
-            onTap: () => prototypeNoOp(context, 'Language'),
+    children: <Widget>[
+      const Text(
+        'NiaBook',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: NiaTokens.blue,
+        ),
+      ),
+      const Spacer(),
+      Semantics(
+        button: true,
+        label: 'Change language (English)',
+        child: InkWell(
+          onTap: () => prototypeNoOp(context, 'Language'),
+          child: ExcludeSemantics(
             child: Row(
               children: const <Widget>[
                 Icon(Icons.language, size: 18, color: NiaTokens.inkSecondary),
                 SizedBox(width: NiaTokens.s1),
-                Text('English',
-                    style: TextStyle(fontSize: 14, color: NiaTokens.ink)),
-                Icon(Icons.keyboard_arrow_down,
-                    size: 18, color: NiaTokens.inkSecondary),
+                Text(
+                  'English',
+                  style: TextStyle(fontSize: 14, color: NiaTokens.ink),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 18,
+                  color: NiaTokens.inkSecondary,
+                ),
               ],
             ),
           ),
-        ],
-      );
+        ),
+      ),
+    ],
+  );
 
   Widget _identityRow(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Monogram(initials: month.memberName.substring(0, 1), size: 44),
-          const SizedBox(width: NiaTokens.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget>[
+      Monogram(initials: month.memberName.substring(0, 1), size: 44),
+      const SizedBox(width: NiaTokens.s3),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Hi, ${month.memberName}',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: NiaTokens.ink,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Row(
               children: <Widget>[
-                Text('Hi, ${month.memberName}',
+                const Icon(
+                  Icons.place_outlined,
+                  size: 14,
+                  color: NiaTokens.inkSecondary,
+                ),
+                const SizedBox(width: 2),
+                Expanded(
+                  child: Text(
+                    month.studio,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: NiaTokens.ink)),
-                const SizedBox(height: 2),
-                Row(
-                  children: <Widget>[
-                    const Icon(Icons.place_outlined,
-                        size: 14, color: NiaTokens.inkSecondary),
-                    const SizedBox(width: 2),
-                    Expanded(
-                      child: Text(month.studio,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontSize: 13, color: NiaTokens.inkSecondary)),
+                      fontSize: 13,
+                      color: NiaTokens.inkSecondary,
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: NiaTokens.s2),
-          // Shared SOS control (E4): one implementation for every screen. Opens Nia
-          // Emergency — an abstract route (today the Operator), never red.
-          niaSosButton(context),
-        ],
-      );
-
-  Widget _monthDropdown(BuildContext context) => InkWell(
-        onTap: () => prototypeNoOp(context, 'Choose month'),
-        borderRadius: BorderRadius.circular(NiaTokens.radius),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: NiaTokens.s4, vertical: NiaTokens.s3),
-          decoration: BoxDecoration(
-            border: Border.all(color: NiaTokens.hairline),
-            borderRadius: BorderRadius.circular(NiaTokens.radius),
-          ),
-          child: Row(
-            children: <Widget>[
-              Text(month.monthLabel,
-                  style: const TextStyle(fontSize: 16, color: NiaTokens.ink)),
-              const Spacer(),
-              const Icon(Icons.keyboard_arrow_down,
-                  size: 22, color: NiaTokens.inkSecondary),
-            ],
-          ),
-        ),
-      );
-
-  Widget _summaryLine(BuildContext context) => Text.rich(
-        TextSpan(
-          style: const TextStyle(fontSize: 18, height: 1.3, color: NiaTokens.ink),
-          children: <InlineSpan>[
-            TextSpan(
-                text: formatPaise(month.summaryDeltaPaise),
-                style: const TextStyle(
-                    color: NiaTokens.blue, fontWeight: FontWeight.w700)),
-            const TextSpan(
-                text: ' more stayed with you than in May.',
-                style: TextStyle(fontWeight: FontWeight.w600)),
           ],
         ),
-      );
+      ),
+      const SizedBox(width: NiaTokens.s2),
+      // Shared SOS control (E4): one implementation for every screen. Opens Nia
+      // Emergency — an abstract route (today the Operator), never red.
+      niaSosButton(context),
+    ],
+  );
 
-  Widget _statusLine() => Row(
-        children: <Widget>[
-          // The signature ○→✓ motion: the "unlocked" tally opens as waiting and
-          // completes to true on load — the movement made visible.
-          const MovementCheck(size: 16),
-          const SizedBox(width: NiaTokens.s1),
-          Text('${month.unlockedCount} unlocked',
-              style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: NiaTokens.ink)),
-          const SizedBox(width: NiaTokens.s3),
-          const Icon(Icons.radio_button_unchecked,
-              size: 16, color: NiaTokens.inkSecondary),
-          const SizedBox(width: NiaTokens.s1),
-          Text('${month.waitingCount} waiting',
-              style: const TextStyle(
-                  fontSize: 14, color: NiaTokens.inkSecondary)),
-        ],
-      );
-
-  // ── Left column — what became true ───────────────────────────────────────
-  Widget _leftColumn(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(right: NiaTokens.s2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _columnHeading('WHAT BECAME TRUE', 'Your progress.'),
-            const SizedBox(height: NiaTokens.s4),
-            // Each line that became true this month plays the ○→✓ motion, staggered
-            // down the column so the left side visibly fills in on open.
-            for (final MapEntry<int, BecameTrueRow> e
-                in month.becameTrue.asMap().entries) ...<Widget>[
-              _becameTrueRow(e.value,
-                  Duration(milliseconds: 420 + e.key * 140)),
-              const SizedBox(height: NiaTokens.s4),
-            ],
-            _progressCard(),
-            const SizedBox(height: NiaTokens.s4),
-            _sukhCard(context),
-          ],
+  Widget _monthDropdown(BuildContext context) => Semantics(
+    button: true,
+    child: InkWell(
+      onTap: () => prototypeNoOp(context, 'Choose month'),
+      borderRadius: BorderRadius.circular(NiaTokens.radius),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: NiaTokens.s4,
+          vertical: NiaTokens.s3,
         ),
-      );
-
-  Widget _becameTrueRow(BecameTrueRow r, Duration checkMotion) => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _iconChip(r.icon, check: true, checkMotion: checkMotion),
-          const SizedBox(width: NiaTokens.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(formatPaise(r.amountPaise),
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: NiaTokens.ink)),
-                ),
-                Text(r.label,
-                    style: const TextStyle(
-                        fontSize: 13, color: NiaTokens.inkSecondary)),
-              ],
-            ),
-          ),
-        ],
-      );
-
-  Widget _progressCard() => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(NiaTokens.s4),
-        decoration: BoxDecoration(
-          color: NiaTokens.surfaceGrey,
-          borderRadius: BorderRadius.circular(NiaTokens.radius),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(month.progressHeadline,
-                style: const TextStyle(
-                    fontSize: 16,
-                    height: 1.25,
-                    fontWeight: FontWeight.w700,
-                    color: NiaTokens.ink)),
-            const SizedBox(height: NiaTokens.s2),
-            Text(month.progressSub,
-                style: const TextStyle(
-                    fontSize: 13, color: NiaTokens.inkSecondary)),
-          ],
-        ),
-      );
-
-  Widget _sukhCard(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(NiaTokens.s4),
         decoration: BoxDecoration(
           border: Border.all(color: NiaTokens.hairline),
           borderRadius: BorderRadius.circular(NiaTokens.radius),
         ),
+        child: Row(
+          children: <Widget>[
+            Text(
+              month.monthLabel,
+              style: const TextStyle(fontSize: 16, color: NiaTokens.ink),
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              size: 22,
+              color: NiaTokens.inkSecondary,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Widget _summaryLine(BuildContext context) => Text.rich(
+    TextSpan(
+      style: const TextStyle(fontSize: 18, height: 1.3, color: NiaTokens.ink),
+      children: <InlineSpan>[
+        TextSpan(
+          text: formatPaise(month.summaryDeltaPaise),
+          style: const TextStyle(
+            color: NiaTokens.blue,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const TextSpan(
+          text: ' more stayed with you than in May.',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ],
+    ),
+  );
+
+  Widget _statusLine() => Row(
+    children: <Widget>[
+      // The signature ○→✓ motion: the "unlocked" tally opens as waiting and
+      // completes to true on load — the movement made visible.
+      const MovementCheck(size: 16),
+      const SizedBox(width: NiaTokens.s1),
+      Text(
+        '${month.unlockedCount} unlocked',
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: NiaTokens.ink,
+        ),
+      ),
+      const SizedBox(width: NiaTokens.s3),
+      const Icon(
+        Icons.radio_button_unchecked,
+        size: 16,
+        color: NiaTokens.inkSecondary,
+      ),
+      const SizedBox(width: NiaTokens.s1),
+      Text(
+        '${month.waitingCount} waiting',
+        style: const TextStyle(fontSize: 14, color: NiaTokens.inkSecondary),
+      ),
+    ],
+  );
+
+  // ── Left column — what became true ───────────────────────────────────────
+  Widget _leftColumn(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(right: NiaTokens.s2),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _columnHeading('WHAT BECAME TRUE', 'Your progress.'),
+        const SizedBox(height: NiaTokens.s4),
+        // Each line that became true this month plays the ○→✓ motion, staggered
+        // down the column so the left side visibly fills in on open.
+        for (final MapEntry<int, BecameTrueRow> e
+            in month.becameTrue.asMap().entries) ...<Widget>[
+          _becameTrueRow(e.value, Duration(milliseconds: 420 + e.key * 140)),
+          const SizedBox(height: NiaTokens.s4),
+        ],
+        _progressCard(),
+        const SizedBox(height: NiaTokens.s4),
+        _sukhCard(context),
+      ],
+    ),
+  );
+
+  Widget _becameTrueRow(BecameTrueRow r, Duration checkMotion) => Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget>[
+      _iconChip(r.icon, check: true, checkMotion: checkMotion),
+      const SizedBox(width: NiaTokens.s3),
+      Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: const <Widget>[
-                Icon(Icons.local_offer_outlined, size: 14, color: NiaTokens.blue),
-                SizedBox(width: NiaTokens.s1),
-                Expanded(
-                  child: Text('THIS WEEK AT SUKH',
-                      style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
-                          color: NiaTokens.blue)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                formatPaise(r.amountPaise),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: NiaTokens.ink,
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 2),
-            Text(month.sukhSubcopy,
-                style:
-                    const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary)),
-            const SizedBox(height: NiaTokens.s3),
-            for (final SukhOffer o in month.sukhOffers) ...<Widget>[
-              _sukhOfferRow(o),
-              const SizedBox(height: NiaTokens.s2),
-            ],
-            const SizedBox(height: NiaTokens.s1),
-            _link(context, 'See all offers', 'See all offers'),
+            Text(
+              r.label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: NiaTokens.inkSecondary,
+              ),
+            ),
           ],
         ),
-      );
+      ),
+    ],
+  );
+
+  Widget _progressCard() => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(NiaTokens.s4),
+    decoration: BoxDecoration(
+      color: NiaTokens.surfaceGrey,
+      borderRadius: BorderRadius.circular(NiaTokens.radius),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          month.progressHeadline,
+          style: const TextStyle(
+            fontSize: 16,
+            height: 1.25,
+            fontWeight: FontWeight.w700,
+            color: NiaTokens.ink,
+          ),
+        ),
+        const SizedBox(height: NiaTokens.s2),
+        Text(
+          month.progressSub,
+          style: const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
+        ),
+      ],
+    ),
+  );
+
+  Widget _sukhCard(BuildContext context) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(NiaTokens.s4),
+    decoration: BoxDecoration(
+      border: Border.all(color: NiaTokens.hairline),
+      borderRadius: BorderRadius.circular(NiaTokens.radius),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: const <Widget>[
+            Icon(Icons.local_offer_outlined, size: 14, color: NiaTokens.blue),
+            SizedBox(width: NiaTokens.s1),
+            Expanded(
+              child: Text(
+                'THIS WEEK AT SUKH',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                  color: NiaTokens.blue,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          month.sukhSubcopy,
+          style: const TextStyle(fontSize: 12, color: NiaTokens.inkSecondary),
+        ),
+        const SizedBox(height: NiaTokens.s3),
+        for (final SukhOffer o in month.sukhOffers) ...<Widget>[
+          _sukhOfferRow(o),
+          const SizedBox(height: NiaTokens.s2),
+        ],
+        const SizedBox(height: NiaTokens.s1),
+        _link(context, 'See all offers', 'See all offers'),
+      ],
+    ),
+  );
 
   // One flowing line per offer so the item name never breaks mid-word in the
   // narrow column: "Atta · 5kg  ₹180 → ₹170" (was struck, now bold).
   Widget _sukhOfferRow(SukhOffer o) => Text.rich(
+    TextSpan(
+      style: const TextStyle(fontSize: 13, height: 1.4, color: NiaTokens.ink),
+      children: <InlineSpan>[
+        TextSpan(text: '${o.name}  '),
         TextSpan(
-          style:
-              const TextStyle(fontSize: 13, height: 1.4, color: NiaTokens.ink),
-          children: <InlineSpan>[
-            TextSpan(text: '${o.name}  '),
-            TextSpan(
-                text: formatPaise(o.wasPaise),
-                style: const TextStyle(
-                    fontSize: 12,
-                    color: NiaTokens.inkSecondary,
-                    decoration: TextDecoration.lineThrough)),
-            const TextSpan(
-                text: ' → ', style: TextStyle(color: NiaTokens.inkSecondary)),
-            TextSpan(
-                text: formatPaise(o.nowPaise),
-                style: const TextStyle(fontWeight: FontWeight.w700)),
-          ],
+          text: formatPaise(o.wasPaise),
+          style: const TextStyle(
+            fontSize: 12,
+            color: NiaTokens.inkSecondary,
+            decoration: TextDecoration.lineThrough,
+          ),
         ),
-      );
+        const TextSpan(
+          text: ' → ',
+          style: TextStyle(color: NiaTokens.inkSecondary),
+        ),
+        TextSpan(
+          text: formatPaise(o.nowPaise),
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ],
+    ),
+  );
 
   // ── Right column — more you can keep ────────────────────────────────────
   Widget _rightColumn(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: NiaTokens.s2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _columnHeadingRafiqi(),
-            const SizedBox(height: NiaTokens.s4),
-            for (final Opportunity o in month.opportunities) ...<Widget>[
-              _opportunityCard(o),
-              const SizedBox(height: NiaTokens.s3),
-            ],
-            const SizedBox(height: NiaTokens.s1),
-            _link(
-                context,
-                'See all opportunities (${month.totalOpportunities})',
-                'See all opportunities'),
-          ],
+    padding: const EdgeInsets.only(left: NiaTokens.s2),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _columnHeadingRafiqi(),
+        const SizedBox(height: NiaTokens.s4),
+        for (final Opportunity o in month.opportunities) ...<Widget>[
+          _opportunityCard(o),
+          const SizedBox(height: NiaTokens.s3),
+        ],
+        const SizedBox(height: NiaTokens.s1),
+        _link(
+          context,
+          'See all opportunities (${month.totalOpportunities})',
+          'See all opportunities',
         ),
-      );
+      ],
+    ),
+  );
 
   Widget _opportunityCard(Opportunity o) {
     final bool locked = o.status == OppStatus.locked;
@@ -367,8 +438,8 @@ class NiaBookPage extends StatelessWidget {
                 o.hero
                     ? Icons.work_outline
                     : (o.status == OppStatus.ready
-                        ? Icons.card_giftcard
-                        : Icons.groups_outlined),
+                          ? Icons.card_giftcard
+                          : Icons.groups_outlined),
                 filled: o.hero,
                 muted: locked,
               ),
@@ -378,28 +449,37 @@ class NiaBookPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     if (o.badge != null)
-                      Text(o.badge!,
-                          style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                              color: NiaTokens.blue)),
+                      Text(
+                        o.badge!,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                          color: NiaTokens.blue,
+                        ),
+                      ),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
-                      child: Text(o.gain,
-                          style: TextStyle(
-                              fontSize: o.hero ? 24 : 20,
-                              fontWeight: FontWeight.w700,
-                              color: locked
-                                  ? NiaTokens.inkSecondary
-                                  : NiaTokens.blue)),
+                      child: Text(
+                        o.gain,
+                        style: TextStyle(
+                          fontSize: o.hero ? 24 : 20,
+                          fontWeight: FontWeight.w700,
+                          color: locked
+                              ? NiaTokens.inkSecondary
+                              : NiaTokens.blue,
+                        ),
+                      ),
                     ),
-                    Text(o.title,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: NiaTokens.ink)),
+                    Text(
+                      o.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: NiaTokens.ink,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -407,9 +487,14 @@ class NiaBookPage extends StatelessWidget {
           ),
           if (o.detail != null) ...<Widget>[
             const SizedBox(height: NiaTokens.s2),
-            Text(o.detail!,
-                style: const TextStyle(
-                    fontSize: 13, height: 1.3, color: NiaTokens.inkSecondary)),
+            Text(
+              o.detail!,
+              style: const TextStyle(
+                fontSize: 13,
+                height: 1.3,
+                color: NiaTokens.inkSecondary,
+              ),
+            ),
           ],
           if (o.chain != null) ...<Widget>[
             const SizedBox(height: NiaTokens.s3),
@@ -435,25 +520,40 @@ class NiaBookPage extends StatelessWidget {
     ];
     final List<Widget> out = <Widget>[];
     for (int i = 0; i < steps.length; i++) {
-      out.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Icon(i < icons.length ? icons[i] : Icons.circle_outlined,
-              size: 16, color: NiaTokens.blue),
-          const SizedBox(width: NiaTokens.s2),
-          Expanded(
-            child: Text(steps[i],
+      out.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Icon(
+              i < icons.length ? icons[i] : Icons.circle_outlined,
+              size: 16,
+              color: NiaTokens.blue,
+            ),
+            const SizedBox(width: NiaTokens.s2),
+            Expanded(
+              child: Text(
+                steps[i],
                 style: const TextStyle(
-                    fontSize: 13, height: 1.3, color: NiaTokens.ink)),
-          ),
-        ],
-      ));
+                  fontSize: 13,
+                  height: 1.3,
+                  color: NiaTokens.ink,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
       if (i < steps.length - 1) {
-        out.add(const Padding(
-          padding: EdgeInsets.symmetric(vertical: 1),
-          child: Icon(Icons.keyboard_arrow_down,
-              size: 16, color: NiaTokens.inkSecondary),
-        ));
+        out.add(
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 1),
+            child: Icon(
+              Icons.keyboard_arrow_down,
+              size: 16,
+              color: NiaTokens.inkSecondary,
+            ),
+          ),
+        );
       }
     }
     return out;
@@ -482,14 +582,17 @@ class NiaBookPage extends StatelessWidget {
         Icon(icon, size: 14, color: color),
         const SizedBox(width: NiaTokens.s1),
         Expanded(
-          child: Text(o.statusText,
-              style: TextStyle(
-                  fontSize: 12,
-                  height: 1.3,
-                  fontWeight: o.status == OppStatus.ready
-                      ? FontWeight.w600
-                      : FontWeight.w400,
-                  color: color)),
+          child: Text(
+            o.statusText,
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: o.status == OppStatus.ready
+                  ? FontWeight.w600
+                  : FontWeight.w400,
+              color: color,
+            ),
+          ),
         ),
       ],
     );
@@ -497,51 +600,64 @@ class NiaBookPage extends StatelessWidget {
 
   // ── Shared pieces ────────────────────────────────────────────────────────
   Widget _columnHeading(String heading, String sub) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(heading,
-              style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                  color: NiaTokens.blue)),
-          const SizedBox(height: 2),
-          Text(sub,
-              style:
-                  const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary)),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        heading,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
+          color: NiaTokens.blue,
+        ),
+      ),
+      const SizedBox(height: 2),
+      Text(
+        sub,
+        style: const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
+      ),
+    ],
+  );
 
   // Right heading names RafiQi as the finder, not the hero (quiet, inline).
   Widget _columnHeadingRafiqi() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Text('MORE YOU CAN KEEP',
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      const Text(
+        'MORE YOU CAN KEEP',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
+          color: NiaTokens.blue,
+        ),
+      ),
+      const SizedBox(height: 2),
+      Text.rich(
+        TextSpan(
+          style: const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
+          children: const <InlineSpan>[
+            TextSpan(text: 'Found by '),
+            TextSpan(
+              text: 'RafiQi',
               style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                  color: NiaTokens.blue)),
-          const SizedBox(height: 2),
-          Text.rich(TextSpan(
-            style:
-                const TextStyle(fontSize: 13, color: NiaTokens.inkSecondary),
-            children: const <InlineSpan>[
-              TextSpan(text: 'Found by '),
-              TextSpan(
-                  text: 'RafiQi',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600, color: NiaTokens.blue)),
-            ],
-          )),
-        ],
-      );
+                fontWeight: FontWeight.w600,
+                color: NiaTokens.blue,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 
-  Widget _iconChip(IconData icon,
-      {bool check = false,
-      bool filled = false,
-      bool muted = false,
-      Duration? checkMotion}) {
+  Widget _iconChip(
+    IconData icon, {
+    bool check = false,
+    bool filled = false,
+    bool muted = false,
+    Duration? checkMotion,
+  }) {
     final Color bg = filled
         ? NiaTokens.blue
         : (muted ? NiaTokens.surfaceGrey : NiaTokens.surfaceGrey);
@@ -570,11 +686,16 @@ class NiaBookPage extends StatelessWidget {
               bottom: -3,
               child: Container(
                 decoration: const BoxDecoration(
-                    color: NiaTokens.ground, shape: BoxShape.circle),
+                  color: NiaTokens.ground,
+                  shape: BoxShape.circle,
+                ),
                 child: checkMotion != null
                     ? MovementCheck(size: 16, duration: checkMotion)
-                    : const Icon(Icons.check_circle,
-                        size: 16, color: NiaTokens.blue),
+                    : const Icon(
+                        Icons.check_circle,
+                        size: 16,
+                        color: NiaTokens.blue,
+                      ),
               ),
             ),
           if (muted)
@@ -589,22 +710,25 @@ class NiaBookPage extends StatelessWidget {
   }
 
   Widget _link(BuildContext context, String label, String action) => InkWell(
-        onTap: () => prototypeNoOp(context, action),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: NiaTokens.s1),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Flexible(
-                child: Text(label,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: NiaTokens.blue)),
+    onTap: () => prototypeNoOp(context, action),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: NiaTokens.s1),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: NiaTokens.blue,
               ),
-              const Icon(Icons.chevron_right, size: 16, color: NiaTokens.blue),
-            ],
+            ),
           ),
-        ),
-      );
+          const Icon(Icons.chevron_right, size: 16, color: NiaTokens.blue),
+        ],
+      ),
+    ),
+  );
 }

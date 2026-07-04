@@ -19,12 +19,17 @@ class SectionLabel extends StatelessWidget {
     // not a shouted one. Typography and space carry the structure now.
     return Padding(
       padding: const EdgeInsets.only(bottom: NiaTokens.s2),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-          color: NiaTokens.inkSecondary,
+      // A section heading — expose it as a header so screen-reader users can
+      // navigate by section (golden-neutral: semantics don't paint).
+      child: Semantics(
+        header: true,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: NiaTokens.inkSecondary,
+          ),
         ),
       ),
     );
@@ -42,7 +47,11 @@ Future<void> openOperatorSheet(BuildContext context) {
     builder: (BuildContext context) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(
-            NiaTokens.s5, 0, NiaTokens.s5, NiaTokens.s7),
+          NiaTokens.s5,
+          0,
+          NiaTokens.s5,
+          NiaTokens.s7,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,11 +65,15 @@ Future<void> openOperatorSheet(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(PrototypeData.operatorName,
-                          style: theme.textTheme.titleLarge),
+                      Text(
+                        PrototypeData.operatorName,
+                        style: theme.textTheme.titleLarge,
+                      ),
                       const SizedBox(height: NiaTokens.s1),
-                      Text(PrototypeData.operatorStudio,
-                          style: theme.textTheme.bodySmall),
+                      Text(
+                        PrototypeData.operatorStudio,
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -72,8 +85,7 @@ Future<void> openOperatorSheet(BuildContext context) {
               child: FilledButton.icon(
                 style: FilledButton.styleFrom(
                   backgroundColor: NiaTokens.ink,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: NiaTokens.s4),
+                  padding: const EdgeInsets.symmetric(vertical: NiaTokens.s4),
                 ),
                 onPressed: () => _proto(context, 'Call Operator'),
                 icon: const Icon(Icons.call_outlined),
@@ -102,20 +114,24 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: NiaTokens.hairline,
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        initials,
-        style: TextStyle(
-          fontSize: size * 0.4,
-          fontWeight: FontWeight.w600,
-          color: NiaTokens.ink,
+    // Decorative: the monogram stands in for a photo. The Member's name is always
+    // adjacent, so the raw initial must not be announced on its own ("R").
+    return ExcludeSemantics(
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: NiaTokens.hairline,
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          initials,
+          style: TextStyle(
+            fontSize: size * 0.4,
+            fontWeight: FontWeight.w600,
+            color: NiaTokens.ink,
+          ),
         ),
       ),
     );

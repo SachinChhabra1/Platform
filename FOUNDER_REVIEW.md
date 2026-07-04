@@ -57,6 +57,18 @@ References.
 - **Impact:** turns configured CI into enforced CI. **Urgency:** low. **Blocking?** No.
   **References:** `.github/workflows/ci.yml`, `ENGINEERING_AUDIT.md`.
 
+### Q11 — Accessibility on the frozen screens: enlarge sub-48px tap targets / allow text reflow?
+- **Context:** R9.4 fixed all golden-neutral accessibility (labels, roles, headers, contrast — passes
+  WCAG AA). Remaining: the SOS pill, the NiaBook language/month toggles, and the icon chips are < 48px
+  tap targets on the five **frozen** screens, and some fixed-height slots can clip at large system text
+  scale. Fixing these changes the goldens.
+- **Options:** (a) approve a small screen change to meet the 48px minimum + text reflow (regenerates the
+  five goldens once); (b) keep the goldens byte-identical and accept current sizes for now.
+- **Recommendation:** (a) when convenient — 48px is the accessibility baseline and the change is minor;
+  it just needs your go-ahead to move the goldens. Not urgent for the demo.
+- **Impact:** the five goldens regenerate once. **Urgency:** low. **Blocking?** No. **References:**
+  `R9_ACCESSIBILITY_AUDIT.md`, `DESIGN_SYSTEM_LOCK.md`.
+
 ---
 
 ## Resolved

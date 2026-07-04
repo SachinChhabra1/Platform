@@ -52,7 +52,7 @@ never leave one partially complete if it can be finished within the slice (`docs
 | Offline | ✅ | ✅ | ✅ | ✅ | Folded into async (sign-in offline kept distinct from default-deny) |
 | Crash recovery | ✅ | ✅ | ✅ | ✅ | R9.5 — global `ErrorWidget.builder` calm fallback |
 | Housekeeping · test-count restatement | ✅ | ✅ | — | ✅ | R9.0 — consolidated to one canonical count |
-| Accessibility | ⬜ | ⬜ | ⬜ | ⬜ | Whole-app: semantic labels, tap targets ≥48px, contrast, text scale |
+| Accessibility | ✅ | ✅¹ | ✅ | 🟡 | Labels/roles/headers/contrast done ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)); ¹ sub-48px tap targets + text-scale reflow on the 5 frozen screens gated on a Founder-approved screen change (Q11) |
 | Motion | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changing a frozen screen needs a Founder-approved screen change |
 | Typography | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changes to frozen screens gated |
 | Performance (launch/low-end/battery/memory) | 🔒 | 🔒 | — | 🔒 | Gated on the native build (K1/R2) — unmeasurable web-only |
@@ -68,7 +68,7 @@ when every applicable cell is ✅.
 | R9.1 | **Live-surface error / offline states** | ✅ `NiaAsyncView` (loading · calm error · Retry) now backs the money surfaces (`home` balance, `wallet_page`, `my_family_page`) and `profile_page`'s standing — an API failure / airplane mode / timeout shows a recoverable error, not an endless spinner. `membership_header` degrades gracefully to a placeholder by design (identity chrome). Golden-neutral; +5 tests. | ✅ DONE |
 | R9.2 | **Async state audit** — complete state machine for every async surface | ✅ Full inventory in [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md). Hardened `membership_header` (identity) and `phone_sign_in` (offline now distinct from default-deny); documented the Home-greeting graceful exception; confirmed empty states intentional (`my_family`). Every **implemented** async surface has a complete state model. +3 tests. | ✅ DONE |
 | R9.3 | **Loading states reassure** | ✅ Loading is calm and consistent via `NiaAsyncView`/`NiaAsyncLoading` (each surface keeps its footprint); no raw uncontained spinners on the live surfaces. | ✅ DONE |
-| R9.4 | **Accessibility audit** | 16 semantics uses today; `nia_bottom_nav` is exemplary (Semantics + Tooltip). Audit icon-only controls (SOS, chevrons), `Monogram`/image semantics, tap targets ≥48px, text-scale resilience, contrast vs Book III. Semantics are golden-neutral. | 🔓 TODO |
+| R9.4 | **Accessibility audit** | ✅ (in-authority) Whole-app audit in [`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md). Fixed golden-neutral: SOS labelled button, NiaBook language/month toggles as buttons, `Monogram` excluded, `SectionLabel`s as headers, Profile call tooltip. Contrast passes (WCAG AA). +3 tests. **Gated (Q11):** sub-48px tap targets + text-scale reflow on the 5 frozen screens (moves goldens). | ✅ DONE (in-authority) |
 | R9.5 | **Crash recovery / error boundary** | ✅ `installNiaCrashBoundary()` sets `ErrorWidget.builder` (release/profile; debug keeps the dev red screen) to a calm `NiaErrorScreen` ("Nia is still here — your money and your record are safe"); wired into both entrypoints. +2 tests. | ✅ DONE |
 
 **In-authority to AUDIT, changes gated (🟡) — a change to a frozen screen needs a Founder-approved screen change (golden-risk):**

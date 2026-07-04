@@ -2,6 +2,16 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## R9.4 — accessibility (whole-app, in-authority) (2026-07-04)
+
+- Whole-app accessibility audit ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)). Golden-neutral
+  fixes: SOS is a labelled `button`; NiaBook language/month toggles are buttons (language explicitly
+  labelled); `Monogram` excluded from semantics; `SectionLabel`s are headers; Profile call button has a
+  tooltip. Contrast confirmed WCAG AA. +3 tests (`accessibility_test.dart`); suite 87 → 90; goldens
+  byte-identical.
+- Gated (FOUNDER_REVIEW Q11): sub-48px tap targets + text-scale reflow on the five frozen screens
+  (would move the goldens — needs a Founder-approved screen change).
+
 ## R9 matrix + Founder rulings; R9.0 count + R9.5 crash recovery (2026-07-04)
 
 - **Governance:** `REPOSITORY_CONSTITUTION.md` rule 7 — visual prototypes (the Next.js exploration) are
