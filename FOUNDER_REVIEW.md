@@ -16,8 +16,11 @@ References.
   also blocked by an open decision needing a ruling. ODs expire 2026-07-13.
 - **Options:** rule each OD (becomes an ADR) and un-pause, or keep paused through Product Polish.
 - **Recommendation:** rule OD-1 first (Wage Flow is the next backend slice) when ready to resume backend.
-- **Impact:** unlocks R3–R8. **Urgency:** medium (OD expiry approaching). **Blocking?** Yes — gates backend.
-- **References:** `DECISIONS.md` (OD-1…OD-6).
+  **A decision-ready brief exists — [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md)** — options,
+  recommendation (Option B: Member-&-family-first waterfall, Nia's fee/advance last), and a one-line
+  ruling shortcut. Rule OD-1 from that page in minutes.
+- **Impact:** unlocks R3–R8. **Urgency:** medium (OD expiry 2026-07-13). **Blocking?** Yes — gates backend.
+- **References:** `DECISIONS.md` (OD-1…OD-6); [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md).
 
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,

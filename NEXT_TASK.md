@@ -23,9 +23,11 @@ Founder decision or the native build. Per the loop, this is not failure — the 
 reporting a gate. **The single highest-leverage unlock is OD-1 / backend un-pause** (below); the OD
 rulings expire **2026-07-13**.
 
-**The one in-authority thing that compresses the schedule now:** draft the **OD-1 decision brief**
-(Wage Flow options · tradeoff · recommendation) so the Founder can rule in minutes rather than reopen the
-whole design space. Offered — say *"draft the OD-1 brief"* to have it ready before the ruling.
+**OD-1 decision brief is READY** — [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md). The Wage-Flow
+shortfall question (deduction priority when the wage lands short), three options, a recommendation
+(Option B: dignity floor → rent → curry → remittance → savings → fee → advance; Nia's claims last), and a
+one-line ruling shortcut. The Founder can rule OD-1 from that page in minutes; on ruling, write ADR-0012,
+un-gate R3, and build the Wage Flow slice against the existing `services/*` scaffold.
 
 **Founder-gated — these are what move the product to real production:**
 
