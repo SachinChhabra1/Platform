@@ -33,8 +33,24 @@ export {
   DEDUCTION_ORDER,
   allocateWage,
 } from './wage.js';
-// The dignity-floor seam (server-side; OD-6/ADR-0017 fills the concrete config later).
+// The dignity-floor seam (server-side; the concrete config below fills it — R8).
 export { type FloorSource, InMemoryFloorSource } from './floor.js';
+// The Floor (R8; ADR-0017/OD-6) — the versioned, Founder-owned, audited `the_floor`
+// config behind the FloorSource seam. Mechanism only; no value invented in code.
+export {
+  type FloorValues,
+  type FloorVersion,
+  type PublishInput,
+  createInitialFloor,
+  reviseFloor,
+  resolveDignityFloor,
+} from './the_floor.js';
+export {
+  type FloorRegistry,
+  InMemoryFloorRegistry,
+  RegistryFloorSource,
+} from './the_floor_registry.js';
+export { type FloorRouteDeps, registerFloorRoutes } from './floor_http.js';
 // The wage-settlement endpoint (POST /v1/wage/settlements; contract openapi.wage.yaml).
 export { type WageRouteDeps, registerWageSettlementRoutes } from './wage_http.js';
 // Arrears — the ADR-0012 carry-forward record type + persistence seam (recording

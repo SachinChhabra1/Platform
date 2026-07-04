@@ -3,7 +3,7 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: R3–R7 DONE (domains + endpoints). NEXT: R8 Floor (ADR-0017). Then decide OD-7 (arrears recovery).
+## Status: R3–R8 DONE (backend policy spine complete). NEXT: rule OD-7 (Founder-gated), then per-slice infra.
 
 **OD gate cleared.** The Founder ruled all six decisions on 2026-07-04 (ratified as recommended); each is
 an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)
@@ -11,18 +11,41 @@ an ADR ([0012–0017](docs/adr/README.md)) and **Locked** in [`ENGINEERING_LOCK.
 locked decision. **If implementation reveals an uncovered product decision, STOP and open a new OD — do
 not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
 
-**R3 Wage · R4 Remittance · R5 RafiQi · R6 Offline · R7 Savings are DONE** (domains + Member-facing
-endpoints; `services/wallet` 20 → 144 tests, eight OpenAPI contracts gated; `nia verify` green). The
-backend policy spine is complete through R7.
+**R3 Wage · R4 Remittance · R5 RafiQi · R6 Offline · R7 Savings · R8 The Floor are DONE** (domains +
+Member-facing endpoints; `services/wallet` 20 → 161 tests, nine OpenAPI contracts gated; `nia verify`
+green). **The backend policy spine R3–R8 is complete.**
 
-### ▶ NEXT: R8 — Dignity gates / The Floor (ADR-0017 / OD-6)
-Build the concrete, versioned, Founder-owned `the_floor` config + a read-only `GET /v1/floor` + a shared
-accessor, and **plug it into the existing `FloorSource` seam** (replacing `InMemoryFloorSource`, which R3
-Wage already consumes server-side). Contract → domain → HTTP → tests → `nia verify` green → commit-if-green
-→ update the four state docs. Strictly against ADR-0017; if a slice exposes an uncovered decision, STOP and
-open a new OD. **Do not open R2/native yet** — finish R8 first so the backend policy spine is complete, then
-decide OD-7 (arrears recovery). The concrete Floor *values* are a Founder input (like R7's interest rate);
-build the mechanism + seam, don't invent the numbers.
+### ▶ NEXT: rule OD-7 (Founder-gated), then per-slice infra
+The forward path no longer has an un-built, un-gated policy slice. What remains is:
+- **OD-7 — arrears recovery ordering (Founder decision).** The one open backend product decision, opened
+  during R3 per Step-5. Recording carry-forward arrears is built; **recovery** stays unbuilt until ruled.
+  Recommendation B (current cycle first; recover from surplus, oldest-first, capped; Nia last). Rule it,
+  then build recovery into the wage waterfall against the ADR. Brief:
+  [`OD-7_ARREARS_RECOVERY_BRIEF.md`](OD-7_ARREARS_RECOVERY_BRIEF.md).
+- **Per-slice infra (no OD, in-authority):** the rail webhook adapter + scheduled SLA sweep (R4); RafiQi
+  orchestrator auto-take + reversal compensation (R5); the Operator reconciliation surface + durable sync
+  store (R6); the interest-accrual job + rail settlement adapter + `savings` deposit wiring (R7); the
+  Founder-owned config-backed Floor store + shared `@nia/floor` lib extraction + wiring
+  `RegistryFloorSource` into the wage boot in place of `InMemoryFloorSource` (R8).
+- **Do NOT start R2/native** — separate Founder go-ahead.
+
+Seams awaiting Founder *values* (not engineering): the concrete `the_floor` config values (R8) and the
+savings interest rate/fee/formula + horizon `n` (R7). Build the mechanism; never invent the numbers.
+
+**R8 The Floor — DONE (ADR-0017 / OD-6).**
+- ✅ **Versioned, audited config** (`the_floor.ts`): contents per ADR (baseline dignity floor, settlement
+  floor, FD-11 women-Member higher floor, server-side per-Member overrides); `createInitialFloor` /
+  `reviseFloor` — a revision is a **new** version superseding the last; values validated (no negative /
+  non-integer floor).
+- ✅ **Append-only registry = audit trail** (`the_floor_registry.ts`): `InMemoryFloorRegistry` rejects any
+  non-monotonic publish (history is never rewritten); `RegistryFloorSource` **implements `FloorSource`**
+  and is plugged into wage settlement — a test proves take-home tracks the registry floor and a Founder
+  revision moves it, server-side; it refuses to serve a floor when none is published.
+- ✅ **Read-only endpoint + contract** (`floor_http.ts`, `openapi.floor.yaml`): `GET /v1/floor` returns
+  only the **public** guarantees (per-Member overrides never leak — asserted), default-deny 401/403, 404
+  when unconfigured, **no mutation route** (the app cannot change the Floor). +17 tests (wallet 144 → 161).
+- 🔒 **No Floor value invented in code** — Founder-provided / fixtures only (recorded judgment pattern per
+  [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md)).
 
 **R7 Savings — DONE (ADR-0016 / OD-5).**
 - ✅ **Withdrawal mechanics** (`savings.ts`): instant-to-Wallet (the withdrawal is returned already

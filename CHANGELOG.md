@@ -2,6 +2,28 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Backend R8 The Floor — implementation against ADR-0017 (2026-07-04)
+
+R8 built strictly against the locked OD-6 ([ADR-0017](docs/adr/0017-the-floor-authoritative-source.md));
+`services/wallet` 144 → 161 tests, nine OpenAPI contracts gated. **The backend policy spine R3–R8 is now
+complete**; the one open backend decision is OD-7 (arrears recovery), Founder-gated.
+
+- **R8 The Floor (ADR-0017):** the authoritative, versioned, Founder-owned `the_floor` config behind the
+  existing `FloorSource` seam. `the_floor.ts` — the config contents per ADR (baseline dignity floor,
+  off-boarding settlement floor, the FD-11 higher floor for women Members, plus server-side per-Member
+  overrides) and pure `createInitialFloor`/`reviseFloor`; a revision is a **new** version that supersedes
+  the last, never a rewrite. `the_floor_registry.ts` — an **append-only** version registry whose history
+  **is** the change-audit trail (publishing rejects any non-monotonic version), and `RegistryFloorSource`,
+  the server-side accessor that **implements `FloorSource`** and drops into wage settlement in place of
+  `InMemoryFloorSource` (a test proves take-home tracks the registry floor and that a Founder revision
+  moves it — no code change). `floor_http.ts` + `openapi.floor.yaml` — read-only `GET /v1/floor` returning
+  only the **public** guarantees (per-Member overrides never leak; a test asserts it), default-deny
+  401/403, no mutation route (the app cannot change the Floor).
+- **No Floor value invented in code** — every paise figure is Founder-provided (production) or an explicit
+  test fixture; `RegistryFloorSource` refuses to serve a floor when none is published (a settlement must
+  not run floorless). The concrete Founder-owned config-backed store + shared `@nia/floor` lib extraction
+  are remaining infra (no OD).
+
 ## Backend R7 Savings — implementation against ADR-0016 (2026-07-04)
 
 R7 built strictly against the locked OD-5 ([ADR-0016](docs/adr/0016-savings-withdrawal-mechanics.md));

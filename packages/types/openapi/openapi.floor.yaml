@@ -1,0 +1,112 @@
+openapi: 3.1.0
+info:
+  title: Nia API — The Floor (read-only)
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    The Floor — the non-negotiable dignity guarantees every Member gets (R8;
+    ADR-0017 / OD-6, Option B, locked in `/ENGINEERING_LOCK.md`). "One Floor for
+    everyone." The authoritative `the_floor` config is a single, versioned,
+    Founder-owned, audited source consumed by every service through a shared
+    accessor. This is the READ-ONLY app surface: the current published version and
+    its public guarantees. The app cannot change the Floor — changes are
+    Founder-owned and made out of band (versioned + audited); there is no mutation
+    endpoint here. Per-Member floor assignments are resolved SERVER-SIDE (they feed
+    the wage dignity floor, OD-1) and are deliberately NOT exposed here. Money is
+    integer paise.
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: floor
+    description: The Floor — read-only, versioned dignity guarantees (ADR-0017).
+
+paths:
+  /floor:
+    get:
+      operationId: getFloor
+      tags: [floor]
+      summary: The current published Floor (versioned, read-only).
+      description: >
+        Returns the current version of `the_floor` — the public dignity guarantees
+        (baseline dignity floor, off-boarding settlement floor, the FD-11 higher
+        floor for women Members) plus the version and its change note. Read-only:
+        the app never changes the Floor. 404 if no version has been published yet.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: The current Floor version.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FloorView"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "404":
+          $ref: "./openapi.base.yaml#/components/responses/NotFound"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: A money amount in integer minor units (paise) — never a float.
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 0
+          example: 500000
+        currency:
+          type: string
+          enum: [INR]
+
+    FloorView:
+      type: object
+      description: >
+        The current published Floor. Carries only the PUBLIC guarantees — per-Member
+        floor assignments are server-side and never appear here.
+      required:
+        [version, effective_at, note, author, dignity_floor, settlement_floor, women_dignity_floor]
+      additionalProperties: false
+      properties:
+        version:
+          type: integer
+          minimum: 1
+          description: Monotonic version number; every change publishes a new version (audited).
+        effective_at:
+          type: string
+          format: date-time
+        note:
+          type: string
+          description: The change note for this version (part of the audit trail).
+        author:
+          type: string
+          description: Who published this version (Founder-owned change; part of the audit trail).
+        dignity_floor:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: The baseline protected minimum take-home per cycle (OD-1's dignity floor).
+        settlement_floor:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: The minimum owed on membership off-boarding.
+        women_dignity_floor:
+          allOf: [{ $ref: "#/components/schemas/Money" }]
+          description: The FD-11 higher dignity floor guaranteed to women Members.
+
+security:
+  - MemberSession: []
