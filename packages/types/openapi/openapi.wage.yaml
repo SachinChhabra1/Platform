@@ -1,0 +1,186 @@
+openapi: 3.1.0
+info:
+  title: Nia API — Wage Flow
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+  description: >
+    The Wage Flow settlement surface (R3; ADR-0012 / OD-1, locked in
+    `/ENGINEERING_LOCK.md`). Settles a received wage against the Member's claims
+    using the fixed, locked deduction waterfall: dignity floor → rent → curry →
+    remittance → savings → membership fee → advance. Nia's own claims (fee,
+    advance) are deferred LAST; deferred claims carry forward as arrears, except
+    the membership fee on an employer-caused shortfall, which is waived ("if it is
+    ever wrong, we fix it first").
+
+    The dignity floor is NOT a client input — it is read server-side from the
+    Floor (ADR-0017 / OD-6), so the client cannot lower it. Money is carried in
+    integer paise; the Member-facing rendering is the client's job (Book III
+    §6.4). Feature surface only — it references the shared components in the base
+    contract (`openapi.base.yaml`) and adds no cross-cutting components of its own
+    (Book VIII ch. 4; ADR-0007).
+servers:
+  - url: /v1
+    description: Version 1. APIs are versioned in the path (Book VIII §4.6).
+
+tags:
+  - name: wage
+    description: Wage Flow — settling a received wage per the locked waterfall (ADR-0012).
+
+paths:
+  /wage/settlements:
+    post:
+      operationId: settleWage
+      tags: [wage]
+      summary: Settle a received wage against the Member's claims (ADR-0012).
+      description: >
+        Allocates the received wage across the Member's claims in the fixed,
+        locked order — protecting the Member's dignity floor and family first and
+        deferring Nia's own claims (fee, advance) last. The Member is resolved
+        from the session (default-deny; he settles only his own wage, Book VIII
+        §1.4). The dignity floor is read server-side from the Floor (ADR-0017); it
+        is never accepted from the client.
+      parameters:
+        - $ref: "./openapi.base.yaml#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WageSettlementRequest"
+      responses:
+        "200":
+          description: The wage allocation, computed per ADR-0012.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WageAllocation"
+        "400":
+          $ref: "./openapi.base.yaml#/components/responses/BadRequest"
+        "401":
+          $ref: "./openapi.base.yaml#/components/responses/Unauthorized"
+        "429":
+          $ref: "./openapi.base.yaml#/components/responses/TooManyRequests"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    # Re-exported from the base contract so this feature doc is self-validating
+    # and the `MemberSession` requirement below resolves.
+    MemberSession:
+      $ref: "./openapi.base.yaml#/components/securitySchemes/MemberSession"
+
+  schemas:
+    Money:
+      type: object
+      description: >
+        A money amount in the Member's currency, carried in integer minor units
+        (paise) — never a float. Formatting is the client's job (Book III §6.4).
+      required: [minor, currency]
+      additionalProperties: false
+      properties:
+        minor:
+          type: integer
+          minimum: 0
+          description: The amount in minor units (paise). Non-negative for wage claims.
+          example: 300000
+        currency:
+          type: string
+          enum: [INR]
+          description: ISO 4217 currency. Nia is INR-only in this slice.
+
+    ShortfallCause:
+      type: string
+      enum: [employer_caused, member_caused, none]
+      description: >
+        Why a wage is short. Only `employer_caused` waives the membership fee on
+        the shortfall (ADR-0012). `none` when the wage covers every claim.
+
+    WageClaims:
+      type: object
+      description: >
+        The amounts due this cycle per claim, in the ledger categories
+        (`openapi.wallet.yaml`). Priority is fixed by ADR-0012, not by this
+        object's key order.
+      required:
+        [rent, curry, remittance, savings, membership_fee, advance_repayment]
+      additionalProperties: false
+      properties:
+        rent:
+          $ref: "#/components/schemas/Money"
+        curry:
+          $ref: "#/components/schemas/Money"
+        remittance:
+          $ref: "#/components/schemas/Money"
+        savings:
+          $ref: "#/components/schemas/Money"
+        membership_fee:
+          $ref: "#/components/schemas/Money"
+        advance_repayment:
+          $ref: "#/components/schemas/Money"
+
+    WageSettlementRequest:
+      type: object
+      description: >
+        A received wage plus the claims due against it. The dignity floor is
+        deliberately absent — the server reads it from the Floor (ADR-0017) and
+        never accepts it from the client.
+      required: [wage, claims, cause]
+      additionalProperties: false
+      properties:
+        wage:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: The wage actually received this cycle.
+        claims:
+          $ref: "#/components/schemas/WageClaims"
+        cause:
+          $ref: "#/components/schemas/ShortfallCause"
+
+    WageAllocation:
+      type: object
+      description: >
+        The result of the ADR-0012 waterfall. Money is conserved:
+        `take_home` + Σ`paid` = `wage`.
+      required:
+        [take_home, paid, arrears, waived_membership_fee, floor_breached, shortfall]
+      additionalProperties: false
+      properties:
+        take_home:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: >
+            Cash that reaches the Member — the protected dignity floor plus any
+            surplus after every claim.
+        paid:
+          allOf:
+            - $ref: "#/components/schemas/WageClaims"
+          description: Amount honoured per claim this cycle.
+        arrears:
+          allOf:
+            - $ref: "#/components/schemas/WageClaims"
+          description: >
+            Amount deferred per claim, carried forward. The membership fee is 0
+            here when it was waived (see `waived_membership_fee`).
+        waived_membership_fee:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: >
+            Membership fee waived (not carried) because the shortfall was
+            employer-caused (ADR-0012). Zero otherwise.
+        floor_breached:
+          type: boolean
+          description: >
+            True when the wage could not even cover the dignity floor — the
+            settlement must escalate to the Operator (the floor is inviolable).
+        shortfall:
+          type: boolean
+          description: True when any claim was not fully met (or the floor was breached).
+
+security:
+  - MemberSession: []

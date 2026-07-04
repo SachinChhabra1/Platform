@@ -22,8 +22,10 @@ decision**: add it to the Decision Book and stop; do not invent product behaviou
 
 ## Locked decisions
 
-**All six ruled by the Founder on 2026-07-04 (ratified as recommended).** Locked by commit `f885800`
-(hash recorded here in the immediate follow-up commit, since a commit can't contain its own hash).
+**All six ruled by the Founder on 2026-07-04.** Ratified as recommended, then re-issued verbatim as an
+explicit written ruling (B · B · B · C · B · B) — the options recorded below match that ruling
+word-for-word. Locked by commit `f885800` (hash recorded here in the immediate follow-up commit, since a
+commit can't contain its own hash).
 
 | OD | Decision | Approved option | Owner | Ruling date | ADR | Locking commit | Supersedes | Status |
 |----|----------|-----------------|-------|-------------|-----|----------------|-----------|--------|
