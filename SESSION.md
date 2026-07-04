@@ -3,6 +3,23 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-01 — Autonomous loop, engineering-quality pass
+
+- Founder strengthened the loop: when no roadmap task is unlocked, create grounded
+  engineering-quality work within an explicit authority boundary (never change product
+  behaviour, visual design, roadmap priorities, or the board freeze).
+- **Encoded** the rules in `docs/AUTONOMOUS-LOOP.md`; added an UNLOCKED engineering lane to
+  `ROADMAP.md`; `NEXT_TASK.md` flipped BLOCKED → unlocked engineering queue. Commit `411dd95`.
+- **E1 (`70b84e0`)** — removed 4 dead helpers from `pillar_kit.dart` (niaCard, niaListRow,
+  niaBookStrip, sectionTitle; zero callers). Analyze clean, 49 tests, goldens byte-identical.
+- **E2 (`4bc0e0b`)** — added `test/nia_components_test.dart`, 11 tests for the shared
+  component surface. Suite 49 → 60.
+- **E3** — audit pass: no further dead code. One real duplication remains (SOS + icon-chip
+  across `niabook_page` and `pillar_kit`) but it touches the **frozen** NiaBook screen →
+  gated as **E4** until after the board (golden-risk; outside autonomous authority).
+- **Stopped**: the safe, golden-neutral engineering queue is exhausted. Remaining real work
+  (E4, and product tasks R1–R8) is founder/freeze-gated. Board demo untouched and still live.
+
 ## 2026-07-01 — Autonomous loop bootstrap (docs reconciliation)
 
 - **Ran the autonomous engineering loop.** Recovered context; found the loop's expected docs

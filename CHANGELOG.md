@@ -34,6 +34,15 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
   Dart client → Flutter screen) + read-only Membership surface. Tag `v0.2-m1`. Backend then
   paused for Product Polish. Detail in `docs/PROJECT_STATUS.md`.
 
+## Engineering quality — autonomous loop (2026-07-01)
+
+- `4bc0e0b` **E2** — `test/nia_components_test.dart`: 11 tests for the shared component
+  surface (InfoCard/ListRow/SummaryCard/SectionHeader/OpportunityCard/NiaReveal). 49 → 60.
+- `70b84e0` **E1** — removed dead helpers from `pillar_kit.dart` (niaCard, niaListRow,
+  niaBookStrip, sectionTitle; zero callers). Goldens byte-identical.
+- `411dd95` **Loop governance** — `docs/AUTONOMOUS-LOOP.md` (the "when roadmap blocked"
+  ladder + Engineering Authority); ROADMAP gains an unlocked engineering-quality lane.
+
 ## Docs / loop scaffolding (2026-07-01)
 
 - Reconciled `docs/PROJECT_STATUS.md` to the Product Polish phase; established `ROADMAP.md`,
