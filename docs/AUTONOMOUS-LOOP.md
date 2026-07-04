@@ -48,6 +48,27 @@ no technical debt, no safe refactor, no documentation drift, no missing tests, *
 item left**, and no Founder-approved product work available. Then surface the gate — never manufacture
 make-work.
 
+### Objective termination rule — the three-empty-investigations stop
+
+Judgment ("nothing meaningful left") is not enough — it lets the loop spend hours *proving* there is
+nothing to do. Use an objective counter instead. **Each iteration is one investigation:**
+
+1. Identify **one** concrete candidate gap (a named file/gate/doc/test, not "look around").
+2. Verify it actually exists (grep/run/read — don't assume).
+3. If it exists, fix it. If not, it was an **empty investigation** — record it and move on.
+4. Verify the fix (`nia verify` green).
+5. Commit (single-purpose, only if green).
+6. Repeat.
+7. **After three *consecutive* investigations that produce no code, test, or documentation change with
+   measurable value, stop.** Record the three investigations performed (what was checked, why it was a
+   no-op), document that the in-authority engineering surface **appears exhausted**, and surface the
+   gate. Do not keep searching indefinitely.
+
+Any iteration that lands a real change **resets the counter to zero**. "Measurable value" means it
+closes a real gap (an ungated spec, a broken link, a contradictory doc, a missing fail-closed proof) —
+not a cosmetic reword. Log the empty investigations in the closeout (e.g. `NEXT_TASK.md`) so the next
+session sees what was already ruled out and doesn't re-walk the same ground.
+
 **Finish categories, not files** (Founder ruling, 2026-07-04 — think like a staff engineer). Work
 production qualities as whole **categories** — async states, empty states, accessibility, offline,
 crash recovery, motion, typography, performance — each run **audit → fix → verify → close**, tracked

@@ -25,15 +25,25 @@ item needs a Founder decision or the native build. Per the loop, this is not fai
 correctly reporting a gate. **The critical path has moved entirely to Founder decisions; the highest-
 leverage unlock is OD-1 / backend un-pause** (below). The OD rulings expire **2026-07-13**.
 
-**Engineering-quality loop ran (2026-07-04) and is now exhausted.** In-authority, non-product hygiene
-delivered (ROADMAP E8–E10): OpenAPI contract lint via glob (closed the ungated `sessions` spec);
-doc-link integrity gate (`scripts/check-doc-links.mjs`, protects the governance chain); CHANGELOG brought
-current. Confirmed no remaining safe gap — backend infra (`runtime`/`log`/`sessions`/`preview`) is
-well-tested, lockfile is frozen-clean, `.nvmrc` consistent, and the only dependency updates are risky
-majors (TS 6 / Vitest 4 / Redocly 2 — not behaviour-preserving, so out of bounds). **The next valuable
-engineering work is money-path / behaviour testing and implementation (wallet · wage · remittance ·
-savings · offline · Floor). That is OD-gated by definition** — writing those tests now would assert
-behaviour that OD-1…OD-6 are meant to *define*, and would pre-empt the very rulings the
+**Engineering-quality loop ran (2026-07-04) and is exhausted per the objective termination rule**
+([`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md) — stop after three consecutive empty
+investigations). In-authority, non-product hygiene delivered (ROADMAP E8–E12): OpenAPI contract lint via
+glob (closed the ungated `sessions` spec); doc-link integrity gate + its fail-closed self-test (the
+lib/cli/selftest trio); CHANGELOG brought current; a doc-accuracy sweep (PROJECT_STATUS single-source
+contradiction; README verify steps).
+
+**Investigations already ruled out this round (don't re-walk):**
+- Backend infra coverage (`runtime` health/prefix, `sessions` directory, `log`, `preview`) — already
+  well-tested; no gap.
+- Dependency hygiene — lockfile frozen-clean, `.nvmrc` consistent across all CI jobs; only updates are
+  risky **majors** (TS 6 / Vitest 4 / Redocly 2 — not behaviour-preserving, out of bounds).
+- Tracked build artifacts — none (`build/`, `.dart_tool/`, `generated/` untracked); no gitignore gap.
+- Remaining stale-HEAD refs (ENGINEERING_AUDIT / KNOWN_BUGS / SESSION at `d3bd715`) — dated audit
+  snapshots, legitimately frozen history; leave intact.
+
+**The next valuable engineering work is money-path / behaviour testing and implementation (wallet · wage
+· remittance · savings · offline · Floor). That is OD-gated by definition** — writing those tests now
+would assert behaviour that OD-1…OD-6 are meant to *define*, and would pre-empt the very rulings
 [`ENGINEERING_LOCK.md`](ENGINEERING_LOCK.md) exists to freeze. So the loop correctly **stops here** and
 surfaces the blocker: rule the decision book.
 
