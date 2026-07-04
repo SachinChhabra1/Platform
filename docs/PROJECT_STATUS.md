@@ -3,7 +3,33 @@
 The factual handover state for the next session. This is **not** methodology — it is the
 current state of the repository. The repository, not any conversation, is the memory.
 
-## Current milestone
+## Current phase — Product Polish (frontend), board-frozen
+
+**Phase: Product Polish — COMPLETE for the board (HEAD `795b0de`, 2026-07-01).** After M1
+(backend vertical slice) the work moved to the Member app's experience. All five screens of
+the operating system were rebuilt to App-Store quality on a shared component set
+(`apps/member/lib/features/pillars/nia_components.dart`) and integrated into the shell:
+
+- **NiaBook** (Truth · the home ledger, opens first) · **Work** (Hope) · **Living** (Relief)
+  · **Store** (Satisfaction) · **Family** (Purpose). Each pillar ends on its own emotion — a
+  product law now recorded in [`PRODUCT_ARCHITECTURE.md`](../PRODUCT_ARCHITECTURE.md).
+- **Integration verified:** NiaBook opens first; nav order NiaBook · Work · Living · Store ·
+  Family; pillars on the shared components; every pillar closes into NiaBook; no wallet
+  language in the integrated surface; SOS + NiaBook chrome (month/language/identity/Studio)
+  consistent; all five goldens regenerate byte-identical.
+- **Verification:** `nia verify` green · `flutter analyze` clean · 49 tests pass · no codegen
+  drift. Recovery bundle `nia-final-integration-20260701-164454.bundle` (verified).
+- **State:** **frozen for the board meeting.** The craftsmanship backlog
+  (`docs/design/niabook/niabook-next-iteration.md`) is deferred by Founder decision until
+  after the board meeting. See [`ROADMAP.md`](../ROADMAP.md) for what is locked vs. unlocked.
+- **Demo:** the offline board build (`apps/member/lib/main.dart`) runs as a web app; a live
+  demo is served locally + via a temporary tunnel (see `~/Desktop/nia-board-demo/OPEN-ME.md`).
+  There is no native iOS/Android build — web only.
+
+The backend remains **paused** during Product Polish (no money-movement flows built). M1
+below is the last backend milestone and remains valid.
+
+## Backend milestone (paused)
 
 **Milestone M1 — COMPLETE (2026-06-30).** The first end-to-end vertical slice is built and
 validated: the Wallet Overview (read model → OpenAPI contract → HTTP surface → generated Dart
