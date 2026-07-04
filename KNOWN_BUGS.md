@@ -1,8 +1,8 @@
 # Known bugs & limitations
 
-Grounded in the repository at HEAD `795b0de`. "Bug" = defect in shipped behaviour;
+Grounded in the repository at HEAD `d3bd715`. "Bug" = defect in shipped behaviour;
 "limitation" = a known boundary of the current build. Verified state: `flutter analyze`
-clean, 49 tests pass, no codegen drift, zero `TODO/FIXME/HACK` in `apps/member/lib`.
+clean, 77 tests pass, no codegen drift, zero `TODO/FIXME/HACK` in `apps/member/lib`.
 
 ## Open
 

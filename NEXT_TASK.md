@@ -5,6 +5,9 @@ Start from [`START_HERE.md`](START_HERE.md).
 
 ## Status: BLOCKED — a Founder decision is required to continue
 
+*Last verified this way: 2026-07-04, HEAD `d3bd715` — `nia verify` green, 77 tests / 17 files,
+analyze clean, no drift, tree clean. State docs reconciled to this baseline the same session.*
+
 **R1 (the craftsmanship backlog) is complete.** The board freeze is lifted. The member app is
 clean and healthy: `nia verify` green, `flutter analyze` clean, **77 tests**, no dead code, no
 TODOs, CI present, goldens deterministic, docs reconciled. **No unlocked in-authority engineering

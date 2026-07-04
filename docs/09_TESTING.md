@@ -18,7 +18,7 @@ flutter test test/niabook_golden_test.dart --update-goldens
 Repository-wide gate: **`nia verify`** (from repo root, after `source scripts/_env.sh`) runs the
 suite plus a non-destructive codegen-drift check. It must end `nia verify passed`.
 
-## The suite (68 tests today)
+## The suite (77 tests today)
 
 - **Screen contracts** — `pillars_test.dart` (each pillar's promise, hero, benefit-led copy,
   cross-pillar tags, emotional close) and `niabook_page_test.dart`.
@@ -33,9 +33,9 @@ suite plus a non-destructive codegen-drift check. It must end `nia verify passed
   assertions; their job is visual review + freeze proof.
 - Plus prototype-invariant, preview-screen, config, membership, and family tests.
 
-## The golden rule (board freeze)
+## The golden rule (the goldens are the visual spec)
 
-The five screens are **frozen**. A behaviour-preserving change (refactor, dead-code removal,
+The five goldens are the visual spec. A behaviour-preserving change (refactor, dead-code removal,
 added test) must leave `test/goldens/*.png` **byte-identical**:
 
 ```sh
@@ -43,8 +43,10 @@ flutter test test/niabook_golden_test.dart --update-goldens
 git diff --quiet -- apps/member/test/goldens/ && echo "byte-identical ✓"
 ```
 
-If the goldens change and you did not intend a screen change, **revert** — you crossed the
-freeze. Only a Founder-approved product change may alter them.
+If the goldens change and you did not intend a screen change, **revert** — you altered the visual
+spec unintentionally. Only a Founder-approved product change may alter them. (The board freeze has
+been lifted; R1 was such an approved change and intentionally regenerated the goldens — see
+`design/niabook/R1-visual-review.md`.)
 
 ## Writing tests
 
@@ -58,6 +60,8 @@ freeze. Only a Founder-approved product change may alter them.
 
 ## Not yet covered (grounded gaps)
 
-- No CI configuration in the repo yet (tests run locally). No integration/e2e harness beyond the
-  widget suite. The backend `/v1` surfaces have their own TypeScript tests (see
+- CI **is** configured (`.github/workflows/ci.yml`: lint gates, OpenAPI contract, TS typecheck+test,
+  Flutter analyze+test) but runs on a GitHub runner only once the repo is pushed to a GitHub remote —
+  today `origin` is a local recovery bundle (`FOUNDER_REVIEW.md` Q7). No integration/e2e harness
+  beyond the widget suite. The backend `/v1` surfaces have their own TypeScript tests (see
   `engineering-stack.md`); they are paused during Product Polish.

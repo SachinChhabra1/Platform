@@ -2,6 +2,19 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Docs: reconcile state to verified reality (2026-07-04)
+
+- Re-established a Level-A baseline from the repository: `nia verify` green, `flutter analyze` clean,
+  **77 tests** across 17 files, no codegen drift, working tree clean, HEAD `d3bd715`.
+- Reconciled stale **current-state** docs to that reality — `START_HERE`, `PROJECT_STATUS` (root +
+  `docs/12_STATUS`), `KNOWN_BUGS`, `REPOSITORY_INDEX`, `ENGINEERING_AUDIT`, `09_TESTING`,
+  `15_SCORECARD`, `AUTONOMOUS-LOOP` scorecard, `08_ROADMAP`, `01_START_HERE`, `16_RISK_REGISTER`.
+  Fixed: test counts (49/68/72 → **77**), stale HEADs (`795b0de`/`ec8be4b` → `d3bd715`),
+  "board-frozen" present tense (freeze **lifted**, R1 complete; the goldens remain the visual spec),
+  E4 (**resolved**, not gated), and the stale "no CI" note (CI is configured — Q7).
+- Historical records left intact (SESSION logs, prior CHANGELOG entries, R1-visual-review, the dated
+  board handover). Docs only — no code; goldens byte-identical.
+
 ## Product Polish phase — Member app to App-Store quality (2026-06-30 → 2026-07-01)
 
 - `795b0de` Board handover: record final integration commit + bundle

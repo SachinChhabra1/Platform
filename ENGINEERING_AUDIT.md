@@ -4,7 +4,7 @@ A grounded snapshot of engineering health and the prioritized backlog it implies
 durable output of the loop's Phase-2 repository scan. Re-run at each Engineering Council review
 (every 10 slices) and after major work. Scores are evidence-based, not aspirational.
 
-**Audited:** 2026-07-04, HEAD `ec8be4b`. **Method:** `flutter analyze`, `flutter test`, golden
+**Audited:** 2026-07-04, HEAD `d3bd715`. **Method:** `flutter analyze`, `flutter test`, golden
 diff vs the board freeze, and a repository scan (TODOs, dead code, test gaps).
 
 ## Scorecard (member app — the production focus)
@@ -17,7 +17,7 @@ diff vs the board freeze, and a repository scan (TODOs, dead code, test gaps).
 | Goldens | ✅ | deterministic; intentionally updated by R1 (freeze lifted) — see `docs/design/niabook/R1-visual-review.md` |
 | Dead code / TODOs | ✅ | 0 `TODO/FIXME` in `lib`; pillar_kit dead code removed (E1) |
 | Documentation | ✅ | manual 00–17 grounded; Product Bible from mining; links resolve |
-| Tech debt | 🟡 | one known duplication (E4) — **gated** (touches frozen NiaBook screen) |
+| Tech debt | ✅ | E4 resolved (SOS deduped; icon-chip kept separate by design) — no open debt |
 | Test coverage breadth | 🟡 | screens/components/formatPaise/common covered; backend services not covered here (paused) |
 | CI | ✅ configured | `.github/workflows/ci.yml`: lint-gates (+ self-test), OpenAPI-contract, TS typecheck+test, Flutter analyze+test (pinned 3.44.4). Caveat: `origin` is a local recovery bundle, so CI runs only when pushed to a GitHub remote. |
 | Native release readiness | 🔴 | web-only; no iOS/Android build (K1) |
@@ -31,8 +31,9 @@ frozen and proven byte-identical; grounded documentation.
 
 ## Gaps / findings (grounded)
 
-1. **E4 duplication** — `niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`.
-   Real debt, but golden-risky → **gated** until the board freeze lifts. `ROADMAP.md` E4.
+1. ~~**E4 duplication**~~ — **RESOLVED** (freeze lifted, R1). SOS deduped — NiaBook uses the shared
+   `niaSosButton` (byte-identical). Icon-chip kept separate by design (R1a ○→✓ motion + lock badge;
+   avoids a circular `pillar_kit ↔ nia_components` import). `ROADMAP.md` E4.
 2. ~~`widgets/common.dart` test gap~~ — **CLOSED (E6)**: `test/common_test.dart` covers Monogram,
    SectionLabel, prototypeNoOp, and the SOS → Operator sheet. Suite 68 → 72.
 3. **CI exists** — `.github/workflows/ci.yml` already runs lint/contract/TS/Flutter gates. It is
@@ -44,11 +45,12 @@ frozen and proven byte-identical; grounded documentation.
 ## Prioritized backlog
 
 - **Unlocked (in-authority, golden-neutral):** none material remaining — the member app is clean
-  (analyze/72 tests/goldens frozen), dead code removed, common.dart covered, CI present. Further
-  test-adding into legacy/prototype surfaces is low value (they are candidates for retirement —
-  `FOUNDER_REVIEW.md` Q3).
-- **Gated (Founder / freeze):** E4 + R1 (board freeze) · R2 native (K1) · R3–R8 backend (OD-1…OD-6)
-  · pushing to a GitHub remote to activate CI (Q7). Tracked in `ROADMAP.md` / `FOUNDER_REVIEW.md`.
+  (analyze/77 tests/goldens deterministic), dead code removed, common.dart covered, CI present, E4
+  resolved, R1 complete. Further test-adding into legacy/prototype surfaces is low value (they are
+  candidates for retirement — `FOUNDER_REVIEW.md` Q3).
+- **Gated (Founder):** R2 native (K1) · R3–R8 backend (OD-1…OD-6) · retiring the legacy wallet/home
+  surfaces (Q3, a Founder product call) · pushing to a GitHub remote to activate CI (Q7). Tracked in
+  `ROADMAP.md` / `FOUNDER_REVIEW.md`.
 
 ## Scope note
 

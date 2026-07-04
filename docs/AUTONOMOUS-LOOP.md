@@ -29,7 +29,7 @@ order; the first category that yields real, in-authority work becomes the next t
 
 A task must be **grounded** (found by inspecting the repo, e.g. grep/analyze/coverage), not
 invented. Prefer changes that keep the five golden screenshots **byte-identical** — that is
-the proof the board-frozen product is untouched.
+the proof the approved screens are visually untouched.
 
 ## Only then evaluate stop conditions
 
@@ -111,12 +111,12 @@ accumulated debt and recommended architectural improvements. Record the outcome 
 
 ### Engineering Scorecard (re-score at each Council review)
 
-| Dimension | Signal | Last (2026-07-01) |
+| Dimension | Signal | Last (2026-07-04, HEAD `d3bd715`) |
 |---|---|---|
 | Build/verify | `nia verify` green, no codegen drift | ✅ green |
 | Static analysis | `flutter analyze` clean | ✅ clean |
 | Tests | count + all green | ✅ 77 green |
-| Goldens | five screens byte-identical to spec | ✅ frozen |
-| Tech debt | dead code / duplication / TODOs | 🟡 1 gated item (E4, post-board) |
+| Goldens | five screens deterministic to spec | ✅ deterministic (freeze lifted; R1 updated intentionally) |
+| Tech debt | dead code / duplication / TODOs | ✅ E4 resolved; 0 open |
 | Docs drift | implementation vs docs | ✅ reconciled |
-| Slices since last Council | should reset at 10 | 4 (E1, E2, E5, E6) |
+| Slices since last Council | should reset at 10 | ≥10 (E1,E2,E5,E6,R1a,E4,R1#1,Q8,Q9) — **Council review due** |

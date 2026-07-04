@@ -3,6 +3,24 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — Baseline re-verified + state-doc reconciliation
+
+- **Level-A baseline established from the repository** (not memory/handover): `nia verify` green,
+  `flutter analyze` clean, **77 tests / 17 files**, no codegen drift, tree clean, HEAD `d3bd715`.
+  The stale `backups/SESSION-HANDOVER.md` (2026-07-01) was correctly ignored in favour of the repo.
+- **Drift found & reconciled (in-authority, docs only).** Several current-state docs still asserted
+  the pre-R1 reality — 49/68/72 tests, HEAD `795b0de`/`ec8be4b`, "board-frozen", E4 "gated", "no CI".
+  Reconciled `START_HERE`, `PROJECT_STATUS` (root + `docs/12_STATUS`), `KNOWN_BUGS`, `REPOSITORY_INDEX`,
+  `ENGINEERING_AUDIT`, `09_TESTING`, `15_SCORECARD`, `AUTONOMOUS-LOOP` scorecard, `08_ROADMAP`,
+  `01_START_HERE`, `16_RISK_REGISTER` to the verified reality (77 tests, freeze lifted, R1 complete,
+  E4 resolved, CI configured). Historical logs left intact (rewriting a dated log would falsify it).
+- **Re-verified after the edits:** `nia verify` green, goldens byte-identical (docs-only change).
+- **Gate still stands (loop Stop condition):** no unlocked in-authority engineering work remains.
+  Every forward step is a genuine Founder decision — R2 native, R3–R8 backend (OD-1…OD-6), Q3 legacy
+  retirement, Q7 CI-on-remote. Surfaced in `NEXT_TASK.md` / `FOUNDER_REVIEW.md`; not make-work.
+- **Also flagged for the next Council:** ≥10 slices since the last review (2026-07-01) — a Council
+  re-score is due (`AUTONOMOUS-LOOP.md`).
+
 ## 2026-07-04 — R1 COMPLETE (Q8 register + Q9 coaching + philosophy)
 
 - Founder decisions Q8 + Q9 approved; implemented and R1 finished.

@@ -28,8 +28,9 @@ the code.
   keep working elsewhere. Never interrupt the Founder for it.
 - **Read the tie-breaker** [`../REPOSITORY_CONSTITUTION.md`](../REPOSITORY_CONSTITUTION.md): when
   two documents disagree, it defines which wins.
-- **Respect freezes** — the five screens are board-frozen; goldens stay byte-identical unless a
-  Founder-approved screen change is intended.
+- **Respect the golden spec** — `test/goldens/*.png` are the visual spec; keep them byte-identical
+  for behaviour-preserving changes, and alter them only for an intended, Founder-approved screen
+  change. (The board freeze has been lifted; R1 was such an approved change.)
 - Then follow the loop in [`17_AUTONOMOUS_LOOP.md`](17_AUTONOMOUS_LOOP.md): contract → build →
   verify → audit → update state → single-purpose commit.
 
@@ -42,7 +43,7 @@ cannot, keep reading — you are not ready to write code.
 2. What is the member's primary goal on each screen, and which emotion must it leave? (`03_PRODUCT_BIBLE.md`)
 3. How does navigation work today? (`IndexedStack` shell, modal SOS — `04_ARCHITECTURE.md`)
 4. Which ADR controls the clients/navigation stack? (ADR-0002) Which controls design? (ADR-0003) — `07_DECISIONS.md`
-5. What is currently frozen, and what proves it? (the board freeze; the five goldens — `16_RISK_REGISTER.md`)
+5. What is the visual spec and what proves it? (the five goldens; the board freeze has been lifted — `16_RISK_REGISTER.md`)
 6. What Founder decisions remain open? (`../DECISIONS.md` OD-1…OD-6; `../FOUNDER_REVIEW.md`)
 7. Where is the roadmap, and what is the next **unlocked** task? (`08_ROADMAP.md`, `../NEXT_TASK.md`)
 8. What production risks/limitations exist? (`16_RISK_REGISTER.md` → `../KNOWN_BUGS.md`)

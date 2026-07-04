@@ -3,9 +3,13 @@
 The factual handover state for the next session. This is **not** methodology — it is the
 current state of the repository. The repository, not any conversation, is the memory.
 
-## Current phase — Product Polish (frontend), board-frozen
+## Current phase — Product Polish (frontend); board freeze lifted, R1 complete
 
-**Phase: Product Polish — COMPLETE for the board (HEAD `795b0de`, 2026-07-01).** After M1
+**Current state (2026-07-04, HEAD `d3bd715`):** the board freeze is lifted, R1 (the craftsmanship
+backlog) is complete, and the suite is at **77 tests** — `nia verify` green, `flutter analyze`
+clean, no codegen drift, goldens deterministic. Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).
+
+**Board baseline: Product Polish was COMPLETE for the board (baseline `795b0de`, 2026-07-01).** After M1
 (backend vertical slice) the work moved to the Member app's experience. All five screens of
 the operating system were rebuilt to App-Store quality on a shared component set
 (`apps/member/lib/features/pillars/nia_components.dart`) and integrated into the shell:
@@ -17,8 +21,9 @@ the operating system were rebuilt to App-Store quality on a shared component set
   Family; pillars on the shared components; every pillar closes into NiaBook; no wallet
   language in the integrated surface; SOS + NiaBook chrome (month/language/identity/Studio)
   consistent; all five goldens regenerate byte-identical.
-- **Verification:** `nia verify` green · `flutter analyze` clean · 49 tests pass · no codegen
-  drift. Recovery bundle `nia-final-integration-20260701-164454.bundle` (verified).
+- **Verification (board baseline `795b0de`):** `nia verify` green · `flutter analyze` clean · 49
+  tests pass · no codegen drift. Recovery bundle `nia-final-integration-20260701-164454.bundle`
+  (verified). *Current verified state is 77 tests at HEAD `d3bd715` — see the State line below.*
 - **State:** board freeze lifted; **R1 (the craftsmanship backlog) is COMPLETE (2026-07-04).**
   All four items: ○→✓ motion visible (R1a); Living middle reads "Included" (spend less); per-pillar
   emotional register via non-colour levers — motion timing + density (Q8); Continuity Coaching —

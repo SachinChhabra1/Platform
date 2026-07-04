@@ -22,8 +22,9 @@ backend services (ADR-0005) over PostgreSQL (ADR-0006), with OpenAPI-generated c
 
 ## `apps/`
 
-- **`member/`** — the Member app. **The production focus.** Five hardened, board-frozen screens
-  (NiaBook · Work · Living · Store · Family) in `lib/features/{niabook,pillars,shell}`. Other
+- **`member/`** — the Member app. **The production focus.** Five hardened screens (NiaBook · Work
+  · Living · Store · Family) in `lib/features/{niabook,pillars,shell}` — the board freeze is lifted
+  and R1 is complete; the goldens remain the visual spec. Other
   `lib/features/*` (auth, recovery, membership, promise, home, wallet, profile, clusters,
   family/my_family, placeholder) are prototype/legacy surfaces **not mounted in the shell** — see
   the Product Bible "Surfaces not in the frozen OS" and `FOUNDER_REVIEW.md` Q3.
@@ -44,7 +45,7 @@ the Wallet read-slice (ADR-0008); money-movement flows are gated on OD-1…OD-6 
 
 ## Verify / test surface
 
-- Member app: `apps/member/test/` — 16 test files, 68 tests, 5 golden screenshots
+- Member app: `apps/member/test/` — 17 test files, 77 tests, 5 golden screenshots
   (`test/goldens/*.png`, the visual spec — keep byte-identical unless a Founder-approved change).
   See [`docs/09_TESTING.md`](docs/09_TESTING.md).
 - Repository gate: `nia verify` (suite + non-destructive codegen-drift check).
