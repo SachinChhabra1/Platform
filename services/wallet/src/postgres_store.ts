@@ -74,3 +74,63 @@ export class PostgresDurableStore<T> implements DurableStore<T> {
     return res.rows.map((r) => r.value as T);
   }
 }
+
+/// A dependency-free, in-memory `SqlExecutor` that implements EXACTLY the statements
+/// `PostgresDurableStore` and the migration emit — `CREATE TABLE`, keyed `SELECT`,
+/// ordered `SELECT ... ORDER BY seq`, upserting `INSERT ... ON CONFLICT`, and
+/// `DELETE`. It lets the whole service run over the PRODUCTION Postgres code path
+/// with no database — for tests, parity checks, and local/UAT demos. It is NOT a
+/// general SQL engine and NOT for production (mirrors `InMemoryDurableStore`: a
+/// parity backing behind the same seam). Insertion order is preserved via `seq`.
+export class InMemorySqlExecutor implements SqlExecutor {
+  readonly #tables = new Map<string, Map<string, { seq: number; value: unknown }>>();
+  #seq = 0;
+
+  #table(name: string): Map<string, { seq: number; value: unknown }> {
+    let table = this.#tables.get(name);
+    if (table === undefined) {
+      table = new Map();
+      this.#tables.set(name, table);
+    }
+    return table;
+  }
+
+  async query(q: SqlQuery): Promise<SqlResult> {
+    const text = q.text.trim();
+    const values = q.values ?? [];
+
+    const create = /^CREATE TABLE IF NOT EXISTS (\w+)/i.exec(text);
+    if (create) {
+      this.#table(create[1] as string);
+      return { rows: [] };
+    }
+
+    const del = /^DELETE FROM (\w+)\b/i.exec(text);
+    if (del) {
+      this.#table(del[1] as string).delete(values[0] as string);
+      return { rows: [] };
+    }
+
+    const into = /^INSERT INTO (\w+)\b/i.exec(text);
+    if (into) {
+      const table = this.#table(into[1] as string);
+      const [id, value] = values as [string, unknown];
+      const existing = table.get(id);
+      table.set(id, { seq: existing ? existing.seq : ++this.#seq, value }); // upsert keeps position
+      return { rows: [] };
+    }
+
+    const from = /\bFROM (\w+)\b/i.exec(text);
+    if (/^SELECT/i.test(text) && from) {
+      const table = this.#table(from[1] as string);
+      if (/WHERE id/i.test(text)) {
+        const row = table.get(values[0] as string);
+        return { rows: row ? [{ value: row.value }] : [] };
+      }
+      const ordered = [...table.values()].sort((a, b) => a.seq - b.seq);
+      return { rows: ordered.map((r) => ({ value: r.value })) };
+    }
+
+    throw new Error(`InMemorySqlExecutor: unsupported statement: ${text}`);
+  }
+}

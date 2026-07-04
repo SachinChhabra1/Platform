@@ -193,8 +193,31 @@ export {
   type SqlResult,
   type SqlExecutor,
   PostgresDurableStore,
+  InMemorySqlExecutor,
   pgKeyValueSchema,
 } from './postgres_store.js';
+// The real PostgreSQL SqlExecutor (ADR-0006) — dependency-free binding to
+// node-postgres via dynamic import; the one module that touches `pg`.
+export {
+  type PgPool,
+  type PgConnectOptions,
+  PgSqlExecutor,
+  connectPgSqlExecutor,
+} from './pg_executor.js';
+// Durable-store factory (infra) — opens every store by logical name so one
+// composition runs over file or Postgres backing; WALLET_STORE_NAMES is the single
+// source of truth shared with the migration (they cannot drift).
+export {
+  type WalletStoreName,
+  type DurableStoreFactory,
+  WALLET_STORE_NAMES,
+  FileDurableStoreFactory,
+  InMemoryDurableStoreFactory,
+  PostgresDurableStoreFactory,
+  storeTableName,
+  walletMigrationStatements,
+  runWalletMigrations,
+} from './durable_factory.js';
 // Savings withdrawal mechanics (R7; ADR-0016) — instant-to-Wallet, T+n settle,
 // interest to the Member net of a disclosed fee, no early-withdrawal penalty. The
 // rate/formula is the InterestAccrualPolicy seam (Founder-owned pricing; zero
