@@ -3,9 +3,9 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Production Readiness Lead mode — R9 in progress (in-authority work available)
+## Status: Production Readiness Lead mode — R9 in-authority lane EXHAUSTED, gate surfaced
 
-*Last verified: 2026-07-04 — `nia verify` green, **90 tests / 20 files**, analyze clean, no drift,
+*Last verified: 2026-07-04 — `nia verify` green, **92 tests / 21 files**, analyze clean, no drift,
 tree clean.*
 
 **Founder ruling (2026-07-04):** when the feature roadmap is gated, become **Production Readiness
@@ -23,11 +23,15 @@ SOS is a labelled button, NiaBook language/month toggles are buttons, `Monogram`
 `SectionLabel`s are headers, the Profile call button has a tooltip; contrast passes WCAG AA. Gated on a
 Founder-approved screen change (Q11): sub-48px tap targets + text-scale reflow on the frozen screens.
 
-**Next in-authority (pick up here) — the last two in-authority categories:** the **Motion** and
-**Typography** audits (audit is in-authority; *changing* a frozen screen needs a Founder-approved screen
-change, so those fixes may be gated). After that the in-authority R9 lane is largely exhausted
-(Performance is gated on the native build) — surface the gate: **OD-1 / backend un-pause** is the
-critical path. See the R9 matrix in `ROADMAP.md`.
+**Motion + Typography audits DONE** — [`R9_MOTION_AUDIT.md`](R9_MOTION_AUDIT.md) and
+[`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md). Motion closed fully (golden-neutral reduce-motion
+fix on both primitives, +2 tests); typography audit done, its reconciliation gated (Q11).
+
+**The in-authority R9 lane is now exhausted.** Every remaining R9 item is gated: Performance on the
+native build (R2/K1), and the frozen-screen fixes (a11y tap-targets, typography scale, text-scale) on a
+Founder-approved screen change (Q11). **This is the point NEXT_TASK was told to reach: surface the
+gate. The critical path is OD-1 / backend un-pause** (below) — nothing further moves the product to
+real production without a Founder ruling. See the R9 matrix in `ROADMAP.md`.
 
 **Still Founder-gated (unchanged) — these are what move the product to real production:**
 

@@ -5,10 +5,12 @@ current state of the repository. The repository, not any conversation, is the me
 
 ## Current phase — Product Polish (frontend); board freeze lifted, R1 complete
 
-**Current state (2026-07-04, HEAD `d3bd715`):** the board freeze is lifted, R1 (the craftsmanship
-backlog) is complete, and the suite is at **90 tests** — `nia verify` green, `flutter analyze`
-clean, no codegen drift, goldens deterministic. **R9 — Production Readiness** is now the active phase
-(Founder ruling, 2026-07-04). Detail below and in [`../NEXT_TASK.md`](../NEXT_TASK.md).
+**Current state (2026-07-04):** the board freeze is lifted, R1 (the craftsmanship
+backlog) is complete, and the suite is at **92 tests** — `nia verify` green, `flutter analyze`
+clean, no codegen drift, goldens deterministic. **R9 — Production Readiness** is the active phase
+(Founder ruling, 2026-07-04); the **in-authority R9 lane is now exhausted** — every remaining item is
+gated (native build R2/K1, or a Founder-approved frozen-screen change Q11). Detail below and in
+[`../NEXT_TASK.md`](../NEXT_TASK.md).
 
 **Board baseline: Product Polish was COMPLETE for the board (baseline `795b0de`, 2026-07-01).** After M1
 (backend vertical slice) the work moved to the Member app's experience. All five screens of

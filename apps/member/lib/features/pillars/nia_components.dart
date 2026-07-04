@@ -259,6 +259,9 @@ class SummaryCard extends StatelessWidget {
 
 /// Restrained entrance motion — a subtle fade and 8px rise on mount, easeOutCubic.
 /// One-shot (settles under pumpAndSettle, so goldens capture the final frame).
+/// Honors the OS "Reduce Motion" flag: when set, it snaps to the final frame
+/// (Duration.zero) instead of playing. Golden-neutral — under test the flag is
+/// off, so the settled frame is unchanged (R9 Motion audit).
 class NiaReveal extends StatelessWidget {
   const NiaReveal({super.key, required this.child, this.duration = const Duration(milliseconds: 320)});
 
@@ -267,9 +270,11 @@ class NiaReveal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Duration d =
+        MediaQuery.of(context).disableAnimations ? Duration.zero : duration;
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
-      duration: duration,
+      duration: d,
       curve: Curves.easeOutCubic,
       builder: (BuildContext context, double t, Widget? c) => Opacity(
         opacity: t,
@@ -340,9 +345,11 @@ class MovementCheck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Duration d =
+        MediaQuery.of(context).disableAnimations ? Duration.zero : duration;
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
-      duration: duration,
+      duration: d,
       curve: Curves.easeOutCubic,
       builder: (BuildContext context, double t, Widget? _) => SizedBox(
         width: size,

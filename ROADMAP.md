@@ -53,8 +53,8 @@ never leave one partially complete if it can be finished within the slice (`docs
 | Crash recovery | ✅ | ✅ | ✅ | ✅ | R9.5 — global `ErrorWidget.builder` calm fallback |
 | Housekeeping · test-count restatement | ✅ | ✅ | — | ✅ | R9.0 — consolidated to one canonical count |
 | Accessibility | ✅ | ✅¹ | ✅ | 🟡 | Labels/roles/headers/contrast done ([`R9_ACCESSIBILITY_AUDIT.md`](R9_ACCESSIBILITY_AUDIT.md)); ¹ sub-48px tap targets + text-scale reflow on the 5 frozen screens gated on a Founder-approved screen change (Q11) |
-| Motion | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changing a frozen screen needs a Founder-approved screen change |
-| Typography | ⬜ | 🔒 | — | ⬜ | Audit in-authority; changes to frozen screens gated |
+| Motion | ✅ | ✅ | ✅ | ✅ | Whole-app audit ([`R9_MOTION_AUDIT.md`](R9_MOTION_AUDIT.md)); golden-neutral reduce-motion fix on both primitives (+2 tests). Only deferred item is a *branded* route transition (product call, not readiness) |
+| Typography | ✅ | 🔒 | — | 🟡 | Audit done ([`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md)): family/colour/weight pass; 7-step scale bypassed by ~11 inline sizes + text-scale reflow gated on a Founder-approved screen change (Q11) |
 | Performance (launch/low-end/battery/memory) | 🔒 | 🔒 | — | 🔒 | Gated on the native build (K1/R2) — unmeasurable web-only |
 
 Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔒 gated · — N/A. A category is **Complete** only
@@ -75,8 +75,8 @@ when every applicable cell is ✅.
 
 | # | Item | Note |
 |---|------|------|
-| R9.6 | **Motion audit** | `MovementCheck` / `NiaReveal` timing + curve consistency across screens. Audit is in-authority; altering a frozen screen's render is a Founder-approved screen change. |
-| R9.7 | **Typography audit** | `theme/nia_theme.dart` scale vs Book III; consistency. Audit in-authority; changes to frozen screens gated. |
+| R9.6 | **Motion audit** | ✅ DONE (in-authority + fix) — whole-app audit in [`R9_MOTION_AUDIT.md`](R9_MOTION_AUDIT.md). All motion is one-shot `TweenAnimationBuilder` (no controllers/tickers/spinners, goldens safe); per-pillar durations encode the Q8 register deliberately. Fixed **golden-neutral**: both primitives (`NiaReveal`, `MovementCheck`) now honor `MediaQuery.disableAnimations` (OS Reduce Motion), snapping to the final frame — settled frame and all five goldens unchanged. +2 tests. Only deferred item is a *branded* route transition (a product/motion Founder call, not a readiness fix). |
+| R9.7 | **Typography audit** | ✅ DONE (in-authority) — whole-app audit in [`R9_TYPOGRAPHY_AUDIT.md`](R9_TYPOGRAPHY_AUDIT.md). One family / colour-via-tokens / two-weight discipline all **pass**. Debt recorded: the 7-step theme scale (`theme/nia_theme.dart`, Book III §2.2) is **bypassed by ~11 inline `fontSize` values** (7 off-scale), and no `TextScaler` clamp. Reconciling repaints the frozen screens → **gated (Q11)**, same gate as the a11y text-scale item. |
 
 **Gated on the native build (🔒 R2 / K1) — cannot be measured web-only; audit & record, don't fake:**
 
