@@ -99,6 +99,21 @@ Also: **Member** (never tenant) · **Nest** (never room or bed) · **Membership 
    emotionally, not financially; protect that. A screen that leaves the Member
    merely *informed* has failed this law, even if it matches the spec.
 
+## Progress product, not engagement product (the north star)
+
+**Nia is not an engagement product. It is a progress product.** Every screen answers one
+question: *"What became better for this member?"* — never *"How do we make them come back
+tomorrow?"* This single principle settles hundreds of small product decisions without drifting
+toward conventional engagement patterns; it serves economic continuity, not app usage.
+
+Consequences that bind every screen and feature:
+- **Never manufacture engagement.** No artificial streaks, no gamification, no notifications
+  created to lift DAU, no infinite feed. A return happens because there is genuine value, or it
+  doesn't happen.
+- **Coaching, not hooks.** A screen may surface *at most one* contextual next step, and only when
+  it is genuinely valuable. Calm, helpful, optional — a trusted advisor, never a social feed.
+  (Continuity Coaching — Founder decision Q9.)
+
 ## The intake test for every future feature
 
 Before anything is built, it must answer two questions. If it cannot, it does not
