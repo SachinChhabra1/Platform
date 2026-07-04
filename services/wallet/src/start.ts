@@ -1,53 +1,23 @@
-/// Boot entry for the Wallet service HTTP surface (spec 0001 §14 step 4 slice 2).
+/// Boot entry for the wallet service. Loads the Founder/ops-owned configuration
+/// from the environment and composes the fully-wired HTTP surface (Member routes,
+/// rail webhooks, ops triggers, Operator reconciliation) over durable stores and
+/// the config seams (`compose.ts`). Configuration is environment-only; no product
+/// value is invented here.
 ///
-/// Composes `@nia/runtime`'s `createServer` (health + request logging) with the
-/// read-only Wallet Overview routes, over an in-memory activity source. The
-/// ledger-backed adapter is a later, senior-reviewed slice (ADR-0008); until
-/// then this seeds the Founder-accepted prototype scenario so the surface is
-/// demonstrably runnable end to end. Configuration is environment-only.
+/// Note: Member session issuance is a separate slice, so the composed app starts
+/// with an EMPTY session store — Member routes default-deny until issuance lands.
+/// Set NIA_SERVICE_TOKENS to enable the rail/ops surfaces, and NIA_FLOOR_CONFIG_PATH
+/// to seed the authoritative Floor (without it, wage settlement refuses to run).
 
 import { createLogger } from '@nia/log';
-import { createServer, InMemorySessionStore } from '@nia/runtime';
-import { registerWalletOverviewRoutes } from './http.js';
-import { InMemoryWalletActivitySource } from './source.js';
-import { rupees } from './money.js';
-import type { WalletActivity } from './activity.js';
+import { loadWalletConfig } from './config.js';
+import { composeWalletApp } from './compose.js';
 
 const serviceName = process.env.SERVICE_NAME ?? 'nia-wallet';
-const host = process.env.HOST ?? '127.0.0.1';
-const port = Number(process.env.PORT ?? 8081);
-
-// Demo seed only (NOT a ledger): the prototype Wallet scenario, keyed by the
-// membership id a client presents as its bearer token. May carried ₹680 forward;
-// June is the wage month. The two figures are distinct by construction (§3).
-const seed = (
-  partial: Omit<WalletActivity, 'affectsAvailable' | 'changesHoldings'> &
-    Partial<Pick<WalletActivity, 'affectsAvailable' | 'changesHoldings'>>,
-): WalletActivity => ({ affectsAvailable: true, changesHoldings: true, ...partial });
-
-const DEMO_MEMBER = 'm-001';
-const DEMO_LOG: readonly WalletActivity[] = [
-  seed({ id: 'a0', occurredOn: '2026-05-31', category: 'wage', direction: 'in', amount: rupees(680) }),
-  seed({ id: 'a1', occurredOn: '2026-06-01', category: 'wage', direction: 'in', amount: rupees(14000) }),
-  seed({ id: 'a2', occurredOn: '2026-06-03', category: 'rent', direction: 'out', amount: rupees(2400) }),
-  seed({ id: 'a3', occurredOn: '2026-06-05', category: 'curry', direction: 'out', amount: rupees(1800) }),
-  seed({ id: 'a4', occurredOn: '2026-06-10', category: 'savings', direction: 'out', amount: rupees(2000), changesHoldings: false }),
-  seed({ id: 'a5', occurredOn: '2026-06-15', category: 'remittance', direction: 'out', amount: rupees(5000) }),
-];
-
-// Demo session only (NOT issuance): one opaque token bound to the demo Member's
-// device. Real tokens are issued after phone verification (Book VIII §1.3) — not
-// built. The token is deliberately NOT the membership id (that was the old stub).
-const DEMO_SESSION = 'sess-ramesh-001';
-
 const log = createLogger({ base: { service: serviceName } });
-const app = createServer({ serviceName, logger: log });
-registerWalletOverviewRoutes(app, {
-  source: new InMemoryWalletActivitySource({ [DEMO_MEMBER]: DEMO_LOG }),
-  sessions: new InMemorySessionStore({
-    [DEMO_SESSION]: { membershipId: DEMO_MEMBER, deviceId: 'dev-ramesh-phone' },
-  }),
-});
+
+const config = loadWalletConfig(process.env);
+const app = await composeWalletApp(config, { serviceName });
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.once(signal, () => {
@@ -59,8 +29,14 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) {
 }
 
 try {
-  const address = await app.listen({ host, port });
-  log.info('wallet started', { listenAddress: address });
+  const address = await app.listen({ host: config.host, port: config.port });
+  log.info('wallet started', {
+    listenAddress: address,
+    dataDir: config.dataDir,
+    recoveryCapBps: config.recoveryCapBps,
+    floorConfigured: config.floorSeed !== undefined,
+    serviceAuthEnabled: config.serviceTokens.length > 0,
+  });
 } catch (error) {
   log.error('wallet failed to start', { error: String(error) });
   process.exit(1);

@@ -183,3 +183,12 @@ export {
   settleDueWithdrawals,
 } from './savings_ledger.js';
 export { type SavingsRouteDeps, registerSavingsRoutes } from './savings_http.js';
+// Production wiring (infra) — load Founder-owned config from the environment (no
+// invented value) and compose the fully-wired service over durable stores + seams.
+export {
+  type WalletConfig,
+  type FloorSeed,
+  type FileReader,
+  loadWalletConfig,
+} from './config.js';
+export { type ComposeOptions, composeWalletApp } from './compose.js';
