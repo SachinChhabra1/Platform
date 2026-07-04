@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/auth/phone_sign_in_page.dart';
 import 'package:member/features/auth/session_source.dart';
+import 'package:nia_api/api.dart' show ApiException;
 
 /// Phone sign-in — the front of the chain. It issues a session for the entered
 /// phone + this device and hands the token on; an unrecognised number is refused
@@ -18,7 +19,9 @@ class _FakeSession implements SessionSource {
   Future<String> issue({required String phone, required String deviceId}) async {
     this.phone = phone;
     this.deviceId = deviceId;
-    if (fail) throw StateError('unrecognised');
+    // A refusal is the server answering "no" — an ApiException (default-deny),
+    // which the page now distinguishes from a can't-reach-server (offline) error.
+    if (fail) throw ApiException(401, 'unrecognised');
     return _token;
   }
 }

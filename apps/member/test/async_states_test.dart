@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:member/features/auth/phone_sign_in_page.dart';
+import 'package:member/features/auth/session_source.dart';
 import 'package:member/features/family/my_family_page.dart';
 import 'package:member/features/home/home_page.dart';
+import 'package:member/features/membership/membership_header.dart';
 import 'package:member/features/membership/membership_source.dart';
 import 'package:member/features/profile/profile_page.dart';
 import 'package:member/features/wallet/wallet_overview_source.dart';
@@ -40,6 +43,22 @@ class _ThrowingMembership implements MembershipSource {
   @override
   Future<MembershipView> currentMembership() async {
     throw StateError('offline');
+  }
+}
+
+/// Session issuance that is refused by the server (default-deny, an ApiException).
+class _DenySession implements SessionSource {
+  @override
+  Future<String> issue({required String phone, required String deviceId}) async {
+    throw ApiException(401, 'unrecognised');
+  }
+}
+
+/// Session issuance that never reaches the server (network / offline).
+class _OfflineSession implements SessionSource {
+  @override
+  Future<String> issue({required String phone, required String deviceId}) async {
+    throw Exception('network down');
   }
 }
 
@@ -99,10 +118,62 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('reach Nia just now'), findsOneWidget);
-    expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
+    // Both the identity header and the standing now surface a recoverable error.
+    expect(find.textContaining('reach Nia just now'), findsWidgets);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsWidgets);
     // The rest of the profile still renders.
     expect(find.text('Your Operator'), findsOneWidget);
+  });
+
+  testWidgets('Membership header: a failed fetch shows the error, not a stuck placeholder',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: MembershipHeader(source: _ThrowingMembership())),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('reach Nia just now'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
+  });
+
+  testWidgets('Sign-in: an unrecognised number shows default-deny + the Operator path',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PhoneSignInPage(
+          baseUrl: '',
+          defaultPhone: '+910000000000',
+          sessionSource: _DenySession(),
+        ),
+      ),
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining("don't recognise that number"), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Talk to your Operator'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsNothing);
+  });
+
+  testWidgets('Sign-in: a network failure shows offline + Try again (distinct from deny)',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PhoneSignInPage(
+          baseUrl: '',
+          defaultPhone: '+910000000000',
+          sessionSource: _OfflineSession(),
+        ),
+      ),
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining("couldn't reach Nia"), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Talk to your Operator'), findsNothing);
   });
 
   testWidgets('Retry recovers: tapping Try again re-fetches and renders the data',

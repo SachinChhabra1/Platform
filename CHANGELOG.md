@@ -2,6 +2,16 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## R9.2 — async state audit: complete state machines (2026-07-04)
+
+- Built [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md) — the living inventory of every async
+  surface and the states it implements. Encoded the Definition-of-Done rule ("no async widget without a
+  complete state machine; no spinner without an exit") in `docs/09_TESTING.md` and the Product Bible.
+- Hardened the two remaining gaps: `membership_header` identity (was stuck on `…` forever on failure →
+  `NiaAsyncView` error+retry) and `phone_sign_in` (a network failure is now **offline** + Try again,
+  distinct from a default-deny → the Operator, keyed on `ApiException`). +3 tests; suite 82 → 85.
+  Goldens byte-identical.
+
 ## R9 — Production Readiness unlocked; R9.1 error/offline states (2026-07-04)
 
 - **Founder ruling** — become **Production Readiness Lead** when the feature roadmap is gated. Encoded

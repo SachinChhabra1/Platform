@@ -126,8 +126,8 @@ accumulated debt and recommended architectural improvements. Record the outcome 
 |---|---|---|
 | Build/verify | `nia verify` green, no codegen drift | ✅ green |
 | Static analysis | `flutter analyze` clean | ✅ clean |
-| Tests | count + all green | ✅ 82 green |
+| Tests | count + all green | ✅ 85 green |
 | Goldens | five screens deterministic to spec | ✅ deterministic (freeze lifted; R1 updated intentionally) |
 | Tech debt | dead code / duplication / TODOs | ✅ E4 resolved; 0 open |
 | Docs drift | implementation vs docs | ✅ reconciled |
-| Slices since last Council | should reset at 10 | ≥11 (E1,E2,E5,E6,R1a,E4,R1#1,Q8,Q9,docs-reconcile,R9.1) — **Council review due** |
+| Slices since last Council | should reset at 10 | ≥13 (…,docs-reconcile,R9.1,R9.1b,R9.2) — **Council review due** |

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nia_api/api.dart' show ApiException;
 
 import '../../config/member_config.dart';
 import '../../theme/nia_tokens.dart';
@@ -50,6 +51,9 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
       widget.sessionSource ?? ApiSessionSource(baseUrl: widget.baseUrl);
   bool _busy = false;
   String? _error;
+  // Distinguishes "couldn't reach Nia" (recoverable — offer Retry) from a
+  // default-deny "number not recognised" (recover via the Operator).
+  bool _errorIsOffline = false;
 
   @override
   void dispose() {
@@ -71,11 +75,23 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
       final token = await _source.issue(phone: phone, deviceId: 'dev-preview-web');
       if (!mounted) return;
       (widget.onSession ?? _enter)(token);
-    } catch (_) {
+    } on ApiException catch (_) {
+      // The server answered but refused: default-deny — the number is not known
+      // (the number alone is never enough). The way through is the Operator.
       if (!mounted) return;
       setState(() {
         _busy = false;
+        _errorIsOffline = false;
         _error = "We don't recognise that number. Your Operator can help you in person.";
+      });
+    } catch (_) {
+      // Couldn't reach the server at all — offline / network / timeout. Recoverable:
+      // reconnect and try again.
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _errorIsOffline = true;
+        _error = "We couldn't reach Nia. Check your connection and try again.";
       });
     }
   }
@@ -128,11 +144,18 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
               const SizedBox(height: NiaTokens.s2),
               Align(
                 alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () => openOperatorSheet(context),
-                  icon: const Icon(Icons.headset_mic_outlined, size: 18),
-                  label: const Text('Talk to your Operator'),
-                ),
+                // Offline is recoverable → Try again. Default-deny → the Operator.
+                child: _errorIsOffline
+                    ? TextButton.icon(
+                        onPressed: _busy ? null : _continue,
+                        icon: const Icon(Icons.refresh, size: 18),
+                        label: const Text('Try again'),
+                      )
+                    : TextButton.icon(
+                        onPressed: () => openOperatorSheet(context),
+                        icon: const Icon(Icons.headset_mic_outlined, size: 18),
+                        label: const Text('Talk to your Operator'),
+                      ),
               ),
             ],
             const SizedBox(height: NiaTokens.s7),

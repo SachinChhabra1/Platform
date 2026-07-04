@@ -3,6 +3,30 @@
 Newest first. One entry per working session so the next session needs no chat history.
 Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 
+## 2026-07-04 — R9.2 async state audit (complete state machines) + design-dir question
+
+- **Founder raised the bar:** don't fix one `FutureBuilder` and miss five — inventory **every** async
+  boundary, classify by a complete state machine, fix systematically, and make it a Definition of Done.
+- **Built the inventory** [`R9_ASYNC_STATE_AUDIT.md`](R9_ASYNC_STATE_AUDIT.md) from a repo grep
+  (`FutureBuilder`/`StreamBuilder`/awaited fetch) — 8 async surfaces. Encoded the rule ("no async
+  widget without a complete state machine; no spinner without an exit") in `docs/09_TESTING.md` (DoD)
+  and the Product Bible's binding standards.
+- **Hardened the two remaining real gaps:** `membership_header` (identity was stuck on `…` forever on
+  failure → now `NiaAsyncView` error+retry); `phone_sign_in` (a network failure was mislabelled "we
+  don't recognise that number" → now **offline** = "couldn't reach Nia" + Try again, kept **distinct**
+  from a default-deny = the Operator path, keyed on `ApiException` vs a generic error). Documented the
+  Home greeting as a deliberate graceful-degrade exception. Suite 82 → **85**.
+- **Tests caught two real interactions before commit:** an existing sign-in test modelled a refusal as
+  a generic error (fixed to `ApiException`, matching the new distinction), and the profile now shows two
+  error blocks (header + standing). Both reconciled.
+- **Verified:** `nia verify` green, analyze clean, no drift, goldens byte-identical.
+- **Design direction recorded (not assumed):** the Founder shared `~/Desktop/nia-book-design-exploration`
+  (a Next.js/React/shadcn NiaBook prototype) with "this is the UI we will use." Recorded as
+  `FOUNDER_REVIEW.md` **Q10** — adopt as the visual target to port into Flutter (recommended) vs. a
+  stack migration that would supersede ADR-0002. Did not act on it; R9 hardening applies either way.
+- **Next in-authority:** R9.0 (consolidate the restated test count — kills the per-slice doc churn),
+  R9.4 accessibility, R9.5 crash-recovery boundary.
+
 ## 2026-07-04 — Production Readiness Lead mode; R9 created; R9.1 shipped
 
 - **Founder ruling:** when the feature roadmap is gated, become **Production Readiness Lead** — do not

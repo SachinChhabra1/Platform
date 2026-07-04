@@ -18,7 +18,7 @@ flutter test test/niabook_golden_test.dart --update-goldens
 Repository-wide gate: **`nia verify`** (from repo root, after `source scripts/_env.sh`) runs the
 suite plus a non-destructive codegen-drift check. It must end `nia verify passed`.
 
-## The suite (82 tests today)
+## The suite (85 tests today)
 
 - **Screen contracts** — `pillars_test.dart` (each pillar's promise, hero, benefit-led copy,
   cross-pillar tags, emotional close) and `niabook_page_test.dart`.
@@ -49,6 +49,15 @@ If the goldens change and you did not intend a screen change, **revert** — you
 spec unintentionally. Only a Founder-approved product change may alter them. (The board freeze has
 been lifted; R1 was such an approved change and intentionally regenerated the goldens — see
 `design/niabook/R1-visual-review.md`.)
+
+## Definition of Done — async surfaces (R9)
+
+**No asynchronous widget ships without a complete state machine, and no spinner without an exit.**
+Required states: loading → success → empty (if the payload can be empty) → error → retry, plus
+offline where a network is involved. A surface that can only load-and-succeed is **incomplete**.
+Use the shared `NiaAsyncView` (`lib/widgets/nia_async.dart`). Every async surface is tracked in
+[`R9_ASYNC_STATE_AUDIT.md`](../R9_ASYNC_STATE_AUDIT.md); a new one is added there and may be marked
+**Complete** only once every applicable state is implemented **and** tested (`async_states_test.dart`).
 
 ## Writing tests
 

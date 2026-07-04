@@ -57,6 +57,11 @@ must leave the member on a specific **emotion**, not merely informed:
   selection); green = received/kept, **NiaBook only**; SOS is never red.
 - **Missing / stale data: record reality, never invent.** Unknown figures are marked placeholders
   or omitted, never fabricated. Empty states explain the next step; they never celebrate emptiness.
+- **Every async surface has a complete state machine** (R9): loading → success → (empty if
+  applicable) → error → retry, and offline where a network is involved. On a failed live fetch the
+  Member sees a calm "We couldn't reach Nia" and a **Try again** — never an endless spinner; at
+  sign-in an unreachable server ("check your connection", retry) is distinct from a refused number
+  (the Operator). Inventory + rule: [`R9_ASYNC_STATE_AUDIT.md`](../R9_ASYNC_STATE_AUDIT.md).
 - **SOS on every screen** (blue outline pill) → Nia Emergency, an abstract route (today the
   Operator), never permanently one destination.
 - **Chrome:** NiaBook owns the full header (title · language · identity · Studio · month · SOS);
