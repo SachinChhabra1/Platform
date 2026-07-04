@@ -28,6 +28,11 @@ the terminal gate before backend.**
 build (R2/K1) or a Founder-approved frozen-screen change (Q11). Those are tracked in `ROADMAP.md` and
 `FOUNDER_REVIEW.md`; they do **not** hold R9 open.
 
+*(Framing note: this means no in-authority work that **advances the product roadmap** remains. Optional
+quality work — deeper coverage, observability, dependency upgrades, CI-on-runner — always exists and can
+be picked up, but it does not move R2–R8 and should not block them. The critical path is Founder
+decisions.)*
+
 ## State at sign-off
 
 `nia verify` green · **92 tests / 21 files** · `flutter analyze` clean · no codegen drift · all five

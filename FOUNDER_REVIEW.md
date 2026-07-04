@@ -15,12 +15,13 @@ References.
 - **Context:** money-movement flows (Wage/Remittance/RafiQi/Offline/Savings/Floor) are paused; each is
   also blocked by an open decision needing a ruling. ODs expire 2026-07-13.
 - **Options:** rule each OD (becomes an ADR) and un-pause, or keep paused through Product Polish.
-- **Recommendation:** rule OD-1 first (Wage Flow is the next backend slice) when ready to resume backend.
-  **A decision-ready brief exists — [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md)** — options,
-  recommendation (Option B: Member-&-family-first waterfall, Nia's fee/advance last), and a one-line
-  ruling shortcut. Rule OD-1 from that page in minutes.
-- **Impact:** unlocks R3–R8. **Urgency:** medium (OD expiry 2026-07-13). **Blocking?** Yes — gates backend.
-- **References:** `DECISIONS.md` (OD-1…OD-6); [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md).
+- **Recommendation:** rule all six in one sitting from the **Founder Decision Book —
+  [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md)** — six one-page briefs (decision · why · options · rec ·
+  cost of delay · APIs/data/services). Rule **OD-1 first** (critical path) and **OD-6 early** (the Floor
+  is a root the others reference); each has a one-line ruling shortcut.
+- **Impact:** unlocks R2–R8. **Urgency:** medium (OD expiry 2026-07-13). **Blocking?** Yes — gates backend.
+- **References:** [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md); `DECISIONS.md` (OD-1…OD-6);
+  per-OD briefs `OD-1_…` through `OD-6_…`.
 
 ### Q3 — Fate of the legacy/prototype surfaces?
 - **Context:** `apps/member/lib/features/` has surfaces not mounted in the OS shell (`home`, `wallet`,

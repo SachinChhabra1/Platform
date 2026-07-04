@@ -18,16 +18,19 @@ evolution**, **Founder → OD-1…OD-6**. See the stream table at the top of [`R
 bottleneck has moved off frontend entirely; the highest return is now **backend integration, production
 data, release**.
 
-**Honest queue state: there is no unblocked in-authority engineering task.** Every forward item needs a
-Founder decision or the native build. Per the loop, this is not failure — the queue is correctly
-reporting a gate. **The single highest-leverage unlock is OD-1 / backend un-pause** (below); the OD
-rulings expire **2026-07-13**.
+**Honest queue state: there is no remaining in-authority engineering work that *advances the product
+roadmap*.** (Optional quality work always exists — deeper test coverage, observability, dependency
+upgrades, CI-on-runner — but none of it moves R2–R8, and none should block them.) Every roadmap-advancing
+item needs a Founder decision or the native build. Per the loop, this is not failure — the queue is
+correctly reporting a gate. **The critical path has moved entirely to Founder decisions; the highest-
+leverage unlock is OD-1 / backend un-pause** (below). The OD rulings expire **2026-07-13**.
 
-**OD-1 decision brief is READY** — [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md). The Wage-Flow
-shortfall question (deduction priority when the wage lands short), three options, a recommendation
-(Option B: dignity floor → rent → curry → remittance → savings → fee → advance; Nia's claims last), and a
-one-line ruling shortcut. The Founder can rule OD-1 from that page in minutes; on ruling, write ADR-0012,
-un-gate R3, and build the Wage Flow slice against the existing `services/*` scaffold.
+**The full Founder Decision Book is READY** — [`OD_DECISION_BOOK.md`](OD_DECISION_BOOK.md) — six one-page
+briefs (OD-1…OD-6), each with the decision, why it matters, 2–3 options with pros/cons, a recommendation,
+the cost of delay, and the APIs/data model/services affected. One sitting → six rulings → the whole
+backend month (R2–R8) unlocks. Rule **OD-1 first** (critical path, [`OD-1_WAGE_FLOW_BRIEF.md`](OD-1_WAGE_FLOW_BRIEF.md))
+and **OD-6 early** (the Floor is a root the others reference). On each ruling: write the ADR, un-gate the
+slice, build against the existing `services/*` scaffold.
 
 **Founder-gated — these are what move the product to real production:**
 
