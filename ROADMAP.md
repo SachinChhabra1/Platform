@@ -25,15 +25,13 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E7 | CI setup | ✅ ALREADY PRESENT | `.github/workflows/ci.yml` predates the loop (lint/contract/TS/Flutter gates). No work needed. Activating it on a GitHub runner is a Founder call — `FOUNDER_REVIEW.md` Q7. |
 | E4 | Unify SOS + icon-chip duplication | ✅ DONE (scoped) | SOS deduped — NiaBook now uses `niaSosButton` (byte-identical; goldens unchanged). Icon-chip **kept separate by design:** NiaBook's chip carries the R1a ○→✓ motion + a lock badge the pillar chip lacks, and merging would create a circular `pillar_kit ↔ nia_components` import for marginal gain. Engineering call, documented. |
 
-## Now (freeze lifted — R1 in progress)
+## Now (R1 COMPLETE)
 
-The board freeze has been **lifted** by the Founder. R1 (the craftsmanship backlog) is active.
-Product changes are again allowed, but stay within established patterns (craftsmanship, not
-redesign — `docs/design/niabook/niabook-next-iteration.md`) and keep goldens intentional.
+The board freeze is lifted. **R1 (the craftsmanship backlog) is complete** — all four items:
 
-**R1 sub-items:** ✅ #2 ○→✓ motion (R1a) · ✅ #1 Living "spend less" · ✅ #4 → **Continuity
-Coaching** (Q9 approved; one calm next step per screen, never a hook) · 🔓 #3 per-pillar
-emotional register via non-colour levers (Q8 approved — building).
+**R1:** ✅ #2 ○→✓ motion (R1a) · ✅ #1 Living "spend less" (Included) · ✅ #3 per-pillar emotional
+register via non-colour levers — motion timing + density (Q8) · ✅ #4 → **Continuity Coaching**,
+one calm next step per screen (Q9). Plus E4 (SOS dedup) and the progress-not-engagement law.
 
 ## Next — all GATED (nothing is unlocked right now)
 

@@ -126,6 +126,10 @@ The founder review ("does it feel like one product, and does each screen deliver
 3. **Consistency is flattening emotional register.** One shared visual language nails
    "one product" but Family doesn't yet *feel* warmer than Work — the difference is
    carried only by copy. Find a tonal shift per promise without breaking the system.
+   **✅ Done (R1 #3, Founder decision Q8):** non-colour levers only — **motion timing +
+   spacing density** per identity (Work precise/snappy/dense · Living & Family calm-warm/
+   gentle/airy · Store brisk · NiaBook factual). **Colour stays reserved for state**, never
+   mood. No new palette, gradients, illustration, or noise.
 4. **Uneven daily-return pull.** NiaBook and Store earn a daily open; Living earns it
    least. Give every pillar a reason to come back.
 

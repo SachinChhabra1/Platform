@@ -18,10 +18,13 @@ class WorkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NiaReveal(
+      // Work: precise, energetic, purposeful — snappy motion, denser rhythm (Q8).
+      duration: const Duration(milliseconds: 240),
       child: PillarScaffold(
         pillar: 'Work',
         promise: 'Earn more',
         promiseSub: 'A higher-paying role is one certification away.',
+        blockGap: NiaTokens.s3,
         body: <PillarBlock>[
           PillarBlock(PillarSection.opportunity, _hero(context)),
           PillarBlock(PillarSection.reality, _reality()),

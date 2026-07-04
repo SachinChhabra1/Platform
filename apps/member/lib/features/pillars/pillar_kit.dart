@@ -55,6 +55,7 @@ class PillarScaffold extends StatelessWidget {
     required this.body,
     required this.contribution,
     this.coaching,
+    this.blockGap = NiaTokens.s4,
   }) : assert(
           body.map((PillarBlock b) => b.role).toSet().length == 3,
           'A pillar must contain all three body roles: reality, opportunity, '
@@ -78,6 +79,11 @@ class PillarScaffold extends StatelessWidget {
   /// below the contribution only when genuinely valuable. Never an engagement hook.
   final Widget? coaching;
 
+  /// Spacing rhythm between body blocks — an emotional-register lever (Q8), using
+  /// the token scale, never colour: Work denser (precise), Living/Family airier
+  /// (calm/warm). Density carries feel; the system stays intact.
+  final double blockGap;
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -89,7 +95,7 @@ class PillarScaffold extends StatelessWidget {
         const SizedBox(height: NiaTokens.s5),
         for (final PillarBlock b in body) ...<Widget>[
           b.child,
-          const SizedBox(height: NiaTokens.s4),
+          SizedBox(height: blockGap),
         ],
         contribution,
         if (coaching != null) ...<Widget>[

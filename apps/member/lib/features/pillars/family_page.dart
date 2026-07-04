@@ -19,10 +19,13 @@ class FamilyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NiaReveal(
+      // Family: warm, personal, hopeful — gentle motion, airier rhythm (Q8).
+      duration: const Duration(milliseconds: 460),
       child: PillarScaffold(
         pillar: 'Family',
         promise: 'Take better care of home',
         promiseSub: 'How are the people you left home for?',
+        blockGap: NiaTokens.s5,
         body: <PillarBlock>[
           PillarBlock(PillarSection.reality, _people(context)),
           PillarBlock(PillarSection.reality, _reachedHome()),

@@ -18,6 +18,8 @@ class StorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NiaReveal(
+      // Store: satisfying, brisk — standard rhythm, motion between Work and Living (Q8).
+      duration: const Duration(milliseconds: 340),
       child: PillarScaffold(
         pillar: 'Store',
         promise: 'Keep more',

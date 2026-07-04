@@ -16,10 +16,13 @@ class LivingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NiaReveal(
+      // Living: calm, spacious, reassuring — gentle motion, airier rhythm (Q8).
+      duration: const Duration(milliseconds: 460),
       child: PillarScaffold(
         pillar: 'Living',
         promise: 'Spend less',
         promiseSub: 'Lower, predictable living costs.',
+        blockGap: NiaTokens.s5,
         body: <PillarBlock>[
           PillarBlock(PillarSection.reality, _studio()),
           PillarBlock(PillarSection.reality, _cost()),
