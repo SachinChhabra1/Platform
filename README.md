@@ -59,5 +59,5 @@ Run the full local gate before opening a PR:
 
 ```
 pnpm install      # once, and after dependency changes (Flutter deps: `flutter pub get` per app/package)
-pnpm run verify   # lint gates, API contract, TypeScript tests, Flutter analyze/test; mirrors CI
+pnpm run verify   # lint gates, doc-link integrity, API contract, TypeScript tests, Flutter analyze/test; mirrors CI
 ```
