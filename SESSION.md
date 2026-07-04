@@ -17,6 +17,10 @@ Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
   `docs/design/niabook/R1-visual-review.md` (before/after `795b0de`→`536b2a8`).
 - **R1 is complete** (all four items + E4 + the philosophy law). Next roadmap items (R2 native,
   R3–R8 backend) are all Founder-gated — genuine founder decision required to continue.
+- **Session handoff (clean).** `nia verify` green, tree clean, 77 tests, no drift. State docs
+  reconciled (`PROJECT_STATUS`, `NEXT_TASK`, this journal, `CHANGELOG`, scorecard, `FOUNDER_REVIEW`).
+  Recovery bundle cut. No engineering context lives only in conversation — the next session starts
+  from `START_HERE.md` and the repository. (Engineering Journal = this file, book 15.)
 
 ## 2026-07-04 — Loop: E4 dedup + R1 #1 (Living "spend less")
 

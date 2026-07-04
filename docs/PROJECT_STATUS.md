@@ -19,10 +19,12 @@ the operating system were rebuilt to App-Store quality on a shared component set
   consistent; all five goldens regenerate byte-identical.
 - **Verification:** `nia verify` green · `flutter analyze` clean · 49 tests pass · no codegen
   drift. Recovery bundle `nia-final-integration-20260701-164454.bundle` (verified).
-- **State:** **board freeze LIFTED (2026-07-04).** R1 (the craftsmanship backlog,
-  `docs/design/niabook/niabook-next-iteration.md`) is in progress — first slice R1a shipped: the
-  ○→✓ movement is now visible on NiaBook (`MovementCheck`), goldens byte-identical. See
-  [`ROADMAP.md`](../ROADMAP.md) for R1's remaining items and the now-unlocked E4.
+- **State:** board freeze lifted; **R1 (the craftsmanship backlog) is COMPLETE (2026-07-04).**
+  All four items: ○→✓ motion visible (R1a); Living middle reads "Included" (spend less); per-pillar
+  emotional register via non-colour levers — motion timing + density (Q8); Continuity Coaching —
+  one calm next step per screen (Q9). Plus E4 (SOS dedup) and the **progress-not-engagement** law
+  (`PRODUCT_ARCHITECTURE.md`). Before/after in `design/niabook/R1-visual-review.md`. **77 tests,
+  `nia verify` green, no drift.** Next work is Founder-gated — see [`../NEXT_TASK.md`](../NEXT_TASK.md).
 - **Demo:** the offline board build (`apps/member/lib/main.dart`) runs as a web app; a live
   demo is served locally + via a temporary tunnel (see `~/Desktop/nia-board-demo/OPEN-ME.md`).
   There is no native iOS/Android build — web only.

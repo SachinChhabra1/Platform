@@ -1,38 +1,28 @@
 # Next task
 
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
+Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: UNLOCKED — engineering-quality work (in-authority)
+## Status: BLOCKED — a Founder decision is required to continue
 
-Per [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md), when no product task is unlocked the
-loop works behaviour-preserving engineering quality (dead code, tests, docs, safe refactors)
-that keeps the five goldens byte-identical. Current queue: **ROADMAP E1 → E2 → E3.** These
-need no Founder decision.
+**R1 (the craftsmanship backlog) is complete.** The board freeze is lifted. The member app is
+clean and healthy: `nia verify` green, `flutter analyze` clean, **77 tests**, no dead code, no
+TODOs, CI present, goldens deterministic, docs reconciled. **No unlocked in-authority engineering
+work remains.** Every next step needs you:
 
-## Product tasks remain gated
+| Next task | Gate |
+|---|---|
+| **R3 — Wage Flow (backend)** | Un-pause the backend **and** rule OD-1 (`DECISIONS.md`). Say: *"un-pause backend, OD-1 is X."* |
+| **R2 — native install (Android first)** | Your go-ahead + accounts/device. Say: *"build the Android install."* |
+| **Q3 — retire legacy surfaces** | An in-authority cleanup once you approve the product call (retire `wallet`/`home`?). Say: *"retire the legacy wallet/home screens."* |
+| R4–R8 (backend) | OD-2…OD-6 rulings + backend un-paused. |
 
-The five-screen OS is complete and **frozen for the board meeting**; every *product* task is
-gated:
-
-- **R1 (craftsmanship backlog)** — deferred by the Founder until *after* the board meeting.
-  This is the most likely next task. It unlocks the moment the Founder says the board meeting
-  is done (or "start the backlog").
-- **R2 (native install)** — needs a Founder "build the native app" + device/accounts.
-- **R3–R8 (backend flows)** — need the backend un-paused *and* the matching OD-# ruled
-  (`DECISIONS.md`, OD-1…OD-6).
-
-## What unblocks the loop
-
-One line from the Founder is enough, e.g. **"board's done, start R1"** or **"build the
-Android install (R2)"** or **"un-pause backend, OD-1 ruling is X — do R3"**.
+Open Founder questions are in [`FOUNDER_REVIEW.md`](FOUNDER_REVIEW.md) (Q2, Q3, Q5, Q7). The OD
+rulings expire **2026-07-13**.
 
 ## When picked up
 
-Follow the loop: recover context (this file, `ROADMAP.md`, `PROJECT_STATUS.md`,
-`DESIGN_SYSTEM_LOCK.md`, `PRODUCT_ARCHITECTURE.md`), write an implementation contract, build
-the agreed slice only, verify to green (`nia verify`), audit, update state docs, commit,
-bundle.
-
-For **R1** specifically: build onto the existing shared components; do **not** redesign the
-frozen screens; regenerate + compare goldens; keep each pillar's emotion intact
-(Work Hope · Living Relief · Store Satisfaction · Family Purpose · NiaBook Truth).
+Follow the loop in [`docs/AUTONOMOUS-LOOP.md`](docs/AUTONOMOUS-LOOP.md): recover state → contract
+→ implement → verify (`nia verify` green) → review → update state docs → single-purpose commit →
+continue. Respect the Product Bible ([`docs/03_PRODUCT_BIBLE.md`](docs/03_PRODUCT_BIBLE.md)), the
+ADRs, and the progress-not-engagement law. Do not invent features or redesign product behaviour.
