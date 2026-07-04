@@ -54,9 +54,19 @@ not invent behaviour** (Step-5 rule; `ENGINEERING_LOCK.md`).
   reflects it. +7 tests (wallet 66 → 73).
 - ⏭ **Remaining R4 (infra, no OD):** the rail webhook adapter (feeds `recipient_available`/`settled` with
   its own service auth) and a scheduled SLA sweep calling `escalateIfStalled`.
-- ➡️ **Now: R5 RafiQi** (ADR-0014) — 24h reversibility window + scoped/capped/time-bounded/revocable
-  standing authorisation. Each strictly against its locked ADR; if a slice hits an uncovered decision,
-  STOP and open a new OD.
+**R5 — RafiQi authorization + reversibility (ADR-0014/OD-3) — domain DONE.**
+- ✅ **Standing authorisation** (`rafiqi.ts`): `AuthorizationGrant` scoped by action-type + rupee cap,
+  time-bounded (`expiresAt`), revocable (`revokedAt`); `authorizeAction` returns **auto** (covered by an
+  active grant) or **needs_confirmation** with an auditable reason (`no_grant`/`grant_inactive`/`over_cap`)
+  — the per-action-confirmation fallback.
+- ✅ **24h reversibility**: `takeAction` → `reversible` (`reversibleUntil` = +24h), records how it was
+  authorised (auto grant vs Member confirmation); `reverseAction` (undo within the window) and pure
+  `checkReversibility` (settles once elapsed). Grant/action stores auditable by id/Member. +13 tests
+  (wallet 73 → 86).
+- ⏭ **Next R5 slices:** HTTP endpoints (grant/revoke, list grants, take/reverse action) +
+  `openapi.rafiqi.yaml`; wiring reversal to the target money path (e.g. savings OD-5). No new OD —
+  ADR-0014 covers R5. Then **R6 Offline** (ADR-0015), etc. — each strictly against its locked ADR; if a
+  slice hits an uncovered decision, STOP and open a new OD.
 
 R2 (native packaging) remains a separate Founder go-ahead.
 

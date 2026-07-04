@@ -71,3 +71,24 @@ export {
   escalateIfStalled,
 } from './remittance_ledger.js';
 export { type RemittanceRouteDeps, registerRemittanceRoutes } from './remittance_http.js';
+// RafiQi authorization + reversibility (R5; ADR-0014) — scoped/capped/time-bounded/
+// revocable standing consent, 24h reversibility, per-action confirmation fallback.
+export {
+  type AuthorizationGrant,
+  type AuthorizationOutcome,
+  type RafiqiAction,
+  type RafiqiActionState,
+  grantAuthorization,
+  revokeGrant,
+  isGrantActive,
+  authorizeAction,
+  takeAction,
+  reverseAction,
+  checkReversibility,
+} from './rafiqi.js';
+export {
+  type GrantStore,
+  type RafiqiActionStore,
+  InMemoryGrantStore,
+  InMemoryRafiqiActionStore,
+} from './rafiqi_ledger.js';
