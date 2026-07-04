@@ -21,12 +21,20 @@ import {
   type WithdrawalStore,
 } from './savings_ledger.js';
 import type { InterestAccrualPolicy } from './savings.js';
+import type { ReconciliationItem, ReconciliationQueue } from './offline_sync.js';
 import { SERVICE_TOKEN_HEADER, type ServiceAuthenticator } from './service_auth.js';
 
 export interface OpsRouteDeps {
   readonly auth: ServiceAuthenticator;
   /** Remittance SLA sweep dependencies (R4). */
   readonly remittance: { readonly store: RemittanceStore; readonly operator: OperatorEscalations };
+  /**
+   * The offline money-conflict reconciliation queue (R6). Optional; when wired,
+   * the READ-ONLY Operator surface is registered. Resolving a conflict (which
+   * value wins, and its money effect) is an uncovered decision (OD-8) and is
+   * deliberately NOT exposed here.
+   */
+  readonly reconciliation?: ReconciliationQueue;
   /**
    * Savings-job dependencies (R7). Optional so the ops surface can be composed
    * incrementally — the savings routes are only registered when provided. `policy`
@@ -93,4 +101,34 @@ export function registerOpsRoutes(app: FastifyInstance, deps: OpsRouteDeps): voi
       return reply.code(200).send({ settled: [...result.settled] });
     });
   }
+
+  // The Operator reconciliation surface (R6) — READ-ONLY. It makes the ADR-0015
+  // guarantee ("a money conflict surfaces to the Operator, never lost") visible.
+  // Resolving a conflict is OD-8 (uncovered), so there is no mutation route.
+  const reconciliation = deps.reconciliation;
+  if (reconciliation) {
+    app.get(`${API_PREFIX}/ops/reconciliation`, async (request, reply) => {
+      if (!serviceOrDeny(request, reply)) return reply;
+      const pending = await reconciliation.listPending();
+      return reply.code(200).send({ conflicts: pending.map(conflictView) });
+    });
+
+    app.get(`${API_PREFIX}/ops/reconciliation/:recordId`, async (request, reply) => {
+      if (!serviceOrDeny(request, reply)) return reply;
+      const recordId = (request.params as { recordId: string }).recordId;
+      const items = await reconciliation.listForRecord(recordId);
+      return reply.code(200).send({ conflicts: items.map(conflictView) });
+    });
+  }
+}
+
+function conflictView(item: ReconciliationItem): Record<string, unknown> {
+  const view: Record<string, unknown> = {
+    record_id: item.recordId,
+    record_class: item.recordClass,
+    proposed_updated_at: item.proposedUpdatedAt,
+    at: item.at,
+  };
+  if (item.serverUpdatedAt !== undefined) view.server_updated_at = item.serverUpdatedAt;
+  return view;
 }

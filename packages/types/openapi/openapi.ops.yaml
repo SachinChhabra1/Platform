@@ -99,6 +99,61 @@ paths:
         "500":
           $ref: "./openapi.base.yaml#/components/responses/InternalError"
 
+  /ops/reconciliation:
+    get:
+      operationId: listReconciliationConflicts
+      tags: [ops]
+      summary: The Operator's pending money-conflict queue (read-only, ADR-0015).
+      description: >
+        Every queued offline money conflict, oldest-first — making the ADR-0015
+        guarantee ("a money conflict surfaces to the Operator, never lost")
+        visible. READ-ONLY: resolving a conflict (which value wins, and its money
+        effect) is a Founder decision (OD-8), so there is no mutation route.
+      security:
+        - ServiceToken: []
+      responses:
+        "200":
+          description: The pending conflicts.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConflictList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
+  /ops/reconciliation/{recordId}:
+    get:
+      operationId: listReconciliationConflictsForRecord
+      tags: [ops]
+      summary: The queued money conflicts for one record (read-only).
+      security:
+        - ServiceToken: []
+      parameters:
+        - name: recordId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The record's conflicts.
+          headers:
+            X-Nia-Server-Time:
+              $ref: "./openapi.base.yaml#/components/headers/ServerTime"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConflictList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "./openapi.base.yaml#/components/responses/InternalError"
+
 components:
   responses:
     Unauthorized:
@@ -155,6 +210,40 @@ components:
           description: The withdrawal ids moved available → settled this run.
           items:
             type: string
+
+    ConflictList:
+      type: object
+      required: [conflicts]
+      additionalProperties: false
+      properties:
+        conflicts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReconciliationConflict"
+
+    ReconciliationConflict:
+      type: object
+      description: A queued offline money conflict awaiting Operator resolution (OD-8).
+      required: [record_id, record_class, proposed_updated_at, at]
+      additionalProperties: false
+      properties:
+        record_id:
+          type: string
+        record_class:
+          type: string
+          enum: [money]
+        proposed_updated_at:
+          type: string
+          format: date-time
+          description: The client proposal's version.
+        server_updated_at:
+          type: string
+          format: date-time
+          description: The diverged server version (absent if there was no base).
+        at:
+          type: string
+          format: date-time
+          description: When the conflict was queued.
 
 security:
   - ServiceToken: []

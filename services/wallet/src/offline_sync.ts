@@ -109,17 +109,29 @@ export interface ReconciliationItem {
 export interface ReconciliationQueue {
   enqueue(item: ReconciliationItem): Promise<void>;
   listForRecord(recordId: string): Promise<readonly ReconciliationItem[]>;
+  /**
+   * Every queued money conflict, oldest-first — the Operator reconciliation
+   * surface reads this so a conflict is visibly "never lost" (ADR-0015). Items
+   * stay listed until a resolution model closes them; that model is a Founder
+   * decision (OD-8), so nothing is dequeued here yet.
+   */
+  listPending(): Promise<readonly ReconciliationItem[]>;
 }
 
 export class InMemoryReconciliationQueue implements ReconciliationQueue {
   readonly #byRecord = new Map<string, ReconciliationItem[]>();
+  readonly #order: ReconciliationItem[] = [];
   async enqueue(item: ReconciliationItem): Promise<void> {
     const list = this.#byRecord.get(item.recordId) ?? [];
     list.push(item);
     this.#byRecord.set(item.recordId, list);
+    this.#order.push(item);
   }
   async listForRecord(recordId: string): Promise<readonly ReconciliationItem[]> {
     return [...(this.#byRecord.get(recordId) ?? [])];
+  }
+  async listPending(): Promise<readonly ReconciliationItem[]> {
+    return [...this.#order];
   }
 }
 
