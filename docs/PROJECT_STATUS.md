@@ -80,8 +80,7 @@ validated: the Wallet Overview (read model → OpenAPI contract → HTTP surface
 client → Flutter screen rendering the two distinct §3 figures) plus a read-only Membership HTTP
 surface. Validated from a clean bundle restore: offline reinstall, full verify green, both HTTP
 services launched, and the Wallet screen rendered from data fetched over HTTP through the generated
-client (available ₹3,480 ≠ stayed ₹4,800), with no PrototypeData supplying those values. See the
-M1 evidence in SESSION-HANDOVER.md.
+client (available ₹3,480 ≠ stayed ₹4,800), with no PrototypeData supplying those values.
 
 Previous milestone: Membership specification Engineering-Locked (2026-06-29).
 
