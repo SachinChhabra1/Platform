@@ -20,6 +20,7 @@ frozen screens' renders). The loop works these when no product task is unlocked.
 | E1 | Remove dead code in `pillar_kit.dart` (`niaCard`, `niaListRow`, `niaBookStrip`, `sectionTitle` — superseded by `nia_components.dart`, zero callers) | ✅ DONE | Golden-neutral; analyze/49 tests green. |
 | E2 | Add direct tests for the shared component surface `nia_components.dart` (InfoCard styles, ListRow semantics/trailing, SummaryCard icon param, SectionHeader, OpportunityCard, NiaReveal) | ✅ DONE | +11 tests (49 → 60); goldens untouched. |
 | E3 | Audit pass for further grounded debt | ✅ DONE | No further dead code; remaining safe queue exhausted. |
+| E5 | Unit-test `formatPaise` (Indian ₹ grouping/sign/rounding) + `NiaBookMonth.sample` invariants | ✅ DONE | +8 tests (60 → 68); goldens untouched. |
 | E4 | Unify SOS + icon-chip duplication (`niabook_page._sosButton/_iconChip` vs `pillar_kit.niaSosButton/niaIconChip`) into one shared control | 🔒 LOCKED | Touches the **frozen** NiaBook screen → golden-risk. Deferred until after the board (same gate as R1). |
 
 ## Now (frozen)

@@ -17,8 +17,17 @@ Pair with `docs/PROJECT_STATUS.md` (state) and `ROADMAP.md` (queue).
 - **E3** — audit pass: no further dead code. One real duplication remains (SOS + icon-chip
   across `niabook_page` and `pillar_kit`) but it touches the **frozen** NiaBook screen →
   gated as **E4** until after the board (golden-risk; outside autonomous authority).
-- **Stopped**: the safe, golden-neutral engineering queue is exhausted. Remaining real work
-  (E4, and product tasks R1–R8) is founder/freeze-gated. Board demo untouched and still live.
+- **Governance ratified + frozen (`bb2bfa0`)** — Founder's operational additions: Engineering
+  Director charter, governance freeze, 70/15/10/5 budget, regression budget, Council-every-10
+  + Scorecard. Governance is now stable; sessions update operational state only.
+- **E5 (`<this commit>`)** — unit-tested `formatPaise` (Indian ₹ grouping/sign/rounding) +
+  `NiaBookMonth.sample` invariants. Suite 60 → 68. Goldens byte-identical.
+- **Stopped at the gate.** Slices this run: E1, E2, E5 (3 of 10 before the next Council). The
+  70% roadmap lane is entirely Founder/freeze-gated; per the budget rule, a fully-gated
+  roadmap means **surface the gate, don't do make-work**. Repo left healthier (dead code out,
+  +19 tests, docs reconciled, debt flat). Board demo untouched and still live.
+
+### Next Council review: after 7 more slices (at 10). Scorecard current in `docs/AUTONOMOUS-LOOP.md`.
 
 ## 2026-07-01 — Autonomous loop bootstrap (docs reconciliation)
 

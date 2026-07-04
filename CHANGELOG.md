@@ -36,6 +36,10 @@ Reverse-chronological, grounded in git history. Dates are commit dates.
 
 ## Engineering quality — autonomous loop (2026-07-01)
 
+- **E5** — `test/niabook_scenario_test.dart`: 8 tests for `formatPaise` (Indian ₹
+  grouping/sign/rounding) + `NiaBookMonth.sample` invariants. 60 → 68.
+- `bb2bfa0` **Governance (ratified + frozen)** — Engineering Director charter, governance
+  freeze, 70/15/10/5 budget, regression budget, Council-every-10 + Scorecard.
 - `4bc0e0b` **E2** — `test/nia_components_test.dart`: 11 tests for the shared component
   surface (InfoCard/ListRow/SummaryCard/SectionHeader/OpportunityCard/NiaReveal). 49 → 60.
 - `70b84e0` **E1** — removed dead helpers from `pillar_kit.dart` (niaCard, niaListRow,
