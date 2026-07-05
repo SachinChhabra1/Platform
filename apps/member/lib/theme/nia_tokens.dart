@@ -46,6 +46,10 @@ abstract final class NiaTokens {
   static const Color homePositive = Color(0xFF4E8062); // muted green (gains)
   static const Color homePositiveSoft = Color(0xFFDFEDE2); // green tint (check badge)
   static const Color homeDanger = Color(0xFFB4432C); // SOS / destructive (prototype red)
+  static const Color homeInfo = Color(0xFF5B6E8C); // muted blue (info pills)
+  static const Color homeInfoSoft = Color(0xFFE6EAF1);
+  static const Color homeCaution = Color(0xFF8A6D2B); // muted gold (attention)
+  static const Color homeCautionSoft = Color(0xFFF1EAD8);
 
   /// Headline serif family (the prototype's Fraunces). Offline the font asset is
   /// unavailable and cannot be bundled, so this stays null and headlines fall back

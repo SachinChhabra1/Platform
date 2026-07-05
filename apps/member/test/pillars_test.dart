@@ -35,24 +35,28 @@ Future<void> pump(WidgetTester tester, Widget page) async {
 void main() {
   setUpAll(loadRealFonts);
 
-  testWidgets('Work · earn more', (WidgetTester tester) async {
+  testWidgets('Work · earn more (warm NiaBook design)', (WidgetTester tester) async {
     await pump(tester, const WorkPage());
     expect(find.text('Work'), findsOneWidget);
-    expect(find.text('Earn more'), findsOneWidget);
-    expect(find.text('CURRENT JOB'), findsOneWidget);
-    expect(find.text('Machine Operator'), findsOneWidget);
-    expect(find.text('Better jobs waiting'), findsOneWidget);
-    // The hero is the +₹2,500/month opportunity, found by RafiQi.
-    expect(find.textContaining('Higher-paying role · found by RafiQi'),
-        findsOneWidget);
-    expect(find.text('Certify to unlock — 20 minutes left'), findsOneWidget);
-    // Benefit-led supporting rows (the gain leads, not the job title alone).
-    expect(find.text('After your certification'), findsOneWidget);
-    // The close is the economic chain that lands in NiaBook, not a bare label.
-    expect(find.text('Certify, and you keep ₹2,500 more every month'),
-        findsOneWidget);
-    expect(find.textContaining('+₹500 Sukh voucher'), findsOneWidget);
-    expect(find.textContaining('your NiaBook'), findsOneWidget);
+    expect(find.textContaining('Earn more'), findsOneWidget); // subtitle
+    // Opens on the NiaBook strip — the pillar always points home.
+    expect(find.text('UPDATES YOUR NIABOOK'), findsOneWidget);
+    expect(find.textContaining('added +₹2,500 to what you kept'), findsOneWidget);
+    // Reality: the protected contract + this month.
+    expect(find.text('Prestige Constructions Pvt Ltd'), findsOneWidget);
+    expect(find.text('Protected'), findsOneWidget);
+    expect(find.text('Monthly wage'), findsOneWidget);
+    expect(find.text('₹18,300'), findsOneWidget);
+    expect(find.text('176 hrs'), findsOneWidget);
+    expect(find.text('Your wage is guaranteed'), findsOneWidget);
+    // Supporting: shifts + documents.
+    expect(find.text('YOUR SHIFTS'), findsOneWidget);
+    expect(find.text('Work permit'), findsOneWidget);
+    // Opportunity: upskilling + the better-paying jobs RafiQi found.
+    expect(find.text('GROW YOUR EARNING'), findsOneWidget);
+    expect(find.text('Scaffolding Safety L2'), findsOneWidget);
+    expect(find.text('3 better-paying jobs match you'), findsOneWidget);
+    // SOS reaches help on every screen.
     expect(find.text('SOS'), findsOneWidget);
   });
 
@@ -129,7 +133,7 @@ void main() {
     expect(find.text('Send more home'), findsNothing);
   });
 
-  testWidgets('every pillar closes with a NiaBook contribution and offers SOS',
+  testWidgets('every pillar offers SOS and points at NiaBook',
       (WidgetTester tester) async {
     for (final Widget page in <Widget>[
       const WorkPage(),
@@ -140,7 +144,20 @@ void main() {
       await pump(tester, page);
       expect(find.text('SOS'), findsOneWidget);
       expect(find.textContaining('NiaBook'), findsWidgets);
-      // Q9: exactly one Continuity Coaching line — a next step, never a hook.
+    }
+  });
+
+  testWidgets('un-migrated (blue) pillars still carry one Continuity Coaching line (Q9)',
+      (WidgetTester tester) async {
+    // Work has migrated to the warm design, where the single next step is the
+    // "3 better-paying jobs" CTA rather than a CoachingLine widget. The blue
+    // pillars still use CoachingLine until they migrate in turn.
+    for (final Widget page in <Widget>[
+      const LivingPage(),
+      const StorePage(),
+      const FamilyPage(),
+    ]) {
+      await pump(tester, page);
       expect(find.byType(CoachingLine), findsOneWidget);
       expect(find.textContaining('Next:'), findsOneWidget);
     }

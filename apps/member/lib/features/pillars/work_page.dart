@@ -1,259 +1,242 @@
+/// Work · Earn more — how to earn more next month. Warm NiaBook design (v0
+/// prototype, migrated 2026-07-05): the contract + wage guarantee (reality), the
+/// week's shifts and documents (supporting), upskilling (opportunity), and the
+/// better-paying jobs RafiQi found (opportunity). Opens on the NiaBook strip so
+/// the pillar always points home — Work's hours and overtime become what the
+/// Member kept.
+///
+/// There is no Work backend contract yet, so this screen is sample-only (no live
+/// ApiSource, no async states); it becomes live when a work read-model lands.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import 'nia_components.dart';
-import 'pillar_kit.dart';
+import '../niabook/niabook_scenario.dart' show formatPaise;
+import 'warm_pillar_kit.dart';
 
-/// Work · Earn more. Promise: earn more — one promise, nothing else. Opportunity:
-/// a higher-paying certified role, found by RafiQi — the hero of the screen.
-/// Reality: the current job, next pay, attendance. Supporting: better jobs and
-/// certification progress. Contribution: the economic chain that lands in NiaBook
-/// (certification → +₹2,000 wages → +₹500 Sukh voucher → more savings). Every row
-/// leads with what the Member gains, is tappable, and is labelled for a screen
-/// reader. Product-locked; built to the approved screen on shared components.
 class WorkPage extends StatelessWidget {
   const WorkPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return NiaReveal(
-      // Work: precise, energetic, purposeful — snappy motion, denser rhythm (Q8).
-      duration: const Duration(milliseconds: 240),
-      child: PillarScaffold(
-        pillar: 'Work',
-        promise: 'Earn more',
-        promiseSub: 'A higher-paying role is one certification away.',
-        blockGap: NiaTokens.s3,
-        body: <PillarBlock>[
-          PillarBlock(PillarSection.opportunity, _hero(context)),
-          PillarBlock(PillarSection.reality, _reality()),
-          PillarBlock(PillarSection.supporting, _betterJobs(context)),
-          PillarBlock(PillarSection.supporting, _skillProgress()),
-        ],
-        contribution: const SummaryCard(
-          title: 'Certify, and you keep ₹2,500 more every month',
-          subtitle:
-              '+₹2,000 wages · +₹500 Sukh voucher → more savings → your NiaBook',
-        ),
-        coaching: const CoachingLine(
-          fact: "You've worked 21 of 22 days this month.",
-          next: '20 minutes of training left — then +₹2,500/month.',
-        ),
-      ),
+    return WarmScreen(
+      title: 'Work',
+      subtitle: 'Earn more, grow your NiaBook',
+      children: <Widget>[
+        const NiaBookStrip(note: 'Your 176 hours and overtime added +₹2,500 to what you kept.'),
+        _contract(),
+        _wageGuarantee(),
+        _shifts(),
+        _documents(context),
+        _upskilling(context),
+        _earnMore(context),
+      ],
     );
   }
 
-  /// The hero: the primary opportunity, found by RafiQi. Blue-bordered, tappable,
-  /// and labelled — the +₹2,500/month role that opens the whole screen.
-  Widget _hero(BuildContext context) => Semantics(
-        button: true,
-        label: 'Higher-paying role found by RafiQi. Machine Operator II, '
-            'plus ₹2,500 a month once you certify. 20 minutes left.',
-        excludeSemantics: true,
-        child: InkWell(
-          onTap: () => prototypeNoOp(context, 'Machine Operator II'),
-          borderRadius: BorderRadius.circular(NiaTokens.radius),
-          child: InfoCard(
-            style: CardStyle.hero,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                foundByRafiqi('Higher-paying role'),
-                const SizedBox(height: NiaTokens.s3),
-                Row(
-                  children: <Widget>[
-                    niaIconChip(Icons.trending_up, filled: true),
-                    const SizedBox(width: NiaTokens.s3),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text.rich(TextSpan(children: const <InlineSpan>[
-                            TextSpan(
-                                text: '+₹2,500',
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: NiaTokens.blue)),
-                            TextSpan(
-                                text: '/month more',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: NiaTokens.inkSecondary)),
-                          ])),
-                          const Text('Machine Operator II',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: NiaTokens.ink)),
-                          const Text('Certify to unlock — 20 minutes left',
-                              style: TextStyle(
-                                  fontSize: 12, color: NiaTokens.inkSecondary)),
-                        ],
-                      ),
-                    ),
-                    const Icon(Icons.chevron_right,
-                        color: NiaTokens.inkSecondary),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-  /// Reality: today's job and pay. Grounding, not judgement — the base the
-  /// opportunity lifts you from.
-  Widget _reality() => Column(
-        children: <Widget>[
-          InfoCard(
-            child: Row(
-              children: <Widget>[
-                niaIconChip(Icons.work_outline),
-                const SizedBox(width: NiaTokens.s3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      capsLabel('CURRENT JOB', color: NiaTokens.inkSecondary),
-                      const Text('Machine Operator',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: NiaTokens.ink)),
-                      const Text('TVS Hosur',
-                          style: TextStyle(
-                              fontSize: 12, color: NiaTokens.inkSecondary)),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const <Widget>[
-                    Text('₹22,400',
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: NiaTokens.ink)),
-                    Text('per month',
-                        style: TextStyle(
-                            fontSize: 12, color: NiaTokens.inkSecondary)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: NiaTokens.s3),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                    child: statCard('NEXT PAY', '₹8,200', 'Friday, 4 July')),
-                const SizedBox(width: NiaTokens.s3),
-                Expanded(
-                    child: statCard(
-                        'ATTENDANCE', '21 / 22', 'One more shift +₹850')),
-              ],
-            ),
-          ),
-        ],
-      );
-
-  /// Supporting: the ladder above this job. Every row leads with the gain and is
-  /// tappable, wrapped like Living's services card.
-  Widget _betterJobs(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SectionHeader('Better jobs waiting',
-              trailing: niaLink(context, 'See all')),
-          const SizedBox(height: NiaTokens.s2),
-          InfoCard(
-            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
-            child: Column(
-              children: <Widget>[
-                ListRow(
-                  icon: Icons.work_outline,
-                  title: 'Machine Operator II',
-                  subtitle: 'After your certification',
-                  trailing: '+₹2,500/mo',
-                  trailingColor: NiaTokens.blue,
-                  showChevron: true,
-                  onTap: () => prototypeNoOp(context, 'Machine Operator II'),
-                ),
-                niaHairline(),
-                ListRow(
-                  icon: Icons.work_outline,
-                  title: 'Line Supervisor',
-                  subtitle: "With two years' experience",
-                  trailing: '+₹4,800/mo',
-                  trailingColor: NiaTokens.blue,
-                  showChevron: true,
-                  onTap: () => prototypeNoOp(context, 'Line Supervisor'),
-                ),
-                niaHairline(),
-                ListRow(
-                  icon: Icons.work_outline,
-                  title: 'Quality Inspector',
-                  subtitle: 'One certification away',
-                  trailing: '+₹3,600/mo',
-                  trailingColor: NiaTokens.blue,
-                  showChevron: true,
-                  onTap: () => prototypeNoOp(context, 'Quality Inspector'),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-
-  /// Supporting: the path to the hero. Progress toward the certification that
-  /// unlocks +₹2,500/month.
-  Widget _skillProgress() => InfoCard(
+  // ── Contract + this month ──────────────────────────────────────────────────
+  Widget _contract() => WarmCard(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
-                const Icon(Icons.school_outlined,
-                    size: 18, color: NiaTokens.blue),
-                const SizedBox(width: NiaTokens.s2),
-                Expanded(
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(color: NiaTokens.homeSecondary, shape: BoxShape.circle),
+                  child: const Icon(Icons.work_outline, size: 18, color: NiaTokens.homeMuted),
+                ),
+                const SizedBox(width: NiaTokens.s3),
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      capsLabel('SKILL PROGRESS',
-                          color: NiaTokens.inkSecondary),
-                      const Text('Machine Operator Certification',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: NiaTokens.ink)),
+                      Text('Prestige Constructions Pvt Ltd', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                      Text('Contract · Active', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
                     ],
                   ),
                 ),
-                const Text('75%',
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: NiaTokens.blue)),
+                const WarmStatusPill('Protected', tone: WarmTone.positive, icon: Icons.verified_user_outlined),
               ],
             ),
-            const SizedBox(height: NiaTokens.s3),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: const LinearProgressIndicator(
-                value: 0.75,
-                minHeight: 6,
-                backgroundColor: NiaTokens.surfaceGrey,
-                valueColor: AlwaysStoppedAnimation<Color>(NiaTokens.blue),
+            const SizedBox(height: NiaTokens.s4),
+            const WarmDivider(),
+            const SizedBox(height: NiaTokens.s4),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(child: WarmStat(label: 'Monthly wage', value: formatPaise(1830000))),
+                const Expanded(child: WarmStat(label: 'This month', value: '176 hrs', sub: '+8 overtime', subTone: WarmTone.positive)),
+                const Expanded(child: WarmStat(label: 'Next pay', value: '5 days', sub: '1 Aug')),
+              ],
+            ),
+          ],
+        ),
+      );
+
+  // ── Wage guarantee ─────────────────────────────────────────────────────────
+  Widget _wageGuarantee() => WarmCard(
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(color: NiaTokens.homePrimary.withValues(alpha: 0.12), shape: BoxShape.circle),
+              child: const Icon(Icons.verified_user_outlined, size: 18, color: NiaTokens.homePrimary),
+            ),
+            const SizedBox(width: NiaTokens.s3),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('Your wage is guaranteed', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                  SizedBox(height: 2),
+                  Text('Nia holds your employer accountable. If pay is late, we cover it and chase them.',
+                      style: TextStyle(fontSize: 12, height: 1.4, color: NiaTokens.homeMuted)),
+                ],
               ),
             ),
-            const SizedBox(height: NiaTokens.s2),
-            const Text('20 minutes left — then +₹2,500/month is yours',
-                style: TextStyle(fontSize: 12, color: NiaTokens.inkSecondary)),
           ],
+        ),
+      );
+
+  // ── Shifts ─────────────────────────────────────────────────────────────────
+  Widget _shifts() {
+    const rows = <(String, String, String, WarmTone)>[
+      ('Today', '7:00 – 16:00 · Prestige Tech Park', 'Logged', WarmTone.positive),
+      ('Tomorrow', '7:00 – 16:00 · Prestige Tech Park', 'Scheduled', WarmTone.info),
+      ('Thu', 'Rest day', 'Off', WarmTone.neutral),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        const WarmSectionTitle('Your shifts', action: 'This week'),
+        WarmCard(
+          padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+          child: Column(
+            children: <Widget>[
+              for (int i = 0; i < rows.length; i++) ...<Widget>[
+                if (i > 0) const WarmDivider(),
+                WarmListRow(
+                  icon: Icons.schedule,
+                  title: rows[i].$1,
+                  subtitle: rows[i].$2,
+                  trailing: WarmStatusPill(rows[i].$3, tone: rows[i].$4),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Documents ──────────────────────────────────────────────────────────────
+  Widget _documents(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Documents', action: 'All safe'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: Column(
+              children: <Widget>[
+                const WarmListRow(
+                  icon: Icons.description_outlined,
+                  title: 'Work permit',
+                  subtitle: 'Valid until Mar 2027',
+                  trailing: WarmStatusPill('Valid', tone: WarmTone.positive),
+                ),
+                const WarmDivider(),
+                WarmListRow(
+                  icon: Icons.description_outlined,
+                  title: 'Employment contract',
+                  subtitle: 'Signed · English + Hindi',
+                  onTap: () => prototypeNoOp(context, 'Employment contract'),
+                ),
+                const WarmDivider(),
+                const WarmListRow(
+                  icon: Icons.description_outlined,
+                  title: 'Health insurance',
+                  subtitle: 'Renews in 42 days',
+                  trailing: WarmStatusPill('Renew soon', tone: WarmTone.caution),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  // ── Upskilling ─────────────────────────────────────────────────────────────
+  Widget _upskilling(BuildContext context) {
+    const skills = <(String, String, double)>[
+      ('Scaffolding Safety L2', '3 of 5 modules done', 0.60),
+      ('Spoken English', 'Daily 10-min lessons', 0.35),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        const WarmSectionTitle('Grow your earning', action: 'See courses'),
+        for (int i = 0; i < skills.length; i++) ...<Widget>[
+          if (i > 0) const SizedBox(height: NiaTokens.s3),
+          WarmCard(
+            child: Column(
+              children: <Widget>[
+                WarmListRow(
+                  icon: Icons.school_outlined,
+                  title: skills[i].$1,
+                  subtitle: skills[i].$2,
+                  onTap: () => prototypeNoOp(context, skills[i].$1),
+                ),
+                const SizedBox(height: NiaTokens.s3),
+                WarmProgressBar(skills[i].$3),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  // ── Earn more (the opportunity RafiQi found) ────────────────────────────────
+  Widget _earnMore(BuildContext context) => Material(
+        color: NiaTokens.homeInk,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => prototypeNoOp(context, 'Better-paying jobs'),
+          child: Padding(
+            padding: const EdgeInsets.all(NiaTokens.s4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(color: NiaTokens.homeGround.withValues(alpha: 0.15), shape: BoxShape.circle),
+                      child: const Icon(Icons.trending_up, size: 18, color: NiaTokens.homeGround),
+                    ),
+                    const SizedBox(width: NiaTokens.s3),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('3 better-paying jobs match you', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeGround)),
+                          Text('Verified employers · +₹4,000/mo average', style: TextStyle(fontSize: 12, color: Color(0xB3F6F3EC))),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, size: 16, color: NiaTokens.homeGround.withValues(alpha: 0.7)),
+                  ],
+                ),
+                const SizedBox(height: NiaTokens.s3),
+                const WarmWhyNow('These roles start hiring after this month — apply before the window closes.', onDark: true),
+              ],
+            ),
+          ),
         ),
       );
 }
