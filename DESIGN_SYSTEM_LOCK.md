@@ -20,6 +20,21 @@ The five screens of the operating system. Real app renders (regenerate with
 
 ![NiaBook](apps/member/test/goldens/niabook.png)
 
+> **NiaBook home redesigned 2026-07-05 (Founder-handed v0 prototype).** The home is
+> now a **single-column emotional arc** — identity → hero (*"This month made you ₹X
+> stronger"* + the built-this-month / RafiQi-estimates-next-month forecast) → **the
+> story** waterfall (earned → living → family → saved → kept) → **attribution** back
+> to the pillars → **momentum** (kept, month over month) → **RafiQi's next move** (one
+> recommendation) → **since joining** → **who you're becoming**. This SUPERSEDES the
+> earlier two-column *What became true / More you can keep* model for the home. The
+> screenshot above is the new spec. Visual language for the home is the prototype's
+> **warm cream / terracotta** palette (`NiaTokens.home*`) with **serif headlines** and
+> a **red SOS** — a deliberate, Founder-approved departure from the blue/system-font/
+> blue-SOS lock below, which still governs the four pillars until they are migrated.
+> **Font caveat:** the serif face is Fraunces; offline it cannot be bundled, so
+> headlines fall back to the system font until `Fraunces-*.ttf` is added to the app
+> assets and `NiaTokens.serifFamily` is set (a one-step change — see the token).
+
 **Work · Earn more** — ![Work](apps/member/test/goldens/work.png)
 
 **Living · Spend less** — ![Living](apps/member/test/goldens/living.png)
@@ -41,8 +56,9 @@ The five screens of the operating system. Real app renders (regenerate with
 
 ## Structure
 
-- NiaBook: two columns — left *What became true* (proof), right *More you can keep*
-  (opportunity, found by RafiQi). Every month a line moves right → left.
+- NiaBook: the single-column emotional arc (redesigned 2026-07-05 — see the screen
+  note above). Proof still leads (the hero + the *This became true* waterfall); RafiQi
+  still finds the one next move; attribution closes the loop back to the pillars.
 - Pillars: built on `PillarScaffold` — Identity → Economic promise → Reality →
   Opportunity → Supporting → *Improves NiaBook* (always closes). A pillar must carry
   all three body roles (reality, opportunity, supporting); the scaffold asserts it.

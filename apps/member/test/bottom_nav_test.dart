@@ -36,8 +36,8 @@ void main() {
 
   testWidgets('opens on NiaBook', (WidgetTester tester) async {
     await pumpShell(tester);
-    // NiaBook's own page header is present.
-    expect(find.text('Hi, Ramesh'), findsOneWidget);
+    // NiaBook's own page is present (its identity row names the Member).
+    expect(find.text('Ramesh Kumar Yadav'), findsOneWidget);
     // NiaBook is the selected tab (its label shows in the nav); others don't.
     expect(navLabel('NiaBook'), findsOneWidget);
     expect(navLabel('Work'), findsNothing);

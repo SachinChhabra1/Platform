@@ -20,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(NiaBookPage), findsOneWidget);
-    expect(find.text('Hi, Ramesh'), findsOneWidget);
+    expect(find.text('Ramesh Kumar Yadav'), findsOneWidget);
   });
 
   testWidgets('carries the five anchors', (WidgetTester tester) async {
