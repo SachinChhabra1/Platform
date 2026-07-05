@@ -30,9 +30,14 @@ void main() {
     expect(find.text('Whitefield Site, Bengaluru'), findsOneWidget);
     expect(find.text('JUNE 2026'), findsOneWidget); // month selector (caps)
     expect(find.textContaining('stronger', findRichText: true), findsOneWidget);
+    // "built this month" = this month's kept (a fact).
     expect(find.text("You've built ₹4,800 this month"), findsOneWidget);
-    expect(find.text('RafiQi estimates you can build ₹7,600 next month.'), findsOneWidget);
-    expect(find.textContaining('₹67,450 built so far', findRichText: true), findsOneWidget);
+    // The next-month figure is DERIVED (kept + average recent monthly gain), an
+    // explicit RafiQi estimate — not the old invented ₹7,600.
+    expect(find.text('RafiQi estimates you can build ₹5,083 next month.'), findsOneWidget);
+    // Indefensible metrics (percentile / lifetime-built) are gone.
+    expect(find.textContaining('built so far'), findsNothing);
+    expect(find.textContaining('% of members'), findsNothing);
   });
 
   testWidgets('the story waterfall — earned to kept', (WidgetTester tester) async {
@@ -65,12 +70,12 @@ void main() {
     expect(find.text('Start now'), findsOneWidget);
   });
 
-  testWidgets('since joining + identity close the life story',
+  testWidgets('identity closes the screen (no undefined lifetime aggregates)',
       (WidgetTester tester) async {
     await pump(tester);
-    expect(find.text('SINCE JOINING NIA'), findsOneWidget);
-    expect(find.text('Kept more'), findsOneWidget);
-    expect(find.text('₹48,600'), findsOneWidget);
+    // "Since joining" lifetime aggregates are omitted for UAT (undefined metric).
+    expect(find.text('SINCE JOINING NIA'), findsNothing);
+    // Identity profile facts remain.
     expect(find.text("WHO YOU'RE BECOMING"), findsOneWidget);
     expect(find.text('Years in Nia'), findsOneWidget);
     expect(find.text('2.5'), findsOneWidget);

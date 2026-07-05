@@ -26,15 +26,16 @@ class MemberShell extends StatefulWidget {
 class _MemberShellState extends State<MemberShell> {
   int _index = 0;
 
-  // All five screens are self-contained Founder-accepted scenarios in this slice
-  // (the money-movement backend is paused in the Product Polish Phase).
-  static const List<Widget> _pages = <Widget>[
-    NiaBookPage(),
-    WorkPage(),
-    LivingPage(),
-    StorePage(),
-    FamilyPage(),
-  ];
+  // The five screens. NiaBook renders live facts + derived story from the
+  // config-selected source (sample offline, live when a backend is configured);
+  // the four pillars are still self-contained scenarios in this slice.
+  List<Widget> get _pages => <Widget>[
+        NiaBookPage(source: widget.config.homeSource()),
+        const WorkPage(),
+        const LivingPage(),
+        const StorePage(),
+        const FamilyPage(),
+      ];
 
   static const List<NiaNavItem> _navItems = <NiaNavItem>[
     NiaNavItem(

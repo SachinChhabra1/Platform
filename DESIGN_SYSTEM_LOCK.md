@@ -34,6 +34,18 @@ The five screens of the operating system. Real app renders (regenerate with
 > **Font caveat:** the serif face is Fraunces; offline it cannot be bundled, so
 > headlines fall back to the system font until `Fraunces-*.ttf` is added to the app
 > assets and `NiaTokens.serifFamily` is set (a one-step change — see the token).
+>
+> **Data model — live facts + derived story (Founder direction, 2026-07-05).** The
+> home is **TRUTH + STORY**, never invented numbers. TRUTH (`HomeFacts`, live from
+> the backend where configured): the waterfall (earned/living/family/saved/kept),
+> savings balance, Floor protected. STORY (`deriveHomeInsights`, computed in the
+> client from the facts): stronger-than-last-month, the momentum projection ("RafiQi
+> estimates ₹X next month" = kept + average recent monthly gain), RafiQi's one next
+> move. **Indefensible metrics are omitted** until formally defined as backend
+> read-models: no percentile ("compared to whom?"), no lifetime-built ("since
+> when?"), no undefined "since joining" aggregates. Momentum history, per-pillar
+> attribution and the profile stats are sample for UAT and become live when their
+> read-models land — they are labelled sample on `HomeFacts`, never shown as live.
 
 **Work · Earn more** — ![Work](apps/member/test/goldens/work.png)
 

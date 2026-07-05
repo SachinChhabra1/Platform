@@ -21,6 +21,7 @@ import '../api/nia_transport.dart';
 import '../features/floor/floor_source.dart';
 import '../features/health/health_source.dart';
 import '../features/membership/membership_source.dart';
+import '../features/niabook/home_source.dart';
 import '../features/rafiqi/rafiqi_source.dart';
 import '../features/remittance/remittance_source.dart';
 import '../features/savings/savings_source.dart';
@@ -85,4 +86,16 @@ class MemberConfig {
 
   HealthSource healthSource() =>
       usesLiveBackend ? ApiHealthSource(_transport()) : const SampleHealthSource();
+
+  /// The NiaBook home's TRUTH source. Live assembles the facts from the wallet
+  /// overview + savings + floor + membership; offline serves the sample. The
+  /// home's derived story is computed client-side from whichever facts this yields.
+  HomeFactsSource homeSource() => usesLiveBackend
+      ? ApiHomeFactsSource(
+          wallet: walletSource(),
+          savings: savingsSource(),
+          floor: floorSource(),
+          membership: membershipSource(),
+        )
+      : const SampleHomeFactsSource();
 }

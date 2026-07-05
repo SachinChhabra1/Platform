@@ -1,70 +1,95 @@
 /// NiaBook — the home ledger (first tab, default). The single-column emotional
-/// arc adopted from the Founder-handed v0 prototype (2026-07-05), superseding the
-/// earlier two-column model. It proves the month moved the Member forward and
-/// closes on one RafiQi next move.
+/// arc (v0 prototype, 2026-07-05), rendered as **live facts + derived story**
+/// (Founder direction):
+///   • TRUTH ([HomeFacts]) — the waterfall (earned/living/family/saved/kept),
+///     savings balance, Floor protected. Live from the backend where configured.
+///   • STORY ([HomeInsights]) — stronger-than-last-month, the momentum projection,
+///     RafiQi's one next move. Derived in the client from the facts, never invented.
+/// Indefensible metrics (percentile, lifetime-built) are deliberately omitted.
 ///
-/// Sections, top to bottom: identity → hero (₹ stronger + forecast) → the story
-/// waterfall → attribution back to the pillars → momentum → RafiQi's next move →
-/// since joining → identity. Warm cream/terracotta language (`NiaTokens.home*`),
-/// headline serif via the `serifFamily` seam (falls back to the system font until
-/// the Fraunces asset is bundled). Data is a Founder-accepted sample
-/// ([HomeScenario.sample]); the narrative metrics have no backend source yet.
+/// Warm cream/terracotta language (`NiaTokens.home*`); headline serif via the
+/// `serifFamily` seam (system-font fallback until the Fraunces asset is bundled).
 library;
 
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import 'home_scenario.dart';
+import 'home_facts.dart';
+import 'home_insights.dart';
+import 'home_source.dart';
 import 'niabook_scenario.dart' show formatPaise;
 
 class NiaBookPage extends StatelessWidget {
-  const NiaBookPage({super.key, this.home = HomeScenario.sample});
+  const NiaBookPage({super.key, this.source = const SampleHomeFactsSource()});
 
-  final HomeScenario home;
+  final HomeFactsSource source;
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: NiaTokens.homeGround,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          _header(context),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(NiaTokens.s4, NiaTokens.s4, NiaTokens.s4, NiaTokens.s7),
-              children: <Widget>[
-                _identityRow(context),
-                const SizedBox(height: NiaTokens.s6),
-                _hero(context),
-                const SizedBox(height: NiaTokens.s7),
-                _story(context),
-                const SizedBox(height: NiaTokens.s7),
-                _attribution(context),
-                const SizedBox(height: NiaTokens.s7),
-                _journey(context),
-                const SizedBox(height: NiaTokens.s7),
-                _nextMove(context),
-                const SizedBox(height: NiaTokens.s7),
-                _since(context),
-                const SizedBox(height: NiaTokens.s7),
-                _identity(context),
-              ],
-            ),
-          ),
-        ],
+      child: FutureBuilder<HomeFacts>(
+        future: source.facts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(NiaTokens.s5),
+                child: Text("We couldn't load your NiaBook just now. Pull to try again.",
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: NiaTokens.homeMuted)),
+              ),
+            );
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator(color: NiaTokens.homePrimary));
+          }
+          return _HomeView(facts: snapshot.data!, insights: deriveHomeInsights(snapshot.data!));
+        },
       ),
+    );
+  }
+}
+
+/// The rendered home for a resolved set of facts + derived insights.
+class _HomeView extends StatelessWidget {
+  const _HomeView({required this.facts, required this.insights});
+
+  final HomeFacts facts;
+  final HomeInsights insights;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _header(context),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(NiaTokens.s4, NiaTokens.s4, NiaTokens.s4, NiaTokens.s7),
+            children: <Widget>[
+              _identityRow(context),
+              const SizedBox(height: NiaTokens.s6),
+              _hero(context),
+              const SizedBox(height: NiaTokens.s7),
+              _story(context),
+              const SizedBox(height: NiaTokens.s7),
+              _attribution(context),
+              const SizedBox(height: NiaTokens.s7),
+              _journey(context),
+              const SizedBox(height: NiaTokens.s7),
+              _nextMove(context),
+              const SizedBox(height: NiaTokens.s7),
+              _identity(context),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   // ── Text styles ──────────────────────────────────────────────────────────
-  static const TextStyle _caps = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.5,
-    color: NiaTokens.homeMuted,
-  );
+  static const TextStyle _caps = TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.5, color: NiaTokens.homeMuted);
 
   TextStyle _serif(double size, {FontWeight weight = FontWeight.w600, Color color = NiaTokens.homeInk, double height = 1.1}) =>
       TextStyle(fontFamily: NiaTokens.serifFamily, fontSize: size, fontWeight: weight, color: color, height: height);
@@ -106,18 +131,15 @@ class NiaBookPage extends StatelessWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: NiaTokens.homeSecondary,
-            child: Text(
-              _initials(home.memberName),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NiaTokens.homeInk),
-            ),
+            child: Text(_initials(facts.memberName), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
           ),
           const SizedBox(width: NiaTokens.s3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(home.memberName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
-                Text(home.memberSite, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+                Text(facts.memberName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                Text(facts.memberSite, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
               ],
             ),
           ),
@@ -136,7 +158,7 @@ class NiaBookPage extends StatelessWidget {
         ],
       );
 
-  // ── Hero — the single moment ───────────────────────────────────────────────
+  // ── Hero — the single moment (headline DERIVED from the kept facts) ──────────
   Widget _hero(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -145,7 +167,7 @@ class NiaBookPage extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(home.monthLabel.toUpperCase(), style: _caps),
+                Text(facts.monthLabel.toUpperCase(), style: _caps),
                 const Icon(Icons.expand_more, size: 15, color: NiaTokens.homeMuted),
               ],
             ),
@@ -155,9 +177,12 @@ class NiaBookPage extends StatelessWidget {
             TextSpan(
               style: _serif(38, weight: FontWeight.w600, height: 1.08),
               children: <TextSpan>[
-                const TextSpan(text: 'This month made you '),
-                TextSpan(text: formatPaise(home.strongerByPaise), style: _serif(38, weight: FontWeight.w600, color: NiaTokens.homePrimary, height: 1.08)),
-                const TextSpan(text: ' stronger.'),
+                TextSpan(text: insights.improved ? 'This month made you ' : 'This month you kept '),
+                TextSpan(
+                  text: formatPaise(insights.improved ? insights.strongerByPaise : facts.keptPaise),
+                  style: _serif(38, weight: FontWeight.w600, color: NiaTokens.homePrimary, height: 1.08),
+                ),
+                TextSpan(text: insights.improved ? ' stronger.' : '.'),
               ],
             ),
           ),
@@ -177,51 +202,46 @@ class NiaBookPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("You've built ${formatPaise(home.forecastBuiltPaise)} this month",
+            Text("You've built ${formatPaise(insights.builtThisMonthPaise)} this month",
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: NiaTokens.homeOnPrimary.withValues(alpha: 0.85))),
             const SizedBox(height: NiaTokens.s2),
-            Text('RafiQi estimates you can build ${formatPaise(home.forecastNextPaise)} next month.',
+            // A momentum projection — explicitly a RafiQi estimate, derived from the
+            // recent kept trend (not a promise, not a stored number).
+            Text('RafiQi estimates you can build ${formatPaise(insights.estimatedNextPaise)} next month.',
                 style: _serif(24, weight: FontWeight.w600, color: NiaTokens.homeOnPrimary, height: 1.15)),
-            const SizedBox(height: NiaTokens.s3),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Icon(Icons.auto_awesome, size: 16, color: NiaTokens.homeOnPrimary.withValues(alpha: 0.9)),
-                const SizedBox(width: NiaTokens.s2),
-                Expanded(
-                  child: Text('${formatPaise(home.lifetimeBuiltPaise)} built so far · more than ${home.betterThanPct}% of members',
-                      style: TextStyle(fontSize: 14, color: NiaTokens.homeOnPrimary.withValues(alpha: 0.9))),
-                ),
-              ],
-            ),
           ],
         ),
       );
 
-  // ── The story — narrative waterfall ────────────────────────────────────────
-  Widget _story(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _capsLabel('This became true'),
-          const SizedBox(height: NiaTokens.s1),
-          const Text('How your June actually moved.', style: TextStyle(fontSize: 14, color: NiaTokens.homeMuted)),
-          const SizedBox(height: NiaTokens.s4),
-          for (int i = 0; i < home.flow.length; i++) _flowRow(home.flow[i], i == home.flow.length - 1),
-        ],
-      );
+  // ── The story — narrative waterfall (all TRUTH) ─────────────────────────────
+  Widget _story(BuildContext context) {
+    final List<_Flow> flow = <_Flow>[
+      _Flow('You earned', facts.earnedPaise, _FlowKind.earned),
+      _Flow('Living, all in', facts.livingPaise, _FlowKind.spent),
+      _Flow('Sent to family', facts.familyPaise, _FlowKind.spent),
+      _Flow('Saved at Sukh', facts.savedPaise, _FlowKind.added),
+      _Flow('You kept', facts.keptPaise, _FlowKind.kept),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _capsLabel('This became true'),
+        const SizedBox(height: NiaTokens.s1),
+        const Text('How your month actually moved.', style: TextStyle(fontSize: 14, color: NiaTokens.homeMuted)),
+        const SizedBox(height: NiaTokens.s4),
+        for (int i = 0; i < flow.length; i++) _flowRow(flow[i], i == flow.length - 1),
+      ],
+    );
+  }
 
-  Widget _flowRow(FlowStep step, bool isLast) {
-    final bool isKept = step.kind == FlowKind.kept;
-    final String sign = switch (step.kind) {
-      FlowKind.added => '+',
-      FlowKind.spent => '−',
-      _ => '',
-    };
+  Widget _flowRow(_Flow step, bool isLast) {
+    final bool isKept = step.kind == _FlowKind.kept;
+    final String sign = switch (step.kind) { _FlowKind.added => '+', _FlowKind.spent => '−', _ => '' };
     final Color valueColor = switch (step.kind) {
-      FlowKind.kept => NiaTokens.homePrimary,
-      FlowKind.added => NiaTokens.homePositive,
-      FlowKind.earned => NiaTokens.homeInk,
-      FlowKind.spent => NiaTokens.homeMuted,
+      _FlowKind.kept => NiaTokens.homePrimary,
+      _FlowKind.added => NiaTokens.homePositive,
+      _FlowKind.earned => NiaTokens.homeInk,
+      _FlowKind.spent => NiaTokens.homeMuted,
     };
     final Widget rail = Column(
       children: <Widget>[
@@ -234,46 +254,28 @@ class NiaBookPage extends StatelessWidget {
         if (!isLast) const Expanded(child: SizedBox(width: 1, child: ColoredBox(color: NiaTokens.homeBorder))),
       ],
     );
-
     final Widget label = Text(step.label,
-        style: TextStyle(
-          fontSize: isKept ? 16 : 14,
-          fontWeight: isKept ? FontWeight.w600 : FontWeight.w400,
-          color: isKept ? NiaTokens.homeInk : NiaTokens.homeMuted,
-        ));
+        style: TextStyle(fontSize: isKept ? 16 : 14, fontWeight: isKept ? FontWeight.w600 : FontWeight.w400, color: isKept ? NiaTokens.homeInk : NiaTokens.homeMuted));
     final Widget value = isKept
         ? Text('$sign${formatPaise(step.amountPaise)}', style: _serif(22, weight: FontWeight.w600, color: valueColor))
         : Text('$sign${formatPaise(step.amountPaise)}',
-            style: TextStyle(
-              fontSize: step.kind == FlowKind.earned ? 18 : 16,
-              fontWeight: step.kind == FlowKind.earned ? FontWeight.w700 : FontWeight.w600,
-              color: valueColor,
-            ));
-
+            style: TextStyle(fontSize: step.kind == _FlowKind.earned ? 18 : 16, fontWeight: step.kind == _FlowKind.earned ? FontWeight.w700 : FontWeight.w600, color: valueColor));
     final Widget row = isKept
         ? Container(
             decoration: BoxDecoration(color: NiaTokens.homeSecondary, borderRadius: BorderRadius.circular(NiaTokens.radius)),
             padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4, vertical: NiaTokens.s3),
             child: Row(children: <Widget>[Expanded(child: label), value]),
           )
-        : Padding(
-            padding: const EdgeInsets.only(bottom: NiaTokens.s5),
-            child: Row(children: <Widget>[Expanded(child: label), value]),
-          );
-
+        : Padding(padding: const EdgeInsets.only(bottom: NiaTokens.s5), child: Row(children: <Widget>[Expanded(child: label), value]));
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(width: 10, child: Center(child: rail)),
-          const SizedBox(width: NiaTokens.s4),
-          Expanded(child: row),
-        ],
+        children: <Widget>[SizedBox(width: 10, child: Center(child: rail)), const SizedBox(width: NiaTokens.s4), Expanded(child: row)],
       ),
     );
   }
 
-  // ── Attribution — points back to the pillars ───────────────────────────────
+  // ── Attribution — per-pillar contribution facts ─────────────────────────────
   Widget _attribution(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -282,9 +284,9 @@ class NiaBookPage extends StatelessWidget {
           _card(
             child: Column(
               children: <Widget>[
-                for (int i = 0; i < home.attribution.length; i++) ...<Widget>[
+                for (int i = 0; i < facts.contributions.length; i++) ...<Widget>[
                   if (i > 0) const Divider(height: 1, thickness: 1, color: NiaTokens.homeBorder),
-                  _attributionRow(context, home.attribution[i]),
+                  _attributionRow(context, facts.contributions[i]),
                 ],
               ],
             ),
@@ -292,7 +294,7 @@ class NiaBookPage extends StatelessWidget {
         ],
       );
 
-  Widget _attributionRow(BuildContext context, Attribution a) => InkWell(
+  Widget _attributionRow(BuildContext context, PillarContribution a) => InkWell(
         onTap: () => prototypeNoOp(context, 'Open ${a.label}'),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4, vertical: 14),
@@ -322,10 +324,11 @@ class NiaBookPage extends StatelessWidget {
         ),
       );
 
-  // ── Momentum — kept surplus, month over month ──────────────────────────────
+  // ── Momentum — kept per month (facts) + derived trend ───────────────────────
   Widget _journey(BuildContext context) {
-    final int maxKept = home.journey.map((j) => j.keptPaise).reduce((a, b) => a > b ? a : b);
-    final int minKept = home.journey.map((j) => j.keptPaise).reduce((a, b) => a < b ? a : b);
+    final history = facts.keptHistory;
+    final int maxKept = history.map((j) => j.keptPaise).reduce((a, b) => a > b ? a : b);
+    final int minKept = history.map((j) => j.keptPaise).reduce((a, b) => a < b ? a : b);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -342,14 +345,15 @@ class NiaBookPage extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.north_east, size: 16, color: NiaTokens.homePositive),
-                const SizedBox(width: 2),
-                Text(formatPaise(home.strongerByPaise), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homePositive)),
-              ],
-            ),
+            if (insights.improved)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Icon(Icons.north_east, size: 16, color: NiaTokens.homePositive),
+                  const SizedBox(width: 2),
+                  Text(formatPaise(insights.strongerByPaise), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homePositive)),
+                ],
+              ),
           ],
         ),
         const SizedBox(height: NiaTokens.s5),
@@ -358,7 +362,7 @@ class NiaBookPage extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              for (int i = 0; i < home.journey.length; i++) Expanded(child: _journeyBar(home.journey[i], i == home.journey.length - 1, minKept, maxKept)),
+              for (int i = 0; i < history.length; i++) Expanded(child: _journeyBar(history[i], i == history.length - 1, minKept, maxKept)),
             ],
           ),
         ),
@@ -366,7 +370,7 @@ class NiaBookPage extends StatelessWidget {
     );
   }
 
-  Widget _journeyBar(JourneyBar j, bool isCurrent, int minKept, int maxKept) {
+  Widget _journeyBar(MonthKept j, bool isCurrent, int minKept, int maxKept) {
     final int span = (maxKept - minKept) == 0 ? 1 : (maxKept - minKept);
     final double frac = (0.45 + ((j.keptPaise - minKept) / span) * 0.55).clamp(0.0, 1.0);
     return Padding(
@@ -377,8 +381,6 @@ class NiaBookPage extends StatelessWidget {
           Text(formatPaise(j.keptPaise),
               style: TextStyle(fontSize: isCurrent ? 14 : 12, fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500, color: isCurrent ? NiaTokens.homeInk : NiaTokens.homeMuted)),
           const SizedBox(height: NiaTokens.s2),
-          // The bar area absorbs the slack so the column fills the fixed chart
-          // height exactly (no overflow regardless of text metrics).
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -401,42 +403,45 @@ class NiaBookPage extends StatelessWidget {
     );
   }
 
-  // ── RafiQi's next move ─────────────────────────────────────────────────────
-  Widget _nextMove(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _capsLabel("RafiQi's next move"),
-          const SizedBox(height: NiaTokens.s4),
-          _card(
-            padding: const EdgeInsets.all(NiaTokens.s5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(home.nextMove.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.3, color: NiaTokens.homeInk)),
-                const SizedBox(height: NiaTokens.s2),
-                Text(home.nextMove.rationale, style: const TextStyle(fontSize: 14, height: 1.5, color: NiaTokens.homeMuted)),
-                const SizedBox(height: NiaTokens.s4),
-                _whyNow(home.nextMove.whyNow),
-                const SizedBox(height: NiaTokens.s5),
-                const Divider(height: 1, thickness: 1, color: NiaTokens.homeBorder),
-                const SizedBox(height: NiaTokens.s5),
-                _capsLabel('Expected impact on your NiaBook'),
-                const SizedBox(height: NiaTokens.s3),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(child: _impact('A year from now', '+${formatPaise(home.nextMove.annualGainPaise)}', NiaTokens.homePrimary)),
-                    Expanded(child: _impact('Likelihood', '${home.nextMove.probabilityPct}%', NiaTokens.homeInk)),
-                    Expanded(child: _impact('Time left', '${home.nextMove.minutesLeft} min', NiaTokens.homeInk)),
-                  ],
-                ),
-                const SizedBox(height: NiaTokens.s5),
-                _primaryButton(context, 'Start now'),
-              ],
-            ),
+  // ── RafiQi's next move (derived) ────────────────────────────────────────────
+  Widget _nextMove(BuildContext context) {
+    final move = insights.nextMove;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _capsLabel("RafiQi's next move"),
+        const SizedBox(height: NiaTokens.s4),
+        _card(
+          padding: const EdgeInsets.all(NiaTokens.s5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(move.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.3, color: NiaTokens.homeInk)),
+              const SizedBox(height: NiaTokens.s2),
+              Text(move.rationale, style: const TextStyle(fontSize: 14, height: 1.5, color: NiaTokens.homeMuted)),
+              const SizedBox(height: NiaTokens.s4),
+              _whyNow(move.whyNow),
+              const SizedBox(height: NiaTokens.s5),
+              const Divider(height: 1, thickness: 1, color: NiaTokens.homeBorder),
+              const SizedBox(height: NiaTokens.s5),
+              _capsLabel('Expected impact on your NiaBook'),
+              const SizedBox(height: NiaTokens.s3),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: _impact('A year from now', '+${formatPaise(move.annualGainPaise)}', NiaTokens.homePrimary)),
+                  Expanded(child: _impact('Likelihood', '${move.probabilityPct}%', NiaTokens.homeInk)),
+                  Expanded(child: _impact('Time left', '${move.minutesLeft} min', NiaTokens.homeInk)),
+                ],
+              ),
+              const SizedBox(height: NiaTokens.s5),
+              _primaryButton(context, 'Start now'),
+            ],
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   Widget _impact(String label, String value, Color valueColor) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,10 +464,7 @@ class NiaBookPage extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   style: const TextStyle(fontSize: 12, height: 1.4, color: NiaTokens.homeInk),
-                  children: <TextSpan>[
-                    const TextSpan(text: 'Why now · ', style: TextStyle(fontWeight: FontWeight.w600)),
-                    TextSpan(text: text),
-                  ],
+                  children: <TextSpan>[const TextSpan(text: 'Why now · ', style: TextStyle(fontWeight: FontWeight.w600)), TextSpan(text: text)],
                 ),
               ),
             ),
@@ -490,36 +492,7 @@ class NiaBookPage extends StatelessWidget {
         ),
       );
 
-  // ── Since joining ──────────────────────────────────────────────────────────
-  Widget _since(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _capsLabel('Since joining Nia'),
-          const SizedBox(height: NiaTokens.s4),
-          _card(
-            child: Column(
-              children: <Widget>[
-                for (int i = 0; i < home.since.length; i++) ...<Widget>[
-                  if (i > 0) const Divider(height: 1, thickness: 1, color: NiaTokens.homeBorder),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s5, vertical: NiaTokens.s4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Expanded(child: Text(home.since[i].label, style: const TextStyle(fontSize: 14, color: NiaTokens.homeMuted))),
-                        Text(home.since[i].display, style: _serif(22, weight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      );
-
-  // ── Identity — who you're becoming ─────────────────────────────────────────
+  // ── Identity — who you're becoming (profile facts) ──────────────────────────
   Widget _identity(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -527,9 +500,9 @@ class NiaBookPage extends StatelessWidget {
           const SizedBox(height: NiaTokens.s4),
           Row(
             children: <Widget>[
-              for (int i = 0; i < home.identity.length; i++) ...<Widget>[
+              for (int i = 0; i < facts.identity.length; i++) ...<Widget>[
                 if (i > 0) const SizedBox(width: NiaTokens.s3),
-                Expanded(child: _identityTile(home.identity[i])),
+                Expanded(child: _identityTile(facts.identity[i])),
               ],
             ],
           ),
@@ -560,15 +533,8 @@ class NiaBookPage extends StatelessWidget {
       );
 
   Widget _card({required Widget child, EdgeInsets? padding}) => Container(
-        decoration: BoxDecoration(
-          color: NiaTokens.homeCard,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: NiaTokens.homeBorder),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
-        ),
+        decoration: BoxDecoration(color: NiaTokens.homeCard, borderRadius: BorderRadius.circular(20), border: Border.all(color: NiaTokens.homeBorder)),
+        child: ClipRRect(borderRadius: BorderRadius.circular(20), child: Padding(padding: padding ?? EdgeInsets.zero, child: child)),
       );
 
   static String _initials(String name) {
@@ -577,4 +543,13 @@ class NiaBookPage extends StatelessWidget {
     if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
     return (parts.first.substring(0, 1) + parts.last.substring(0, 1)).toUpperCase();
   }
+}
+
+enum _FlowKind { earned, spent, added, kept }
+
+class _Flow {
+  const _Flow(this.label, this.amountPaise, this.kind);
+  final String label;
+  final int amountPaise;
+  final _FlowKind kind;
 }
