@@ -3,7 +3,30 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Backend + login + UAT deploy kit are code-complete and deploy-ready. NEXT is execution on a networked box (Phase 1 deploy) + the Founder Floor values — not more building.
+## Status: UAT release candidate tagged (`uat-rc-1` @ `9f64d40`). Code-complete: backend + login + deploy kit + full warm NiaBook UI (home + Work/Living/Sukh/Family/Me). NEXT is release execution on a networked box — no more building.
+
+### ▶ UAT release — remaining steps (networked box only; the sandbox cannot build/deploy)
+
+`uat-rc-1` is tagged and green: `services/wallet` 291 TS tests, member 111 Flutter
+tests + goldens, `nia verify` green, no codegen drift. The offline smoke proxy
+passes all six UAT flows (login, NiaBook home, Family reached-home, Me standing,
+SOS, nav). What is left needs network + a device toolchain:
+
+1. **Fraunces font** (optional, cosmetic): drop `Fraunces-*.ttf` into
+   `apps/member/` assets + pubspec and set `NiaTokens.serifFamily = 'Fraunces'`;
+   until then headlines use the system font (documented fallback).
+2. **Build the Flutter artifact.** The member app has **no `android/`/`ios/`
+   platform dirs** — run `cd apps/member && flutter create .` first (needs network
+   for the Android SDK/Gradle), then
+   `flutter build apk --dart-define=NIA_API_BASE_URL=https://<host> --dart-define=NIA_MEMBER_TOKEN=<token>`.
+3. **Deploy the backend** per [`deploy/DEPLOY.md`](deploy/DEPLOY.md) (Docker
+   Compose or bare-metal) with the Founder-approved Floor in `config/floor.json`.
+4. **Point the app at it:** the `NIA_API_BASE_URL` from step 2 = the deployed host;
+   `NIA_MEMBER_TOKEN` = a session issued via `POST /v1/sessions` (a provisioned UAT
+   phone). Family + Me then show live data; the rest stays sample (no read-models
+   invented, per the UAT plan).
+5. **Live smoke:** `deploy/smoke.sh` (backend) + the six flows on-device.
+6. **Fix only blockers**, then move the tag / cut `uat-rc-2` if needed.
 
 ### ▶ Phase 1 — deploy (run on a networked machine; the sandbox cannot)
 
