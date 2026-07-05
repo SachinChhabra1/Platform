@@ -1,3 +1,15 @@
+/// Me — the Member's identity, standing, Operator, phone, and data rights. Warm
+/// NiaBook design (v0 prototype, migrated 2026-07-05).
+///
+/// Identity + standing are the ONE contract-backed part — wired LIVE via
+/// [MembershipSource] through [NiaAsyncView] (loading / error+retry / success).
+/// The locked product content is preserved: the calm standing copy for
+/// Active/Paused/Closed, "this phone is your Nia phone" + recovery (spec 0002),
+/// and data rights ("you decide every time", FD-7). Role / ID / home are sample
+/// until a profile read-model lands; the shared blue MembershipHeader/MemberStanding
+/// widgets are left untouched (other screens still use them).
+library;
+
 import 'package:flutter/material.dart';
 import 'package:nia_api/api.dart';
 
@@ -5,247 +17,253 @@ import '../../prototype/prototype.dart';
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
 import '../../widgets/nia_async.dart';
-import '../membership/member_standing.dart';
-import '../membership/membership_header.dart';
 import '../membership/membership_source.dart';
+import '../pillars/warm_pillar_kit.dart';
 import '../recovery/recovery_page.dart';
 
-/// Profile — the Member's identity, his standing, his Operator, his phone, and
-/// his data rights.
-///
-/// He is known by name, not number (Book III §6.3, Truth 1.7); he owns his data
-/// and Nia is custodian (Article XV). His **standing** is shown (Q2 resolved,
-/// Founder 2026-06-30) via [MemberStanding] — calm for Active, careful and
-/// action-helpful for Paused/Closed. In the offline prototype the remaining open
-/// markers (FD-11) are kept; in the Developer Preview (`previewMode`) they are
-/// hidden so the screen reads as the product.
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({
     super.key,
     this.membershipSource = const SampleMembershipSource(),
     this.previewMode = false,
   });
 
-  /// Source for the identity header and the standing — live over HTTP or the
-  /// offline sample, chosen by [MemberConfig] at the shell. Defaults to sample.
+  /// Live identity + standing over HTTP, or the offline sample (chosen by config).
   final MembershipSource membershipSource;
 
-  /// Developer Preview: hide the remaining prototype FD markers so the screen
-  /// reads as the product. Offline (default) keeps them.
+  /// Developer Preview: hide the remaining prototype FD markers. Offline keeps them.
   final bool previewMode;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // Body-only: renders as a tab under the shell's app bar (which supplies the
-    // "Profile" title, the prototype/preview chip, and one-tap Operator access).
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        NiaTokens.s5,
-        NiaTokens.s5,
-        NiaTokens.s5,
-        NiaTokens.s8,
-      ),
+    return WarmScreen(
+      title: 'Me',
+      subtitle: 'Your Nia membership',
       children: <Widget>[
-        // Identity header — wired to the Membership read model via nia_api.
-        MembershipHeader(source: widget.membershipSource),
-        const SizedBox(height: NiaTokens.s7),
-
-        // Your standing (Q2 resolved) — the live lifecycle state, with careful
-        // copy for Paused/Closed.
-        const SectionLabel('Your standing'),
-        const SizedBox(height: NiaTokens.s2),
-        NiaAsyncView<MembershipView>(
-          load: widget.membershipSource.currentMembership,
-          loading: const SizedBox(height: 44),
-          builder: (BuildContext context, MembershipView m) => MemberStanding(
-            state: m.state,
-            onOperator: () => openOperatorSheet(context),
-          ),
-        ),
-        const SizedBox(height: NiaTokens.s7),
-
-        const SectionLabel('Your Operator'),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Monogram(initials: 'S', size: 44),
-          title: Text(
-            PrototypeData.operatorName,
-            style: theme.textTheme.bodyLarge,
-          ),
-          subtitle: Text(
-            PrototypeData.operatorStudio,
-            style: theme.textTheme.bodySmall,
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.call_outlined),
-            tooltip: 'Call ${PrototypeData.operatorName}',
-            onPressed: () => openOperatorSheet(context),
-          ),
-          onTap: () => openOperatorSheet(context),
-        ),
-        const SizedBox(height: NiaTokens.s6),
-
-        const SectionLabel('Your details'),
-        _Fact(label: 'Phone', value: PrototypeData.phoneMasked),
-        const Divider(),
-        _Fact(label: 'Home', value: PrototypeData.homePlace),
-        const Divider(),
-        _Fact(label: 'Language', value: PrototypeData.language),
-        const Divider(),
-        _Fact(
-          label: 'Emergency contact',
-          value: PrototypeData.emergencyContact,
-        ),
-        const SizedBox(height: NiaTokens.s6),
-
-        // This phone is your Nia phone — and how to recover it (spec 0002).
-        const SectionLabel('Your Nia phone'),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.smartphone_outlined, color: NiaTokens.ink),
-          title: Text(
-            'This phone is your Nia phone',
-            style: theme.textTheme.bodyLarge,
-          ),
-          subtitle: Text(
-            'Lost your phone? Here is how to get back in.',
-            style: theme.textTheme.bodySmall,
-          ),
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: NiaTokens.inkSecondary,
-          ),
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute<void>(builder: (_) => const RecoveryPage())),
-        ),
-        const SizedBox(height: NiaTokens.s6),
-
-        const SectionLabel('Your data — yours'),
-        Text(
-          'You own your data. Nia is the custodian, not the owner. You can see your full history, and every time anyone else looks at it.',
-          style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: NiaTokens.s5),
-        // FD-7 resolved: consent is an event, not a setting — per-request,
-        // default no, no standing authorization. The Member decides each time.
-        Text('You decide every time.', style: theme.textTheme.titleLarge),
-        const SizedBox(height: NiaTokens.s2),
-        Text(
-          'When an employer, recruiter, or anyone outside Nia asks for your information, we ask you first — by name, for that one request. You answer. Then the permission ends. Nothing is shared by default, and no one keeps standing access.',
-          style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: NiaTokens.s4),
-        OutlinedButton(
-          onPressed: () => prototypeNoOp(context, 'See who accessed my data'),
-          child: const Text('See who has accessed my data'),
-        ),
-        if (!widget.previewMode) ...<Widget>[
-          const SizedBox(height: NiaTokens.s5),
-          const FdPlaceholder(
-            code: 'FD-11',
-            label:
-                'What is concretely higher for women Members (dignity, safety, privacy floors — Book II §1.1) is undecided.',
-          ),
-        ],
-        const SizedBox(height: NiaTokens.s8),
-
-        // Sign out of this phone — the member-facing revoke (spec 0002 ERR-8).
-        // The working revoke is Slice C; this previews the action.
-        Center(
-          child: TextButton.icon(
-            style: TextButton.styleFrom(foregroundColor: NiaTokens.red),
-            onPressed: () => _confirmSignOut(context),
-            icon: const Icon(Icons.logout, size: 18),
-            label: const Text('Sign out of this phone'),
-          ),
-        ),
+        _identity(context),
+        _account(context),
+        _protection(context),
+        _operator(context),
+        _details(),
+        _niaPhone(context),
+        _dataRights(context),
+        _signOut(context),
       ],
     );
   }
 
-  Future<void> _confirmSignOut(BuildContext context) {
-    final theme = Theme.of(context);
-    return showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: NiaTokens.ground,
-      showDragHandle: true,
-      builder: (BuildContext sheet) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(
-            NiaTokens.s5,
-            0,
-            NiaTokens.s5,
-            NiaTokens.s7,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Sign out of this phone?',
-                style: theme.textTheme.titleLarge,
-              ),
-              const SizedBox(height: NiaTokens.s3),
-              Text(
-                'This ends your session on this device. To sign back in you use '
-                'your Nia phone again — and if you have lost it, your Operator '
-                'helps you in person.',
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: NiaTokens.s5),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: NiaTokens.red,
-                    padding: const EdgeInsets.symmetric(vertical: NiaTokens.s4),
-                  ),
-                  onPressed: () {
-                    Navigator.of(sheet).pop();
-                    prototypeNoOp(
-                      context,
-                      'Sign out — the working revoke is the next slice (spec 0002 ERR-8)',
-                    );
-                  },
-                  child: const Text('Sign out'),
+  // ── Identity + standing (LIVE) ─────────────────────────────────────────────
+  Widget _identity(BuildContext context) => WarmCard(
+        child: NiaAsyncView<MembershipView>(
+          load: membershipSource.currentMembership,
+          loading: const SizedBox(height: 72, child: Center(child: CircularProgressIndicator(color: NiaTokens.homePrimary))),
+          builder: (BuildContext context, MembershipView m) {
+            final ({String title, String sub, bool active}) s = _standing(m.state);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: NiaTokens.homePrimary,
+                      child: Text(m.name.isNotEmpty ? m.name.substring(0, 1).toUpperCase() : 'R',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: NiaTokens.homeOnPrimary)),
+                    ),
+                    const SizedBox(width: NiaTokens.s4),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(m.name.isEmpty ? 'Member' : m.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
+                          const Text('Construction Helper', style: TextStyle(fontSize: 13, color: NiaTokens.homeMuted)),
+                          const Text('ID · NIA-2291045', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: NiaTokens.s4),
+                const WarmDivider(),
+                const SizedBox(height: NiaTokens.s4),
+                Text(s.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                const SizedBox(height: 2),
+                Text(s.sub, style: const TextStyle(fontSize: 13, height: 1.4, color: NiaTokens.homeMuted)),
+                if (!s.active) ...<Widget>[
+                  const SizedBox(height: NiaTokens.s3),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Material(
+                      color: NiaTokens.homePrimary,
+                      borderRadius: BorderRadius.circular(999),
+                      child: InkWell(
+                        customBorder: const StadiumBorder(),
+                        onTap: () => openOperatorSheet(context),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: NiaTokens.s4, vertical: NiaTokens.s2),
+                          child: Text('Talk to your Operator', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: NiaTokens.homeOnPrimary)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        ),
+      );
+
+  ({String title, String sub, bool active}) _standing(MembershipState state) => switch (state) {
+        MembershipState.member => (title: 'An active Member of Nia', sub: 'Your membership is active and in good standing.', active: true),
+        MembershipState.paused => (title: 'Your membership is paused', sub: 'Nothing of yours is lost. Your Operator can help you resume.', active: false),
+        _ => (title: 'A Member of Nia', sub: 'Your Operator can help with your standing.', active: false),
+      };
+
+  // ── Account ────────────────────────────────────────────────────────────────
+  Widget _account(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Account'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: Column(
+              children: <Widget>[
+                WarmListRow(icon: Icons.description_outlined, title: 'My documents', subtitle: 'Permit, contract, insurance', onTap: () => prototypeNoOp(context, 'Documents')),
+                const WarmDivider(),
+                WarmListRow(icon: Icons.language, title: 'Language', subtitle: 'English · Hindi', onTap: () => prototypeNoOp(context, 'Language')),
+                const WarmDivider(),
+                WarmListRow(icon: Icons.notifications_outlined, title: 'Notifications', subtitle: 'Pay, deliveries, savings', onTap: () => prototypeNoOp(context, 'Notifications')),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  // ── Protection & support ────────────────────────────────────────────────
+  Widget _protection(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Protection & support'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: Column(
+              children: <Widget>[
+                WarmListRow(icon: Icons.verified_user_outlined, title: 'Wage protection', subtitle: 'Active · guaranteed pay', onTap: () => prototypeNoOp(context, 'Wage protection')),
+                const WarmDivider(),
+                WarmListRow(icon: Icons.support_agent_outlined, title: 'Grievance help', subtitle: 'Report an issue confidentially', onTap: () => prototypeNoOp(context, 'Grievance help')),
+                const WarmDivider(),
+                WarmListRow(icon: Icons.call_outlined, title: '24/7 helpline', subtitle: 'In your language', onTap: () => prototypeNoOp(context, 'Helpline')),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  // ── Your Operator ─────────────────────────────────────────────────────────
+  Widget _operator(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Your Operator'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: WarmListRow(
+              icon: Icons.person_outline,
+              title: PrototypeData.operatorName,
+              subtitle: PrototypeData.operatorStudio,
+              trailing: IconButton(
+                icon: const Icon(Icons.call_outlined, color: NiaTokens.homePrimary),
+                tooltip: 'Call ${PrototypeData.operatorName}',
+                onPressed: () => openOperatorSheet(context),
+              ),
+              onTap: () => openOperatorSheet(context),
+            ),
+          ),
+        ],
+      );
+
+  // ── Details ────────────────────────────────────────────────────────────────
+  Widget _details() => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Your details'),
+          WarmCard(
+            child: Column(
+              children: <Widget>[
+                _fact('Phone', PrototypeData.phoneMasked),
+                const WarmDivider(),
+                _fact('Home', PrototypeData.homePlace),
+                const WarmDivider(),
+                _fact('Language', PrototypeData.language),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  Widget _fact(String label, String value) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: NiaTokens.s3),
+        child: Row(
+          children: <Widget>[
+            SizedBox(width: 120, child: Text(label, style: const TextStyle(fontSize: 13, color: NiaTokens.homeMuted))),
+            Expanded(child: Text(value, style: const TextStyle(fontSize: 14, color: NiaTokens.homeInk))),
+          ],
+        ),
+      );
+
+  // ── Your Nia phone + recovery (spec 0002) ──────────────────────────────────
+  Widget _niaPhone(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const WarmSectionTitle('Your Nia phone'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: WarmListRow(
+              icon: Icons.smartphone_outlined,
+              title: 'This phone is your Nia phone',
+              subtitle: 'Lost your phone? Here is how to get back in.',
+              onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const RecoveryPage())),
+            ),
+          ),
+        ],
+      );
+
+  // ── Your data — yours (FD-7) ────────────────────────────────────────────────
+  Widget _dataRights(BuildContext context) => WarmCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Text('YOUR DATA — YOURS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.5, color: NiaTokens.homeMuted)),
+            const SizedBox(height: NiaTokens.s3),
+            const Text('You decide every time.', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
+            const SizedBox(height: NiaTokens.s2),
+            const Text(
+              'When an employer, recruiter, or anyone outside Nia asks for your information, we ask you first — by name, for that one request. You answer. Then the permission ends. Nothing is shared by default.',
+              style: TextStyle(fontSize: 13, height: 1.5, color: NiaTokens.homeMuted),
+            ),
+            const SizedBox(height: NiaTokens.s4),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(foregroundColor: NiaTokens.homePrimary, side: const BorderSide(color: NiaTokens.homeBorder)),
+              onPressed: () => prototypeNoOp(context, 'See who accessed my data'),
+              child: const Text('See who has accessed my data'),
+            ),
+            if (!previewMode) ...<Widget>[
+              const SizedBox(height: NiaTokens.s4),
+              const FdPlaceholder(
+                code: 'FD-11',
+                label: 'What is concretely higher for women Members (dignity, safety, privacy floors — Book II §1.1) is undecided.',
               ),
             ],
-          ),
-        );
-      },
-    );
-  }
-}
+          ],
+        ),
+      );
 
-class _Fact extends StatelessWidget {
-  const _Fact({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: NiaTokens.s3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            width: 150,
-            child: Text(label, style: theme.textTheme.bodyMedium),
-          ),
-          Expanded(child: Text(value, style: theme.textTheme.bodyLarge)),
-        ],
-      ),
-    );
-  }
+  // ── Sign out ─────────────────────────────────────────────────────────────
+  Widget _signOut(BuildContext context) => Center(
+        child: TextButton.icon(
+          style: TextButton.styleFrom(foregroundColor: NiaTokens.homeDanger),
+          onPressed: () => prototypeNoOp(context, 'Sign out — the working revoke is the next slice (spec 0002 ERR-8)'),
+          icon: const Icon(Icons.logout, size: 18),
+          label: const Text('Sign out of this phone'),
+        ),
+      );
 }

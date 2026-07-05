@@ -167,6 +167,11 @@ void main() {
 
   testWidgets('Profile: a failed standing fetch shows the error state, not a silent gap',
       (WidgetTester tester) async {
+    // Tall viewport so the whole (now longer) warm profile lays out for finders.
+    tester.view.physicalSize = const Size(390, 2600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(body: ProfilePage(membershipSource: _ThrowingMembership())),
@@ -174,11 +179,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Both the identity header and the standing now surface a recoverable error.
+    // The identity/standing block surfaces a recoverable error.
     expect(find.textContaining('reach Nia just now'), findsWidgets);
     expect(find.widgetWithText(TextButton, 'Try again'), findsWidgets);
-    // The rest of the profile still renders.
-    expect(find.text('Your Operator'), findsOneWidget);
+    // The rest of the profile still renders (warm section header is caps).
+    expect(find.text('YOUR OPERATOR'), findsOneWidget);
   });
 
   testWidgets('Membership header: a failed fetch shows the error, not a stuck placeholder',
