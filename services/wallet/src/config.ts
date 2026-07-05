@@ -44,6 +44,10 @@ export interface WalletConfig {
   readonly floorSeed?: FloorSeed | undefined;
   /** Per-operator credentials (credential → operatorId) for conflict resolution (OD-8); empty ⇒ deny. */
   readonly operatorCredentials: Readonly<Record<string, string>>;
+  /** Provisioned phone → membershipId directory for session issuance (login);
+   *  empty ⇒ no phone is recognised (issuance denies all). Ops/UAT-owned, not a
+   *  product value. */
+  readonly memberDirectory: Readonly<Record<string, string>>;
 }
 
 /** A thin fs reader, injectable so the loader is testable without touching disk. */
@@ -91,6 +95,7 @@ export function loadWalletConfig(
     savingsSettleMs: intEnv(env.NIA_SAVINGS_SETTLE_MS, 0, 'NIA_SAVINGS_SETTLE_MS'),
     floorSeed: loadFloorSeed(env.NIA_FLOOR_CONFIG_PATH, readFile),
     operatorCredentials: loadOperatorCredentials(env.NIA_OPERATOR_CONFIG_PATH, readFile),
+    memberDirectory: loadStringMap(env.NIA_MEMBER_DIRECTORY_CONFIG_PATH, readFile, 'member directory', 'phone → membershipId'),
   };
 }
 
@@ -98,14 +103,27 @@ export function loadWalletConfig(
 /// JSON file, if configured. No path ⇒ empty ⇒ conflict resolution denies all
 /// (operators must be provisioned). Values are ops-owned, never invented.
 function loadOperatorCredentials(path: string | undefined, readFile: FileReader): Readonly<Record<string, string>> {
+  return loadStringMap(path, readFile, 'operator config', 'credential → operatorId');
+}
+
+/// Load a provisioned `string → string` directory from a JSON file, if configured
+/// (operator credentials, the member phone directory). No path ⇒ empty ⇒ the seam
+/// denies all (must be provisioned). Shape-validated; values ops-owned, never
+/// invented. `label`/`shape` name the map in the error messages.
+function loadStringMap(
+  path: string | undefined,
+  readFile: FileReader,
+  label: string,
+  shape: string,
+): Readonly<Record<string, string>> {
   if (path === undefined || path === '') return {};
   const parsed = JSON.parse(readFile(path)) as unknown;
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    throw new RangeError('operator config must be a JSON object of credential → operatorId');
+    throw new RangeError(`${label} must be a JSON object of ${shape}`);
   }
-  for (const [credential, operatorId] of Object.entries(parsed)) {
-    if (typeof operatorId !== 'string' || operatorId.length === 0 || credential.length === 0) {
-      throw new RangeError('operator config entries must be non-empty credential → operatorId strings');
+  for (const [key, value] of Object.entries(parsed)) {
+    if (typeof value !== 'string' || value.length === 0 || key.length === 0) {
+      throw new RangeError(`${label} entries must be non-empty ${shape} strings`);
     }
   }
   return { ...(parsed as Record<string, string>) };

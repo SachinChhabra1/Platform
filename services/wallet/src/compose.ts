@@ -14,9 +14,12 @@
 /// Session issuance is a separate slice, so `sessions` is injected (default empty).
 
 import type { FastifyInstance } from 'fastify';
-import { createServer, InMemorySessionStore, type SessionStore } from '@nia/runtime';
+import { createServer, type SessionStore } from '@nia/runtime';
 import type { WalletConfig } from './config.js';
 import { FileDurableStoreFactory, type DurableStoreFactory } from './durable_factory.js';
+import { DurableSessionStore, type StoredSession } from './session_store.js';
+import { InMemoryMemberDirectory } from './member_directory.js';
+import { registerSessionRoutes } from './session_http.js';
 import { InMemoryWalletActivitySource } from './source.js';
 import { registerWalletOverviewRoutes } from './http.js';
 import { DurableFloorRegistry, RegistryFloorSource } from './the_floor_registry.js';
@@ -59,7 +62,6 @@ export interface ComposeOptions {
 /// domain is identical across backings.
 export async function composeWalletApp(config: WalletConfig, opts: ComposeOptions = {}): Promise<FastifyInstance> {
   const now = opts.now ?? (() => new Date());
-  const sessions = opts.sessions ?? new InMemorySessionStore();
   const app = createServer({ serviceName: opts.serviceName ?? 'nia-wallet' });
 
   // --- Shared stores — all durable, opened by logical name via the factory ----
@@ -68,6 +70,11 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
   // below — the stores compose over the DurableStore interface, not a concrete impl.
   const stores = opts.stores ?? defaultStoreFactory(config);
   const fds = stores.open.bind(stores);
+
+  // The session boundary: durable + shared across the authed surfaces, hydrated
+  // from the backing at boot (issued sessions survive a restart). Tests inject
+  // their own store via opts.sessions. Issuance (login) is registered below.
+  const sessions = opts.sessions ?? (await DurableSessionStore.load(fds<StoredSession>('sessions')));
 
   const floorRegistry = new DurableFloorRegistry(fds<FloorVersion>('floor'));
   if (config.floorSeed && (await floorRegistry.current()) === undefined) {
@@ -101,6 +108,9 @@ export async function composeWalletApp(config: WalletConfig, opts: ComposeOption
     });
 
   await Promise.all([
+    // Login — session issuance (phone-first, provisioned directory). NOT
+    // session-gated: it is the front of the chain every other surface validates.
+    mount((s) => registerSessionRoutes(s, { sessions, directory: new InMemoryMemberDirectory(config.memberDirectory), now })),
     // Member-facing surfaces.
     mount((s) => registerWalletOverviewRoutes(s, { source: new InMemoryWalletActivitySource({}), sessions })),
     mount((s) => registerFloorRoutes(s, { sessions, registry: floorRegistry, now })),

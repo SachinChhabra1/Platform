@@ -258,6 +258,16 @@ export {
   loadWalletConfig,
 } from './config.js';
 export { type ComposeOptions, composeWalletApp } from './compose.js';
+// Session issuance (login) — spec 0002 phone-first re-proof, composed into the
+// wallet process over a durable, shared session store. Provisioned directory
+// (phone → membershipId) from config; unrecognised phone → 401.
+export { type MemberDirectory, InMemoryMemberDirectory } from './member_directory.js';
+export {
+  type StoredSession,
+  type DurableSessionStoreOptions,
+  DurableSessionStore,
+} from './session_store.js';
+export { type SessionRouteDeps, registerSessionRoutes } from './session_http.js';
 // Deploy bootstrap (infra) — env-only config → durable backing (file or Postgres,
 // connecting pg + running migrations) → fully-wired app, with a dispose() handle.
 export { type BootstrappedWalletApp, bootstrapWalletApp } from './deploy.js';

@@ -20,6 +20,7 @@ describe('loadWalletConfig — honest-empty defaults, no invented value', () => 
     });
     expect(c.floorSeed).toBeUndefined(); // no floor → registry stays empty
     expect(c.operatorCredentials).toEqual({}); // no operators → resolution denies all
+    expect(c.memberDirectory).toEqual({}); // no directory → login denies all
     expect(c.store).toBe('file'); // file-backed by default
     expect(c.databaseUrl).toBeUndefined();
   });
@@ -41,6 +42,15 @@ describe('loadWalletConfig — honest-empty defaults, no invented value', () => 
   it('loads operator credentials from a config file', () => {
     const c = loadWalletConfig({ NIA_OPERATOR_CONFIG_PATH: '/ops.json' }, () => JSON.stringify({ 'cred-1': 'op-neha' }));
     expect(c.operatorCredentials).toEqual({ 'cred-1': 'op-neha' });
+  });
+
+  it('loads the member phone directory from a config file (login provisioning)', () => {
+    const c = loadWalletConfig({ NIA_MEMBER_DIRECTORY_CONFIG_PATH: '/dir.json' }, () => JSON.stringify({ '+919000000001': 'm-1' }));
+    expect(c.memberDirectory).toEqual({ '+919000000001': 'm-1' });
+  });
+
+  it('rejects a malformed member directory', () => {
+    expect(() => loadWalletConfig({ NIA_MEMBER_DIRECTORY_CONFIG_PATH: '/dir.json' }, () => JSON.stringify({ '+91900': 123 }))).toThrow(/member directory/);
   });
 
   it('parses service tokens (trimmed, blanks dropped)', () => {

@@ -57,6 +57,7 @@ function config(dataDir: string): WalletConfig {
     savingsSettleMs: 0,
     floorSeed: FLOOR_SEED,
     operatorCredentials: { [OPERATOR_CRED]: 'op-neha' },
+    memberDirectory: {},
   };
 }
 
@@ -98,6 +99,42 @@ describe.each(backings)('E2E backend smoke over the $name durable backing', ({ f
     server = app;
     return { app, stores };
   }
+
+  it('login — a provisioned phone is issued a session that authenticates a Member flow', async () => {
+    const PHONE = '+919000000009';
+    const dir = freshDir();
+    const stores = factory(dir);
+    // Provision the directory + real (durable) session store — no injected sessions.
+    const app = await composeWalletApp({ ...config(dir), memberDirectory: { [PHONE]: MEMBER } }, { now: () => T0, stores });
+    server = app;
+
+    // Before login, a Member surface default-denies (no session).
+    expect((await app.inject({ method: 'GET', url: '/v1/remittances', headers: bearer })).statusCode).toBe(401);
+
+    // Log in: phone-first issuance returns an opaque token.
+    const login = await app.inject({
+      method: 'POST',
+      url: '/v1/sessions',
+      headers: { 'content-type': 'application/json', 'idempotency-key': 'e2e-login-1' },
+      payload: { phone: PHONE, device_id: 'dev-e2e' },
+    });
+    expect(login.statusCode).toBe(201);
+    const token = login.json().token as string;
+
+    // The issued token authenticates a real Member flow.
+    const authed = { authorization: `Bearer ${token}` };
+    const list = await app.inject({ method: 'GET', url: '/v1/remittances', headers: authed });
+    expect(list.statusCode).toBe(200);
+    expect(list.json().remittances).toEqual([]);
+    // An unrecognised phone is refused.
+    const denied = await app.inject({
+      method: 'POST',
+      url: '/v1/sessions',
+      headers: { 'content-type': 'application/json', 'idempotency-key': 'e2e-login-2' },
+      payload: { phone: '+910000000000', device_id: 'dev-e2e' },
+    });
+    expect(denied.statusCode).toBe(401);
+  });
 
   it('wage settlement — take-home respects the server-side Floor, never dips below it', async () => {
     const { app } = await boot();

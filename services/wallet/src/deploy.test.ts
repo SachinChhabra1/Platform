@@ -40,6 +40,7 @@ function pgConfig(over: Partial<WalletConfig> = {}): WalletConfig {
     savingsSettleMs: 0,
     floorSeed: FLOOR_SEED,
     operatorCredentials: {},
+    memberDirectory: {},
     ...over,
   };
 }

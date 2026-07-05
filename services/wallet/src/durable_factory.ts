@@ -15,6 +15,7 @@ import { PostgresDurableStore, pgKeyValueSchema, type SqlExecutor } from './post
 /** Every durable store the wallet composes, by logical name. The one list the
  *  factory, `compose.ts`, and the Postgres migration all read from. */
 export const WALLET_STORE_NAMES = [
+  'sessions',
   'floor',
   'remittances',
   'escalations',
