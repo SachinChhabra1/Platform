@@ -17,7 +17,15 @@
 /// at the live `/v1` HTTP surfaces through the generated `nia_api` client.
 library;
 
+import '../api/nia_transport.dart';
+import '../features/floor/floor_source.dart';
+import '../features/health/health_source.dart';
 import '../features/membership/membership_source.dart';
+import '../features/rafiqi/rafiqi_source.dart';
+import '../features/remittance/remittance_source.dart';
+import '../features/savings/savings_source.dart';
+import '../features/sync/sync_source.dart';
+import '../features/wage/wage_source.dart';
 import '../features/wallet/wallet_overview_source.dart';
 
 class MemberConfig {
@@ -49,4 +57,32 @@ class MemberConfig {
   MembershipSource membershipSource() => usesLiveBackend
       ? ApiMembershipSource(baseUrl: apiBaseUrl, memberToken: memberToken)
       : const SampleMembershipSource();
+
+  // --- Hand-built typed clients (floor / remittance / savings / RafiQi / wage /
+  // sync / health) over the shared transport seam. Same switch rule: live over
+  // HTTP when a backend is configured, the offline sample otherwise. -----------
+
+  /// A fresh transport for the live backend (bare host + `/v1` + bearer token).
+  NiaTransport _transport() => IoNiaTransport(baseUrl: apiBaseUrl, memberToken: memberToken);
+
+  FloorSource floorSource() =>
+      usesLiveBackend ? ApiFloorSource(_transport()) : const SampleFloorSource();
+
+  RemittanceSource remittanceSource() =>
+      usesLiveBackend ? ApiRemittanceSource(_transport()) : const SampleRemittanceSource();
+
+  SavingsSource savingsSource() =>
+      usesLiveBackend ? ApiSavingsSource(_transport()) : const SampleSavingsSource();
+
+  RafiqiSource rafiqiSource() =>
+      usesLiveBackend ? ApiRafiqiSource(_transport()) : const SampleRafiqiSource();
+
+  WageSource wageSource() =>
+      usesLiveBackend ? ApiWageSource(_transport()) : const SampleWageSource();
+
+  SyncSource syncSource() =>
+      usesLiveBackend ? ApiSyncSource(_transport()) : const SampleSyncSource();
+
+  HealthSource healthSource() =>
+      usesLiveBackend ? ApiHealthSource(_transport()) : const SampleHealthSource();
 }
