@@ -1,0 +1,10 @@
+{
+  "values": {
+    "dignityFloorPaise": 250000,
+    "settlementFloorPaise": 1500000,
+    "womenDignityFloorPaise": 300000,
+    "overridesByMember": {}
+  },
+  "author": "PLACEHOLDER-NOT-FOUNDER-APPROVED",
+  "note": "UAT PLACEHOLDER — these are NOT Founder-approved Floor values. Replace every number with the Founder's ruled values before any real user touches the system. Values are in paise (100 paise = 1 rupee): dignityFloorPaise is the baseline monthly dignity floor, settlementFloorPaise the settlement floor, womenDignityFloorPaise the FD-11 higher floor for women Members. overridesByMember is an optional { membershipId: paise } map of server-side per-Member overrides. This 'author' field is echoed nowhere public but the placeholder marker makes the provisional status obvious in the audit trail."
+}

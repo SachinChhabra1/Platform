@@ -18,8 +18,15 @@ build/
 # Env & secrets — never commit Member data or credentials
 .env
 .env.*
+!.env.example
+!**/.env.example
 *.pem
 *.key
+
+# Deploy: real filled-in config (Floor values, credentials, member phone directory)
+# is secret/PII — only the *.example.json templates are tracked.
+deploy/config/*.json
+!deploy/config/*.example.json
 
 # Editor / OS
 .DS_Store

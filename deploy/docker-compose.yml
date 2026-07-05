@@ -1,0 +1,60 @@
+# Nia backend — UAT stack: Postgres + the wallet service, one command to stand up.
+#
+#   cd deploy
+#   cp .env.example .env                       # fill secrets
+#   cp config/floor.example.json         config/floor.json          # Founder values
+#   cp config/operators.example.json     config/operators.json      # ops credential
+#   cp config/member-directory.example.json config/member-directory.json  # UAT phones
+#   docker compose up --build -d
+#   ./smoke.sh
+#
+# Migrations run on boot (bootstrapWalletApp, idempotent) — no separate step.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - nia-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  wallet:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # Backing + connection (override the .env host: inside the network it is 'postgres').
+      NIA_STORE: postgres
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      HOST: 0.0.0.0
+      PORT: 8081
+      # Founder/ops config is mounted read-only under /config.
+      NIA_FLOOR_CONFIG_PATH: /config/floor.json
+      NIA_OPERATOR_CONFIG_PATH: /config/operators.json
+      NIA_MEMBER_DIRECTORY_CONFIG_PATH: /config/member-directory.json
+    volumes:
+      - ./config:/config:ro
+    ports:
+      - '8081:8081'
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://localhost:8081/v1/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nia-pgdata:
