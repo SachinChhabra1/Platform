@@ -85,25 +85,22 @@ void main() {
     expect(find.textContaining('Room'), findsNothing);
   });
 
-  testWidgets('Store · keep more', (WidgetTester tester) async {
+  testWidgets('Sukh · save more (warm NiaBook design)', (WidgetTester tester) async {
     await pump(tester, const StorePage());
-    expect(find.text('Keep more'), findsOneWidget);
-    // The hero is money, found by RafiQi — the voucher, the flywheel's fuel.
-    expect(find.text('Sukh voucher'), findsOneWidget);
-    expect(find.textContaining('Sukh voucher · found by RafiQi'), findsOneWidget);
-    // Every SKU answers "how much did I keep?" — the kept amount leads.
-    expect(find.text("TODAY'S BASKET"), findsOneWidget);
-    expect(find.text('YOU KEPT'), findsOneWidget);
-    expect(find.text('Rice (5kg)'), findsOneWidget);
-    expect(find.text('You kept ₹63 on today’s basket'), findsOneWidget);
-    // Compounding — the thing only Store has.
-    expect(find.text('SAVINGS, COMPOUNDING'), findsOneWidget);
-    expect(find.text('This year'), findsOneWidget);
-    expect(find.text('₹2,460'), findsOneWidget);
-    // The close is literal money moving into NiaBook.
-    expect(find.text('This month, ₹185 moved into your NiaBook'), findsOneWidget);
-    // Not commerce: no "essentials you buy" shopping framing.
-    expect(find.text('Essentials you buy'), findsNothing);
+    expect(find.text('Sukh'), findsOneWidget);
+    expect(find.textContaining('Save more'), findsOneWidget); // subtitle
+    // Opens on the NiaBook strip.
+    expect(find.text('UPDATES YOUR NIABOOK'), findsOneWidget);
+    expect(find.textContaining('saved you ₹620'), findsOneWidget);
+    // Trust + the week's contribution to NiaBook.
+    expect(find.text('Every item Nia-Certified'), findsOneWidget);
+    expect(find.text('Added to your NiaBook this week'), findsOneWidget);
+    // Every item leads with what it adds to the NiaBook.
+    expect(find.text('Basmati Rice'), findsOneWidget);
+    expect(find.text('₹340'), findsOneWidget);
+    expect(find.textContaining('to your NiaBook'), findsWidgets);
+    // SOS on every screen.
+    expect(find.text('SOS'), findsOneWidget);
   });
 
   testWidgets('Family · take better care of home', (WidgetTester tester) async {
@@ -152,10 +149,9 @@ void main() {
 
   testWidgets('un-migrated (blue) pillars still carry one Continuity Coaching line (Q9)',
       (WidgetTester tester) async {
-    // Work and Living have migrated to the warm design. The remaining blue
-    // pillars still use CoachingLine until they migrate in turn.
+    // Work, Living and Sukh have migrated to the warm design. Family is the last
+    // blue pillar still using CoachingLine until it migrates.
     for (final Widget page in <Widget>[
-      const StorePage(),
       const FamilyPage(),
     ]) {
       await pump(tester, page);
