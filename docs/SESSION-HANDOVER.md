@@ -13,18 +13,19 @@ Work in `repo/`. Always `source scripts/_env.sh` first (PATH + JAVA_HOME + offli
 ## Current state
 
 - **Branch:** `pr/membership-product-review-build`
-- **HEAD:** `e3cbc6b` — tree clean (before this doc's own commit). Online backend wiring landed this
-  session (`f99dfa9` pg executor + factory + migrations, `2089a71` configurable backing + deploy
-  bootstrap, `e3cbc6b` e2e smoke over both backings).
+- **HEAD:** `f0e3332` — tree clean (before this doc's own commit). This session landed the online
+  wiring (`f99dfa9`, `2089a71`, `e3cbc6b`), **login/session issuance** (`da1f263`), and the **UAT
+  deploy kit** (`f0e3332`).
 - **Verify:** `./bin/nia verify` green (run from the KIT dir, `~/Developer/Nia Development`, after
-  sourcing env — NOT from `repo/`). No codegen drift. `services/wallet` at **274 TS tests**; Flutter
+  sourcing env — NOT from `repo/`). No codegen drift. `services/wallet` at **288 TS tests**; Flutter
   goldens deterministic; 12 OpenAPI contract files glob-gated (`openapi.*.yaml`).
 - **Governance:** OD-1…OD-8 all **ruled + Locked** (ADRs 0012–0019). **No backend product decision is
   open** (`DECISIONS.md` open section is empty; `FOUNDER_REVIEW.md` has no open ODs).
-- **Online wiring:** code-complete and deploy-ready — the whole service is proven end-to-end over the
-  production Postgres code path with no database (`InMemorySqlExecutor`). What is left is **hard-blocked**:
-  it needs a **live Postgres** to execute (`pnpm add pg`, `NIA_STORE=postgres`, `DATABASE_URL`) or
-  **Founder values/decisions** to fill the config seams. See [`NEXT_TASK.md`](../NEXT_TASK.md) ⛔ Blocked.
+- **Ship state:** backend + login + deploy kit are code-complete and deploy-ready. The whole service is
+  proven end-to-end over the production Postgres code path with no database (`InMemorySqlExecutor`),
+  across login + all five money flows. **Phase 1 (deploy) runs on a networked box** — follow
+  [`deploy/DEPLOY.md`](../deploy/DEPLOY.md); the sandbox cannot deploy. The only product value still
+  needed is the **Founder-approved Floor** (`config/floor.json`; the template is a labelled placeholder).
 
 ## What is DONE — the backend is complete for everything buildable offline
 

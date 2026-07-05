@@ -3,28 +3,39 @@
 The single task the next session should pick up. Kept in sync with [`ROADMAP.md`](ROADMAP.md).
 Start from [`START_HERE.md`](START_HERE.md).
 
-## Status: Backend complete offline — spine + hardening + OD-7/8 + durable fan-out + Postgres seam + RafiQi orchestrator + **online wiring code-complete & deploy-ready**. NEXT is hard-blocked: needs a **live Postgres** to execute, or **Founder values/decisions** to fill the seams.
+## Status: Backend + login + UAT deploy kit are code-complete and deploy-ready. NEXT is execution on a networked box (Phase 1 deploy) + the Founder Floor values — not more building.
 
-### ⛔ Blocked — what is left needs a live DB or a Founder ruling (2026-07-04)
+### ▶ Phase 1 — deploy (run on a networked machine; the sandbox cannot)
 
-The online backend wiring is now **code-complete and deploy-ready** (commits `f99dfa9`,
-`2089a71`, `e3cbc6b`; `services/wallet` **274 TS tests**; `nia verify` green). The whole
-service is proven end-to-end over the **production Postgres code path** with no database
-(`InMemorySqlExecutor`), across all five money flows. Everything remaining is behind one of
-two hard stops — do NOT work around either:
+Everything to stand the backend up is built and tested. The remaining work is to
+**run it** where there is network + a database, and to drop in the Founder Floor
+numbers. Follow [`deploy/DEPLOY.md`](deploy/DEPLOY.md):
+1. `cd deploy && cp .env.example .env` → set `POSTGRES_PASSWORD`, `NIA_SERVICE_TOKENS`.
+2. `cp config/*.example.json` → `config/*.json`; put the **Founder-approved Floor**
+   values into `config/floor.json` (the template is labelled
+   `PLACEHOLDER-NOT-FOUNDER-APPROVED`), the operator credential, and the UAT phone
+   directory.
+3. `docker compose up --build -d` (installs `pg`, migrates on boot, starts).
+4. `./smoke.sh` — health + login + wage/remittance/RafiQi/sync against the live DB.
+
+Login is DONE: `POST /v1/sessions` (phone-first, provisioned directory) is composed
+into the wallet process over a durable session store — the UI can authenticate.
+
+### ⛔ Still genuinely blocked (do NOT work around)
+
+`services/wallet` is at **288 TS tests**; `nia verify` green. The whole service is
+proven end-to-end over the **production Postgres code path** with no database
+(`InMemorySqlExecutor`), across login + all five money flows. What remains is behind
+two hard stops:
 
 **1. Needs a live Postgres + network (cannot run/verify in the offline sandbox):**
 The offline sandbox has **no `pg` driver, no network to install it, no reachable Postgres,
-no binaries, no creds** — probed and confirmed 2026-07-04. The code path is written and
-tested against a fake; only real-DB *execution* remains. Exact human actions, in order:
-  - `pnpm add pg --filter @nia/wallet` (in an online environment) — the one dependency the
-    sandbox could not fetch. `connectPgSqlExecutor` already loads it by dynamic import.
-  - Set env: `NIA_STORE=postgres` and `DATABASE_URL=postgres://…` (or the standard `PG*`
-    vars — node-postgres reads them itself).
-  - Boot via `pnpm --filter @nia/wallet start`. `bootstrapWalletApp` connects the pool, runs
-    the idempotent migration (`runWalletMigrations` — one `CREATE TABLE IF NOT EXISTS` per
-    `WALLET_STORE_NAMES` entry), then composes over `PostgresDurableStoreFactory`. Verify the
-    five flows against the real DB (mirror `e2e_smoke.test.ts`).
+no binaries, no creds** — probed and confirmed. The code path is written and tested against
+a fake; only real-DB *execution* remains, and it is now a copy-paste operation — follow
+[`deploy/DEPLOY.md`](deploy/DEPLOY.md) (Docker Compose or bare-metal). `bootstrapWalletApp`
+connects the pool and runs the idempotent migration (`runWalletMigrations` — one
+`CREATE TABLE IF NOT EXISTS` per `WALLET_STORE_NAMES` entry) on boot; then run
+`deploy/smoke.sh` to verify the flows against the real DB.
   - *Then* (optimisation, not blocking): push the `values()` list scans down to SQL
     (indexed/paged) instead of `SELECT … ORDER BY seq` full-table reads; extract the
     co-located money domains into their own `services/*` packages once the workspace can grow.

@@ -2,6 +2,34 @@
 
 Reverse-chronological, grounded in git history. Dates are commit dates.
 
+## Ship enablement — login (session issuance) + UAT deploy kit (2026-07-05)
+
+Turns the deploy-ready backend into a deployable one and closes the launch
+blocker that gated every authed screen. `services/wallet` 274 → 288 tests;
+`nia verify` green; no locked policy touched; no product value invented.
+
+- **Login wired into the app** (`da1f263`): the composed app had an empty session
+  store and no issuance route, so every Member endpoint default-denied (401)
+  against a live backend — the e2e smoke only passed because tests inject sessions.
+  Now `POST /v1/sessions` (phone-first re-proof, spec 0002; matches
+  `openapi.sessions.yaml`) is composed into the wallet process: a provisioned
+  `MemberDirectory` (phone → membershipId, from `NIA_MEMBER_DIRECTORY_CONFIG_PATH`)
+  resolves the caller, an opaque device-bound token is issued, one-active-device
+  revoke (FD-S3), Idempotency-Key required. Not service-token-gated — a login
+  endpoint must be callable by the device; the provisioned directory is the
+  control. Backed by `DurableSessionStore` (survives restart; hydrates the sync
+  `SessionStore` from the durable backing at boot — which is why issuance lives
+  in-process). Mirrors `@nia/sessions`, kept wallet-local to avoid a cross-package
+  dependency the offline lockfile cannot add. Real login flow added to the e2e
+  smoke over both backings.
+- **UAT deploy kit** (`f0e3332`): `deploy/` — Dockerfile (installs `pg` at build),
+  docker-compose (Postgres + wallet, healthchecks, migrations-on-boot),
+  `.env.example`, config templates (Floor values **labelled
+  PLACEHOLDER-NOT-FOUNDER-APPROVED**, operators, member directory), `smoke.sh`
+  (live health + login + flows), and `DEPLOY.md` runbook. `.gitignore` tracks only
+  the `*.example` templates; real `.env`/config never commit. Makes Phase 1 a
+  copy-paste operation on a networked machine (the sandbox cannot deploy).
+
 ## Online backend wiring — real pg, configurable backing, deploy bootstrap, e2e smoke (2026-07-04)
 
 The online-only wiring the Postgres seam anticipated, built to the limit of the
