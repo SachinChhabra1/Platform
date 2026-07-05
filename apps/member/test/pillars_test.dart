@@ -60,24 +60,27 @@ void main() {
     expect(find.text('SOS'), findsOneWidget);
   });
 
-  testWidgets('Living · spend less', (WidgetTester tester) async {
+  testWidgets('Living · keep more (warm NiaBook design)', (WidgetTester tester) async {
     await pump(tester, const LivingPage());
-    expect(find.text('Spend less'), findsOneWidget);
-    expect(find.text('Umapathi Studio'), findsOneWidget);
-    expect(find.text("THIS MONTH'S COST"), findsOneWidget);
-    expect(find.text('Community'), findsOneWidget);
-    // Benefit-led copy (Living helps the Member earn/keep, not a facilities menu).
-    expect(find.text('Rest well. Work better tomorrow.'), findsOneWidget);
-    expect(find.text('Meet workers. Hear of better jobs.'), findsOneWidget);
-    // R1 #1: the middle carries the "spend less" feeling — every service reads as
-    // Included (inside the ₹2,400, nothing extra), not just a facilities menu.
-    expect(find.text('Included'), findsAtLeastNWidgets(6));
-    // The outcome feeds NiaBook and returns time.
-    expect(find.text('This month you kept ₹550 by living here'), findsOneWidget);
-    expect(find.textContaining('~14 hours back'), findsOneWidget);
-    // Terminology: it is a Nest, never a "room" (Nest → Coach → Studio → Theatre).
-    expect(find.text('Nest 204'), findsOneWidget);
-    expect(find.text('Your Nest'), findsOneWidget);
+    expect(find.text('Living'), findsOneWidget);
+    expect(find.textContaining('Keep more'), findsOneWidget); // subtitle
+    // Opens on the NiaBook strip.
+    expect(find.text('UPDATES YOUR NIABOOK'), findsOneWidget);
+    expect(find.textContaining('kept +₹400'), findsOneWidget);
+    // Reality: the Nest + the Living membership due (never "rent").
+    expect(find.text('Nia Nest · Whitefield'), findsOneWidget);
+    expect(find.text('Studio 4B · Nest 2'), findsOneWidget);
+    expect(find.text('July Living membership'), findsOneWidget);
+    expect(find.text('₹4,500'), findsOneWidget);
+    expect(find.text('Pay now'), findsOneWidget);
+    // Supporting: food plan, amenities, maintenance, notices.
+    expect(find.text('Daily Curry Plan'), findsOneWidget);
+    expect(find.text('AMENITIES'), findsOneWidget);
+    expect(find.text('MAINTENANCE'), findsOneWidget);
+    expect(find.text('Water heater not heating'), findsOneWidget);
+    // SOS on every screen.
+    expect(find.text('SOS'), findsOneWidget);
+    // Vocabulary: Nest, never "room" (Nest → Coach → Studio → Theatre).
     expect(find.textContaining('room'), findsNothing);
     expect(find.textContaining('Room'), findsNothing);
   });
@@ -149,11 +152,9 @@ void main() {
 
   testWidgets('un-migrated (blue) pillars still carry one Continuity Coaching line (Q9)',
       (WidgetTester tester) async {
-    // Work has migrated to the warm design, where the single next step is the
-    // "3 better-paying jobs" CTA rather than a CoachingLine widget. The blue
+    // Work and Living have migrated to the warm design. The remaining blue
     // pillars still use CoachingLine until they migrate in turn.
     for (final Widget page in <Widget>[
-      const LivingPage(),
       const StorePage(),
       const FamilyPage(),
     ]) {

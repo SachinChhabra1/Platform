@@ -1,193 +1,265 @@
+/// Living · Keep more — how to keep more next month by living well for less. Warm
+/// NiaBook design (v0 prototype, migrated 2026-07-05): the current Nest (reality),
+/// the Living membership due (reality), food plan, amenities, maintenance and
+/// notices (supporting). Opens on the NiaBook strip so the pillar points home —
+/// living membership on time + a shared Nest become what the Member kept.
+///
+/// Vocabulary is canonical (Book VIII): Nest (never room/bed), Studio, Living
+/// membership (never rent). No Living backend contract yet, so sample-only (no
+/// live ApiSource / async states).
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import 'nia_components.dart';
-import 'pillar_kit.dart';
+import '../niabook/niabook_scenario.dart' show formatPaise;
+import 'warm_pillar_kit.dart';
 
-/// Living · Spend less. Promise: spend less. Reality: the studio and this
-/// month's cost. Supporting: nest, meals, community, safety, services — each
-/// framed as what it does for the Member, not a facility. Opportunity: a cheaper
-/// path found by RafiQi. Contribution: lower cost and hours back that feed
-/// NiaBook. Product-locked; built to the approved screen on shared components.
 class LivingPage extends StatelessWidget {
   const LivingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return NiaReveal(
-      // Living: calm, spacious, reassuring — gentle motion, airier rhythm (Q8).
-      duration: const Duration(milliseconds: 460),
-      child: PillarScaffold(
-        pillar: 'Living',
-        promise: 'Spend less',
-        promiseSub: 'Lower, predictable living costs.',
-        blockGap: NiaTokens.s5,
-        body: <PillarBlock>[
-          PillarBlock(PillarSection.reality, _studio()),
-          PillarBlock(PillarSection.reality, _cost()),
-          PillarBlock(PillarSection.supporting, _services(context)),
-          const PillarBlock(
-            PillarSection.opportunity,
-            OpportunityCard(
-              foundLabel: 'More you can keep',
-              icon: Icons.local_laundry_service_outlined,
-              title: "Laundry's included — skip the wash",
-              subtitle: 'Log a Sunday overtime shift instead',
-              gain: '+₹800',
-              tag: 'Work',
-            ),
-          ),
-        ],
-        contribution: const SummaryCard(
-          title: 'This month you kept ₹550 by living here',
-          subtitle: 'Plus ~14 hours back — time to earn · Feeds your NiaBook',
-        ),
-        coaching: const CoachingLine(
-          fact: "You've kept ₹550 living here.",
-          next: "laundry's included — log a Sunday shift instead (+₹800).",
-        ),
-      ),
+    return WarmScreen(
+      title: 'Living',
+      subtitle: 'Keep more, grow your NiaBook',
+      children: <Widget>[
+        const NiaBookStrip(note: 'Living membership on time and a shared Nest kept +₹400 in your pocket.'),
+        _nest(),
+        _membership(context),
+        _foodPlan(context),
+        _amenities(),
+        _maintenance(context),
+        _notices(),
+      ],
     );
   }
 
-  Widget _studio() => InfoCard(
-        child: Row(
+  // ── Current Nest ─────────────────────────────────────────────────────────
+  Widget _nest() => WarmCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            niaIconChip(Icons.apartment),
-            const SizedBox(width: NiaTokens.s3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(color: NiaTokens.homeSecondary, borderRadius: BorderRadius.circular(NiaTokens.radius)),
+                  child: const Icon(Icons.cottage_outlined, size: 22, color: NiaTokens.homePrimary),
+                ),
+                const SizedBox(width: NiaTokens.s3),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Nia Nest · Whitefield', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
+                      Text('Studio 4B · Nest 2', style: TextStyle(fontSize: 13, color: NiaTokens.homeMuted)),
+                    ],
+                  ),
+                ),
+                const WarmStatusPill('Active', tone: WarmTone.positive, icon: Icons.check_circle_outline),
+              ],
+            ),
+            const SizedBox(height: NiaTokens.s4),
+            Container(
+              padding: const EdgeInsets.all(NiaTokens.s3),
+              decoration: BoxDecoration(color: NiaTokens.homeSecondary, borderRadius: BorderRadius.circular(NiaTokens.radius)),
+              child: Row(
                 children: <Widget>[
-                  capsLabel('YOUR STUDIO', color: NiaTokens.inkSecondary),
-                  const Text('Umapathi Studio',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: NiaTokens.ink)),
-                  const Text('Nest 204',
-                      style: TextStyle(
-                          fontSize: 12, color: NiaTokens.inkSecondary)),
+                  const Icon(Icons.group_outlined, size: 16, color: NiaTokens.homeMuted),
+                  const SizedBox(width: NiaTokens.s2),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        style: const TextStyle(fontSize: 12, color: NiaTokens.homeMuted),
+                        children: const <TextSpan>[
+                          TextSpan(text: 'Sharing your Nest: '),
+                          TextSpan(text: 'Bikash, Suresh, Ramesh', style: TextStyle(fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: const <Widget>[
-                Text('31',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: NiaTokens.ink)),
-                Text('days left',
-                    style: TextStyle(fontSize: 11, color: NiaTokens.inkSecondary)),
-                Text('in this stay',
-                    style: TextStyle(fontSize: 11, color: NiaTokens.inkSecondary)),
-              ],
-            ),
           ],
         ),
       );
 
-  Widget _cost() => InfoCard(
+  // ── Living membership due ──────────────────────────────────────────────────
+  Widget _membership(BuildContext context) => Container(
+        padding: const EdgeInsets.all(NiaTokens.s4),
+        decoration: BoxDecoration(
+          color: NiaTokens.homeCautionSoft,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: NiaTokens.homeCaution.withValues(alpha: 0.4)),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            capsLabel("THIS MONTH'S COST", color: NiaTokens.inkSecondary),
-            const SizedBox(height: NiaTokens.s1),
-            const Text('₹2,400',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: NiaTokens.ink)),
-            const Text('Everything included',
-                style: TextStyle(fontSize: 12, color: NiaTokens.inkSecondary)),
-            const SizedBox(height: NiaTokens.s4),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Expanded(
-                    child: iconTile(Icons.bolt_outlined, 'Electricity', 'Included',
-                        statusColor: NiaTokens.blue)),
-                Expanded(
-                    child: iconTile(Icons.water_drop_outlined, 'Water', 'Included',
-                        statusColor: NiaTokens.blue)),
-                Expanded(
-                    child: iconTile(Icons.wifi, 'Wi-Fi', '≈₹250',
-                        statusColor: NiaTokens.blue)),
-                Expanded(
-                    child: iconTile(Icons.local_laundry_service_outlined,
-                        'Laundry', '≈₹300',
-                        statusColor: NiaTokens.blue)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text('July Living membership', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeCaution)),
+                      const SizedBox(height: 2),
+                      Text(formatPaise(450000), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: NiaTokens.homeCaution)),
+                      const Text('Due in 3 days · 7 Jul', style: TextStyle(fontSize: 12, color: NiaTokens.homeCaution)),
+                    ],
+                  ),
+                ),
+                Material(
+                  color: NiaTokens.homePrimary,
+                  borderRadius: BorderRadius.circular(999),
+                  child: InkWell(
+                    customBorder: const StadiumBorder(),
+                    onTap: () => prototypeNoOp(context, 'Pay Living membership'),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: NiaTokens.s5, vertical: 10),
+                      child: Text('Pay now', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeOnPrimary)),
+                    ),
+                  ),
+                ),
               ],
             ),
+            const SizedBox(height: NiaTokens.s3),
+            const Text("Or let Nia auto-pay from your protected wage so it's never late.",
+                style: TextStyle(fontSize: 12, height: 1.4, color: NiaTokens.homeCaution)),
           ],
         ),
       );
 
-  Widget _services(BuildContext context) => InfoCard(
-        padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
-        child: Column(
+  // ── Food plan ──────────────────────────────────────────────────────────────
+  Widget _foodPlan(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          WarmSectionTitle('Food plan', action: 'Manage'),
+          WarmCard(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(color: NiaTokens.homePositiveSoft, borderRadius: BorderRadius.circular(NiaTokens.radius)),
+                      child: const Icon(Icons.restaurant, size: 20, color: NiaTokens.homePositive),
+                    ),
+                    const SizedBox(width: NiaTokens.s3),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Daily Curry Plan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                          Text('Dinner · veg + non-veg', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+                        ],
+                      ),
+                    ),
+                    const WarmStatusPill('Active', tone: WarmTone.positive),
+                  ],
+                ),
+                const SizedBox(height: NiaTokens.s3),
+                Container(
+                  padding: const EdgeInsets.all(NiaTokens.s3),
+                  decoration: BoxDecoration(color: NiaTokens.homeSecondary, borderRadius: BorderRadius.circular(NiaTokens.radius)),
+                  child: const Row(
+                    children: <Widget>[
+                      Text('Next meal', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+                      Spacer(),
+                      Text('Tonight · Chicken curry, rice', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  // ── Amenities ────────────────────────────────────────────────────────────
+  Widget _amenities() {
+    const items = <(IconData, String)>[
+      (Icons.wifi, 'Wi-Fi'),
+      (Icons.hot_tub_outlined, 'Water heater'),
+      (Icons.local_laundry_service_outlined, 'Laundry'),
+      (Icons.fitness_center, 'Gym'),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        const WarmSectionTitle('Amenities'),
+        Row(
           children: <Widget>[
-            ListRow(
-              icon: Icons.bed_outlined,
-              title: 'Your Nest',
-              subtitle: 'Rest well. Work better tomorrow.',
-              trailing: 'Included',
-              trailingColor: NiaTokens.blue,
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Your Nest'),
-            ),
-            niaHairline(),
-            ListRow(
-              icon: Icons.restaurant_outlined,
-              title: 'Meals',
-              subtitle: 'No cooking. More time and energy.',
-              trailing: 'Included',
-              trailingColor: NiaTokens.blue,
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Meals'),
-            ),
-            niaHairline(),
-            ListRow(
-              icon: Icons.groups_outlined,
-              title: 'Community',
-              subtitle: 'Meet workers. Hear of better jobs.',
-              trailing: 'Included',
-              trailingColor: NiaTokens.blue,
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Community'),
-            ),
-            niaHairline(),
-            ListRow(
-              icon: Icons.shield_outlined,
-              title: 'Safety & security',
-              subtitle: 'Family worries less. Stay focused.',
-              trailing: 'Included',
-              trailingColor: NiaTokens.blue,
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Safety & security'),
-            ),
-            niaHairline(),
-            ListRow(
-              icon: Icons.build_outlined,
-              title: 'Services',
-              subtitle: 'Clean Nest after every shift. Recover faster.',
-              trailing: 'Included',
-              trailingColor: NiaTokens.blue,
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Services'),
-            ),
-            niaHairline(),
-            ListRow(
-              icon: Icons.chat_bubble_outline,
-              title: 'Service requests',
-              subtitle: 'Resolved fast. Back to work.',
-              trailing: '0',
-              showChevron: true,
-              onTap: () => prototypeNoOp(context, 'Service requests'),
-            ),
+            for (int i = 0; i < items.length; i++) ...<Widget>[
+              if (i > 0) const SizedBox(width: NiaTokens.s2),
+              Expanded(
+                child: WarmCard(
+                  padding: const EdgeInsets.symmetric(vertical: NiaTokens.s3, horizontal: NiaTokens.s2),
+                  child: Column(
+                    children: <Widget>[
+                      Icon(items[i].$1, size: 20, color: NiaTokens.homePrimary),
+                      const SizedBox(height: NiaTokens.s2),
+                      Text(items[i].$2, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: NiaTokens.homeInk)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
+      ],
+    );
+  }
+
+  // ── Maintenance ─────────────────────────────────────────────────────────
+  Widget _maintenance(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          WarmSectionTitle('Maintenance', action: 'New request'),
+          WarmCard(
+            padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: Column(
+              children: const <Widget>[
+                WarmListRow(
+                  icon: Icons.build_outlined,
+                  title: 'Water heater not heating',
+                  subtitle: 'Raised 1 Jul',
+                  trailing: WarmStatusPill('In progress', tone: WarmTone.info),
+                ),
+                WarmDivider(),
+                WarmListRow(
+                  icon: Icons.build_outlined,
+                  title: 'Kitchen tap leak',
+                  subtitle: 'Closed 22 Jun',
+                  trailing: WarmStatusPill('Resolved', tone: WarmTone.positive),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  // ── Notices ────────────────────────────────────────────────────────────
+  Widget _notices() => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: const <Widget>[
+          WarmSectionTitle('Notices'),
+          WarmCard(
+            padding: EdgeInsets.symmetric(horizontal: NiaTokens.s4),
+            child: Column(
+              children: <Widget>[
+                WarmListRow(icon: Icons.campaign_outlined, title: 'Water tank cleaning', subtitle: 'Sat 5 Jul, 9am–12pm'),
+                WarmDivider(),
+                WarmListRow(icon: Icons.campaign_outlined, title: 'New curry menu this week', subtitle: 'Updated 1 Jul'),
+              ],
+            ),
+          ),
+        ],
       );
 }
