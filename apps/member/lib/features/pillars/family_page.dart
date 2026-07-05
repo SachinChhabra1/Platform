@@ -1,184 +1,135 @@
+/// Family · the emotional centre — how to take better care of home. Warm NiaBook
+/// design (v0 prototype, migrated 2026-07-05). Deliberately NOT the prototype's
+/// money screen: the locked architecture is explicit that Family is care, not a
+/// remittance/payments screen, and every block answers "how are the people I left
+/// home for?". People come first; money is one way, shown after; the close lands
+/// on purpose, not finance.
+///
+/// The ONE contract-backed fact — money that reached home this month — is wired
+/// LIVE via [RemittanceSource] with loading / empty / error / success states.
+/// Everything else (people, goals, protection) has no backend read-model yet and
+/// is sample.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../theme/nia_tokens.dart';
 import '../../widgets/common.dart';
-import 'nia_components.dart';
-import 'pillar_kit.dart';
+import '../niabook/niabook_scenario.dart' show formatPaise;
+import '../remittance/remittance_source.dart';
+import 'warm_pillar_kit.dart';
 
-/// Family · the emotional centre of the operating system. Not a remittance
-/// screen, not payments, not insurance — care. Every block answers one question:
-/// how are the people I left home for? The promise is "Take better care of home"
-/// (the nav still reads Family). People come first, money second; goals are the
-/// cross-pillar flywheel felt without explanation (Work · Store · Living cover a
-/// school fee); protection reassures rather than sells. The close lands on
-/// purpose, not finance — the only pillar whose flywheel closes emotionally.
-/// Product-locked; built to the approved screen on shared components.
 class FamilyPage extends StatelessWidget {
-  const FamilyPage({super.key});
+  const FamilyPage({super.key, this.remittance = const SampleRemittanceSource()});
+
+  /// The remittance source for the "reached home" fact — live when configured.
+  final RemittanceSource remittance;
 
   @override
   Widget build(BuildContext context) {
-    return NiaReveal(
-      // Family: warm, personal, hopeful — gentle motion, airier rhythm (Q8).
-      duration: const Duration(milliseconds: 460),
-      child: PillarScaffold(
-        pillar: 'Family',
-        promise: 'Take better care of home',
-        promiseSub: 'How are the people you left home for?',
-        blockGap: NiaTokens.s5,
-        body: <PillarBlock>[
-          PillarBlock(PillarSection.reality, _people(context)),
-          PillarBlock(PillarSection.reality, _reachedHome()),
-          PillarBlock(PillarSection.opportunity, _goal()),
-          PillarBlock(PillarSection.supporting, _protection()),
-        ],
-        contribution: const SummaryCard(
-          icon: Icons.favorite,
-          title: 'The people you left home for are doing better',
-          subtitle: 'Your NiaBook remembers every month you showed up',
-        ),
-        coaching: const CoachingLine(
-          fact: '₹5,000 reached home, on time.',
-          next: "Ravi's school fees (₹1,200) are due 15 July.",
-        ),
-      ),
+    return WarmScreen(
+      title: 'Family',
+      subtitle: 'How are the people you left home for?',
+      children: <Widget>[
+        const NiaBookStrip(note: 'Every month you show up for home becomes part of your NiaBook.'),
+        _people(context),
+        _ReachedHome(source: remittance),
+        _goal(),
+        _protection(),
+      ],
     );
   }
 
-  /// The hero: people, not money. The first thing a Member sees is that the ones
-  /// they left home for are well. Warm monograms, each row tappable and labelled.
-  Widget _people(BuildContext context) => InfoCard(
-        padding: const EdgeInsets.symmetric(
-            horizontal: NiaTokens.s4, vertical: NiaTokens.s2),
+  // ── People — the hero (care, not money) ─────────────────────────────────────
+  Widget _people(BuildContext context) => WarmCard(
+        padding: const EdgeInsets.symmetric(horizontal: NiaTokens.s4),
         child: Column(
           children: <Widget>[
             _person(context, 'A', 'Mother', 'Amma', 'Healthy'),
-            niaHairline(),
+            const WarmDivider(),
             _person(context, 'A', 'Father', 'Appa', 'Healthy'),
-            niaHairline(),
+            const WarmDivider(),
             _person(context, 'R', 'Ravi', 'Son · Class 6', 'Fees paid'),
           ],
         ),
       );
 
-  Widget _person(BuildContext context, String initials, String name,
-          String detail, String status) =>
-      Semantics(
+  Widget _person(BuildContext context, String initials, String name, String detail, String status) => Semantics(
         button: true,
         label: '$name, $detail. $status.',
         excludeSemantics: true,
         child: InkWell(
           onTap: () => prototypeNoOp(context, name),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 56),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
-              child: Row(
-                children: <Widget>[
-                  Monogram(initials: initials, size: 40),
-                  const SizedBox(width: NiaTokens.s3),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(name,
-                            style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: NiaTokens.ink)),
-                        Text(detail,
-                            style: const TextStyle(
-                                fontSize: 12, color: NiaTokens.inkSecondary)),
-                      ],
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: NiaTokens.s3),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: NiaTokens.homeSecondary,
+                  child: Text(initials, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
+                ),
+                const SizedBox(width: NiaTokens.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                      Text(detail, style: const TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+                    ],
                   ),
-                  const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
-                  const SizedBox(width: 4),
-                  Text(status,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: NiaTokens.ink)),
-                ],
-              ),
+                ),
+                const Icon(Icons.check_circle, size: 18, color: NiaTokens.homePositive),
+                const SizedBox(width: 4),
+                Text(status, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+              ],
             ),
           ),
         ),
       );
 
-  /// Money — only after people. One calm confirmation: it reached home, on time.
-  Widget _reachedHome() => InfoCard(
-        child: Row(
-          children: <Widget>[
-            niaIconChip(Icons.volunteer_activism, filled: true),
-            const SizedBox(width: NiaTokens.s3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text('₹5,000',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: NiaTokens.ink)),
-                  const Text('reached home this month',
-                      style: TextStyle(
-                          fontSize: 12, color: NiaTokens.inkSecondary)),
-                ],
-              ),
-            ),
-            const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
-            const SizedBox(width: 4),
-            const Text('On time',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: NiaTokens.ink)),
-          ],
-        ),
-      );
-
-  /// Goals — where Family becomes magical. A real goal (a school fee), and the
-  /// ways it is already within reach — each one a different pillar quietly doing
-  /// its job. The cross-pillar flywheel, felt without a diagram.
-  Widget _goal() => InfoCard(
+  // ── Goal — the cross-pillar flywheel, felt without a diagram ────────────────
+  Widget _goal() => WarmCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
-                niaIconChip(Icons.school_outlined),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(color: NiaTokens.homeSecondary, shape: BoxShape.circle),
+                  child: const Icon(Icons.school_outlined, size: 18, color: NiaTokens.homePrimary),
+                ),
                 const SizedBox(width: NiaTokens.s3),
-                Expanded(
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const <Widget>[
-                      Text("Ravi's school fees",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: NiaTokens.ink)),
-                      Text('Due 15 July',
-                          style: TextStyle(
-                              fontSize: 12, color: NiaTokens.inkSecondary)),
+                    children: <Widget>[
+                      Text("Ravi's school fees", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                      Text('Due 15 July', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
                     ],
                   ),
                 ),
-                const Text('₹1,200',
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: NiaTokens.ink)),
+                Text(formatPaise(120000), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
               ],
             ),
             const SizedBox(height: NiaTokens.s3),
-            niaHairline(),
+            const WarmDivider(),
             const SizedBox(height: NiaTokens.s3),
-            foundByRafiqi('Covered by'),
+            Text.rich(
+              TextSpan(
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5, color: NiaTokens.homeMuted),
+                children: const <TextSpan>[
+                  TextSpan(text: 'COVERED BY · '),
+                  TextSpan(text: 'found by RafiQi', style: TextStyle(color: NiaTokens.homePrimary)),
+                ],
+              ),
+            ),
             const SizedBox(height: NiaTokens.s2),
             _cover('Two overtime shifts', 'Work'),
             _cover('A Machine Operator promotion', 'Work'),
-            _cover('Four months of Sukh savings', 'Store'),
+            _cover('Four months of Sukh savings', 'Sukh'),
           ],
         ),
       );
@@ -190,47 +141,149 @@ class FamilyPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: NiaTokens.s2),
           child: Row(
             children: <Widget>[
-              const Icon(Icons.check_circle, size: 18, color: NiaTokens.blue),
+              const Icon(Icons.check_circle, size: 18, color: NiaTokens.homePositive),
               const SizedBox(width: NiaTokens.s3),
-              Expanded(
-                child: Text(title,
-                    style: const TextStyle(fontSize: 13, color: NiaTokens.ink)),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 13, color: NiaTokens.homeInk))),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(color: NiaTokens.homePrimary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(999)),
+                child: Text(tag, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: NiaTokens.homePrimary)),
               ),
-              pillarTag(tag),
             ],
           ),
         ),
       );
 
-  /// Protection — never a product menu. The reassuring answer to one question:
-  /// is my family protected? Yes.
-  Widget _protection() => InfoCard(
+  // ── Protection — reassurance, never a product menu ──────────────────────────
+  Widget _protection() => WarmCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text('Your family is protected',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: NiaTokens.ink)),
+            const Text('Your family is protected', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
             const SizedBox(height: NiaTokens.s4),
             Row(
-              children: <Widget>[
-                Expanded(
-                    child: iconTile(Icons.verified_user_outlined, 'Insurance',
-                        'Active',
-                        statusColor: NiaTokens.blue)),
-                Expanded(
-                    child: iconTile(Icons.medical_services_outlined, 'Medical',
-                        'Covered',
-                        statusColor: NiaTokens.blue)),
-                Expanded(
-                    child: iconTile(Icons.savings_outlined, 'Emergency fund',
-                        'Ready',
-                        statusColor: NiaTokens.blue)),
+              children: const <Widget>[
+                Expanded(child: _ProtTile(Icons.verified_user_outlined, 'Insurance', 'Active')),
+                Expanded(child: _ProtTile(Icons.medical_services_outlined, 'Medical', 'Covered')),
+                Expanded(child: _ProtTile(Icons.savings_outlined, 'Emergency fund', 'Ready')),
               ],
             ),
           ],
         ),
+      );
+}
+
+class _ProtTile extends StatelessWidget {
+  const _ProtTile(this.icon, this.label, this.status);
+  final IconData icon;
+  final String label;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          Icon(icon, size: 20, color: NiaTokens.homePrimary),
+          const SizedBox(height: NiaTokens.s2),
+          Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, color: NiaTokens.homeMuted)),
+          Text(status, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+        ],
+      );
+}
+
+/// The one contract-backed fact — money that reached home this month — wired LIVE
+/// via [RemittanceSource], with the full loading / empty / error / success states.
+class _ReachedHome extends StatefulWidget {
+  const _ReachedHome({required this.source});
+  final RemittanceSource source;
+
+  @override
+  State<_ReachedHome> createState() => _ReachedHomeState();
+}
+
+class _ReachedHomeState extends State<_ReachedHome> {
+  late Future<List<RemittanceView>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = widget.source.list();
+  }
+
+  void _retry() => setState(() => _future = widget.source.list());
+
+  @override
+  Widget build(BuildContext context) {
+    return WarmCard(
+      child: FutureBuilder<List<RemittanceView>>(
+        future: _future,
+        builder: (context, snap) {
+          if (snap.connectionState != ConnectionState.done) return _loading();
+          if (snap.hasError) return _error();
+          final confirmed = (snap.data ?? const <RemittanceView>[]).where((r) => r.isConfirmed).toList();
+          if (confirmed.isEmpty) return _empty();
+          final total = confirmed.fold<int>(0, (sum, r) => sum + r.amount.minor);
+          return _success(total);
+        },
+      ),
+    );
+  }
+
+  Widget _frame(Widget trailing, {required Widget title, required String sub}) => Row(
+        children: <Widget>[
+          Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(color: NiaTokens.homePrimary, shape: BoxShape.circle),
+            child: const Icon(Icons.volunteer_activism, size: 18, color: NiaTokens.homeOnPrimary),
+          ),
+          const SizedBox(width: NiaTokens.s3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[title, Text(sub, style: const TextStyle(fontSize: 12, color: NiaTokens.homeMuted))],
+            ),
+          ),
+          trailing,
+        ],
+      );
+
+  Widget _loading() => _frame(
+        const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: NiaTokens.homePrimary)),
+        title: const Text('Checking money sent home…', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+        sub: 'One moment',
+      );
+
+  Widget _error() => Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const <Widget>[
+                Text("Couldn't check money sent home", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+                Text('Your money is safe — this is only the view.', style: TextStyle(fontSize: 12, color: NiaTokens.homeMuted)),
+              ],
+            ),
+          ),
+          TextButton(onPressed: _retry, child: const Text('Try again', style: TextStyle(color: NiaTokens.homePrimary, fontWeight: FontWeight.w600))),
+        ],
+      );
+
+  Widget _empty() => _frame(
+        const SizedBox.shrink(),
+        title: const Text('No money sent home yet', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+        sub: 'Nothing this month — send when you’re ready',
+      );
+
+  Widget _success(int totalPaise) => _frame(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const <Widget>[
+            Icon(Icons.check_circle, size: 18, color: NiaTokens.homePositive),
+            SizedBox(width: 4),
+            Text('Reached home', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: NiaTokens.homeInk)),
+          ],
+        ),
+        title: Text(formatPaise(totalPaise), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: NiaTokens.homeInk)),
+        sub: 'reached home this month',
       );
 }

@@ -34,7 +34,7 @@ class _MemberShellState extends State<MemberShell> {
         const WorkPage(),
         const LivingPage(),
         const StorePage(),
-        const FamilyPage(),
+        FamilyPage(remittance: widget.config.remittanceSource()),
       ];
 
   static const List<NiaNavItem> _navItems = <NiaNavItem>[

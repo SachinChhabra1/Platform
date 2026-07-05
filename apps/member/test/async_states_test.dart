@@ -4,6 +4,8 @@ import 'package:member/features/auth/phone_sign_in_page.dart';
 import 'package:member/features/auth/session_source.dart';
 import 'package:member/features/family/my_family_page.dart';
 import 'package:member/features/home/home_page.dart';
+import 'package:member/features/pillars/family_page.dart';
+import 'package:member/features/remittance/remittance_source.dart';
 import 'package:member/features/membership/membership_header.dart';
 import 'package:member/features/membership/membership_source.dart';
 import 'package:member/features/profile/profile_page.dart';
@@ -62,6 +64,28 @@ class _OfflineSession implements SessionSource {
   }
 }
 
+/// Family reached-home remittance sources — the one contract-backed fact on the
+/// Family pillar. Cover the live states without a backend.
+class _ThrowingRemittance implements RemittanceSource {
+  @override
+  Future<List<RemittanceView>> list() async => throw StateError('offline');
+  @override
+  Future<RemittanceView> get(String id) => throw UnimplementedError();
+  @override
+  Future<RemittanceView> initiate({required String recipientId, required Money amount, String? settlementId}) =>
+      throw UnimplementedError();
+}
+
+class _EmptyRemittance implements RemittanceSource {
+  @override
+  Future<List<RemittanceView>> list() async => const <RemittanceView>[];
+  @override
+  Future<RemittanceView> get(String id) => throw UnimplementedError();
+  @override
+  Future<RemittanceView> initiate({required String recipientId, required Money amount, String? settlementId}) =>
+      throw UnimplementedError();
+}
+
 void main() {
   testWidgets('Wallet: a failed fetch shows a calm error + Try again, not a spinner',
       (WidgetTester tester) async {
@@ -107,6 +131,38 @@ void main() {
     expect(find.textContaining('reach Nia just now'), findsOneWidget);
     expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Family pillar: reached-home surfaces a calm error + Try again (not a spinner)',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390, 2600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(home: Scaffold(body: SafeArea(child: FamilyPage(remittance: _ThrowingRemittance())))),
+    );
+    await tester.pumpAndSettle();
+
+    // People still render; only the money fact degrades, recoverably.
+    expect(find.text('Mother'), findsOneWidget);
+    expect(find.textContaining("Couldn't check money sent home"), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Try again'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Family pillar: reached-home shows the empty state when nothing was sent',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390, 2600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(home: Scaffold(body: SafeArea(child: FamilyPage(remittance: _EmptyRemittance())))),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('No money sent home yet'), findsOneWidget);
   });
 
   testWidgets('Profile: a failed standing fetch shows the error state, not a silent gap',

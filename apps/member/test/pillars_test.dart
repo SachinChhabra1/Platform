@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:member/features/pillars/family_page.dart';
 import 'package:member/features/pillars/living_page.dart';
-import 'package:member/features/pillars/nia_components.dart';
 import 'package:member/features/pillars/pillar_kit.dart';
 import 'package:member/features/pillars/store_page.dart';
 import 'package:member/features/pillars/work_page.dart';
@@ -103,34 +102,30 @@ void main() {
     expect(find.text('SOS'), findsOneWidget);
   });
 
-  testWidgets('Family · take better care of home', (WidgetTester tester) async {
+  testWidgets('Family · care first (warm NiaBook design), reached-home live',
+      (WidgetTester tester) async {
     await pump(tester, const FamilyPage());
-    // Care, not remittance: the promise and the organising question.
-    expect(find.text('Take better care of home'), findsOneWidget);
-    expect(
-        find.text('How are the people you left home for?'), findsOneWidget);
+    expect(find.text('Family'), findsOneWidget);
+    // Care, not payments: the organising question leads.
+    expect(find.text('How are the people you left home for?'), findsOneWidget);
+    expect(find.text('UPDATES YOUR NIABOOK'), findsOneWidget);
     // People come first — the hero is who, not how much.
     expect(find.text('Mother'), findsOneWidget);
     expect(find.text('Father'), findsOneWidget);
     expect(find.text('Ravi'), findsOneWidget);
-    // Money comes only after people.
+    // Money comes only after people — live from the remittance source (sample).
     expect(find.text('₹5,000'), findsOneWidget);
     expect(find.text('reached home this month'), findsOneWidget);
-    // Goals are the cross-pillar flywheel, felt without a diagram.
+    // Goals are the cross-pillar flywheel, found by RafiQi.
     expect(find.text("Ravi's school fees"), findsOneWidget);
-    expect(find.textContaining('Covered by · found by RafiQi'), findsOneWidget);
+    expect(find.textContaining('found by RafiQi', findRichText: true), findsWidgets);
     expect(find.text('Two overtime shifts'), findsOneWidget);
-    expect(find.text('Four months of Sukh savings'), findsOneWidget);
-    expect(find.text('Work'), findsWidgets); // cross-pillar tags
-    expect(find.text('Store'), findsOneWidget);
     // Protection reassures, never sells.
     expect(find.text('Your family is protected'), findsOneWidget);
     expect(find.text('Emergency fund'), findsOneWidget);
-    // The close lands on purpose, not finance.
-    expect(find.text('The people you left home for are doing better'),
-        findsOneWidget);
-    expect(find.text('This adds to your NiaBook'), findsNothing);
-    expect(find.text('Send more home'), findsNothing);
+    // Deliberately NOT the prototype's money screen (architecture: Family is care).
+    expect(find.text('Ready to allocate'), findsNothing);
+    expect(find.text('SOS'), findsOneWidget);
   });
 
   testWidgets('every pillar offers SOS and points at NiaBook',
@@ -144,19 +139,6 @@ void main() {
       await pump(tester, page);
       expect(find.text('SOS'), findsOneWidget);
       expect(find.textContaining('NiaBook'), findsWidgets);
-    }
-  });
-
-  testWidgets('un-migrated (blue) pillars still carry one Continuity Coaching line (Q9)',
-      (WidgetTester tester) async {
-    // Work, Living and Sukh have migrated to the warm design. Family is the last
-    // blue pillar still using CoachingLine until it migrates.
-    for (final Widget page in <Widget>[
-      const FamilyPage(),
-    ]) {
-      await pump(tester, page);
-      expect(find.byType(CoachingLine), findsOneWidget);
-      expect(find.textContaining('Next:'), findsOneWidget);
     }
   });
 
