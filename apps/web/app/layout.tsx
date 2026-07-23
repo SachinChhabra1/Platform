@@ -6,8 +6,8 @@ const sans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", variable: "--font-instrument-serif" });
 
 export const metadata: Metadata = {
-  title: "Workforce Infrastructure for India's Manufacturing Corridors | Nia",
-  description: "Nia helps manufacturers retain migrant workers through managed living, work continuity, and daily essentials across India's industrial corridors.",
+  title: "Nia — Intelligence for Better Working Lives",
+  description: "Nia is the invisible AI layer coordinating living, essentials, and work so people can save more, earn more, and belong more.",
 };
 
 export const viewport: Viewport = {
