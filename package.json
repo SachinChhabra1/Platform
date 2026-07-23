@@ -8,6 +8,8 @@
     "node": ">=20 <21"
   },
   "scripts": {
+    "dev": "pnpm --filter @nia/web dev",
+    "build:web": "pnpm --filter @nia/web build",
     "lint:gates": "node scripts/lint/run.mjs",
     "lint:gates:selftest": "node scripts/lint/selftest.mjs",
     "test": "pnpm -r --if-present test",
