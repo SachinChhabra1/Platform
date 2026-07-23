@@ -3,6 +3,7 @@
 # are Dart/pub packages and are intentionally NOT pnpm workspace members.
 packages:
   - "apps/console"
+  - "apps/web"
   - "services/*"
   - "packages/tokens"
   - "packages/design-system-web"
