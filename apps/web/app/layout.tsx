@@ -6,12 +6,12 @@ const sans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", variable: "--font-instrument-serif" });
 
 export const metadata: Metadata = {
-  title: "Nia — The ordering platform",
-  description: "The operating system for food ordering, payment continuity, and reconciliation.",
+  title: "Workforce Infrastructure for India's Manufacturing Corridors | Nia",
+  description: "Nia helps manufacturers retain migrant workers through managed living, work continuity, and daily essentials across India's industrial corridors.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f3f0e8",
+  themeColor: "#16130f",
   width: "device-width",
   initialScale: 1,
 };

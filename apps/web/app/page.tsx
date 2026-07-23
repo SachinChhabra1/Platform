@@ -1,63 +1,263 @@
-import { ArrowRight, Asterisk, Check, CornerDownRight } from "lucide-react";
-import { MemberMockup, OpsMockup, OrderingMockup, RailDiagram, WalletMockup } from "@/components/product-mockups";
+import { ArrowRight, Asterisk, Check } from "lucide-react";
+import { CorridorRail, MemberMockup, OpsMockup, WalletMockup } from "@/components/product-mockups";
 import { SiteHeader } from "@/components/site-header";
 
-const controls = [
-  ["01", "Identity", "One member record across employer, operator, kitchen, and payment systems."],
-  ["02", "Ordering", "A single ordering layer across WhatsApp, the member app, and assisted desks."],
-  ["03", "Continuity", "A configurable balance that keeps essential access available through payroll gaps."],
-  ["04", "Settlement", "Every order, credit, and collection resolves into one auditable ledger."],
+const heroStats = [
+  ["7,000+", "Members served across industrial corridors"],
+  ["76", "Studios across 4 corridors"],
+  ["7 in 10", "Still with us at six months"],
+  ["Every rupee", "Earned, kept, sent home"],
 ];
 
-const services = ["Member registry", "Entitlements", "Catalog & pricing", "Order orchestration", "Wallet ledger", "Collections", "Reconciliation", "Operator console"];
+const fertility = [
+  ["Bihar", 3.0, "source"],
+  ["UP", 2.4, "source"],
+  ["Gujarat", 1.9, "hub"],
+  ["TN", 1.8, "hub"],
+  ["Maharashtra", 1.7, "hub"],
+  ["Kerala", 1.8, "hub"],
+  ["Goa", 1.3, "hub"],
+];
+
+const controls = [
+  ["01", "Managed living", "Clean, safe studios near the plant, with everything a member needs to settle in from day one."],
+  ["02", "Work continuity", "Attendance, shift transport, and onboarding managed so production lines stay staffed."],
+  ["03", "Daily essentials", "Meals, savings, remittance, and healthcare that travel with the worker across corridors."],
+  ["04", "Employer truth", "Retention, attendance, and output tracked against cost in one enterprise console."],
+];
+
+const services = [
+  "Member registry",
+  "Managed housing",
+  "Shift transport",
+  "Payroll & remittance",
+  "Wellbeing & healthcare",
+  "Attendance",
+  "RafiQi Central",
+  "Corridor analytics",
+];
+
+const roiRows = [
+  ["Month 0", "Survey & construction", "First quarter's fee paid at signing. No savings counted yet."],
+  ["Month 2", "Operations begin", "Members retain their studio; attendance lifts to ~90%."],
+  ["Month 8", "Full year's fee recovered", "Savings cross the full year's fee of ₹20L."],
+  ["Year 1+", "Full benefit realized", "Facility saves a full year's fee roughly every three months."],
+];
 
 export default function Home() {
   return (
     <main id="top">
       <section className="hero dark-section">
+        <img className="hero-bg" src="/images/industrial-corridor.png" alt="A modern Indian manufacturing corridor at blue hour with managed worker housing" />
+        <div className="hero-overlay" aria-hidden="true" />
         <SiteHeader />
         <div className="hero-grid page-shell">
-          <div className="hero-kicker"><Asterisk aria-hidden="true" /><span>NIA OS / ORDERING INFRASTRUCTURE</span></div>
-          <h1>The operating system for <em>everyday food.</em></h1>
-          <div className="hero-bottom"><p>Nia connects demand, payment, fulfilment, and books—so an order never becomes an operational mystery.</p><a href="#platform">Explore the platform <ArrowRight aria-hidden="true" /></a></div>
+          <div className="hero-kicker">
+            <Asterisk aria-hidden="true" />
+            <span>WORKFORCE INFRASTRUCTURE FOR INDIA&apos;S MANUFACTURING CORRIDORS</span>
+          </div>
+          <h1>Make leaving home <em>worth it.</em></h1>
+          <p className="hero-lede">
+            Nia helps manufacturers retain migrant workers by providing managed living, work continuity, and daily essentials across industrial corridors. Employers get a workforce that stays longer, with retention, attendance, and output tracked against cost.
+          </p>
+          <div className="hero-actions">
+            <a className="btn-primary" href="#enterprise">Keep the production lines running <ArrowRight aria-hidden="true" /></a>
+            <a className="btn-ghost" href="#impact">See our impact</a>
+          </div>
+          <dl className="hero-stats">
+            {heroStats.map(([value, label]) => (
+              <div key={label}><dt>{value}</dt><dd>{label}</dd></div>
+            ))}
+          </dl>
         </div>
-        <div className="hero-marquee" aria-hidden="true"><span>ORDER</span><i>→</i><span>PAY</span><i>→</i><span>FULFIL</span><i>→</i><span>RECONCILE</span></div>
+        <div className="hero-marquee" aria-hidden="true">
+          <span>Same wage, same job, more money home.</span>
+        </div>
       </section>
 
-      <section className="intro paper-section section-pad">
-        <div className="page-shell intro-layout"><div className="eyebrow">WHY NIA</div><div><h2>Food ordering looks simple.<br />The system underneath it isn&apos;t.</h2><p className="lead-copy">For managed communities, the hard part isn&apos;t showing a menu. It&apos;s knowing who can order, what they can spend, who fulfils it, who gets paid, and whether every rupee closes cleanly.</p></div></div>
-        <div className="page-shell metrics"><div><strong>01</strong><span>Member identity</span></div><div><strong>02</strong><span>Transaction continuity</span></div><div><strong>03</strong><span>Operational truth</span></div></div>
+      <section id="impact" className="divide paper-section section-pad">
+        <div className="page-shell">
+          <div className="section-head">
+            <div className="eyebrow">THE DEMOGRAPHIC DIVIDE</div>
+            <h2>Where capital pools, fertility has already fallen below replacement.</h2>
+            <p className="lead-copy">
+              A high concentration of young workers sits in states with below-replacement fertility, creating a structural labour&ndash;capital mismatch. Investment flows to regions with declining populations while young workers concentrate where jobs are scarce.
+            </p>
+          </div>
+          <figure className="fertility-chart">
+            <figcaption>
+              <span>TOTAL FERTILITY RATE · NFHS-5</span>
+              <span className="replacement-note">Replacement, 2.1</span>
+            </figcaption>
+            <div className="bars">
+              {fertility.map(([state, rate, kind]) => (
+                <div className="bar-col" key={state as string}>
+                  <span className="bar-value">{(rate as number).toFixed(1)}</span>
+                  <div className={`bar bar-${kind}`} style={{ height: `${(rate as number) / 3 * 100}%` }} />
+                  <span className="bar-label">{state as string}</span>
+                </div>
+              ))}
+              <div className="replacement-line" style={{ bottom: `${2.1 / 3 * 100}%` }} aria-hidden="true" />
+            </div>
+            <div className="chart-legend">
+              <span><i className="dot-source" /> Labour source · youth bulge</span>
+              <span><i className="dot-hub" /> Capital hub · below replacement</span>
+            </div>
+          </figure>
+          <p className="source-note">Source: NFHS-5 (National Family Health Survey); Sample Registration System (SRS).</p>
+        </div>
       </section>
 
-      <section id="platform" className="rail-section orange-section section-pad">
-        <div className="page-shell"><div className="section-head"><div className="eyebrow">THE ORDERING RAIL</div><h2>One continuous line from appetite to accounting.</h2></div><RailDiagram /><p className="rail-copy">Nia doesn&apos;t sit beside operations. It becomes the connective tissue between the person placing an order and the team closing the books.</p></div>
+      <section className="retention orange-section section-pad">
+        <div className="page-shell retention-grid">
+          <div>
+            <div className="eyebrow">THE PROBLEM WE SOLVE FIRST</div>
+            <h2>The hardest retention problem is migrant women beyond six months.</h2>
+          </div>
+          <div className="retention-points">
+            <p>Nia manages the living infrastructure that determines whether migrant women remain on the factory floor. Manufacturers see the return through retention, attendance, and output.</p>
+            <ul>
+              <li><Check aria-hidden="true" /> Co-funded model: you invest, we partner</li>
+              <li><Check aria-hidden="true" /> Commercial deployment tied to retention targets</li>
+              <li><Check aria-hidden="true" /> Retention, attendance, and output tracked against cost</li>
+              <li><Check aria-hidden="true" /> One operating partner across living, work, and essentials</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <section className="showcase dark-section section-pad">
-        <div className="page-shell"><div className="section-head split"><div><div className="eyebrow">THE MEMBER EXPERIENCE</div><h2>One place to eat, pay, and stay covered.</h2></div><p>A calm consumer surface, backed by rigorous transaction infrastructure. Designed for daily use, not financial complexity.</p></div><div className="phones-stage"><div className="phone-shot left"><MemberMockup /></div><div className="phone-shot right"><WalletMockup /></div><div className="shot-label label-a"><span>01</span> Member home</div><div className="shot-label label-b"><span>02</span> Nia Wallet</div></div></div>
+      <section id="enterprise" className="rail-section dark-section section-pad">
+        <div className="page-shell">
+          <div className="section-head">
+            <div className="eyebrow">THE MEMBER JOURNEY</div>
+            <h2>One continuous system from recruitment to a life worth staying for.</h2>
+          </div>
+          <CorridorRail />
+          <p className="rail-copy">
+            Managed living is the entry point, not the business. Once a worker lives with us, work, meals, savings, and remittance travel with them at no new acquisition cost. Continuity is what compounds.
+          </p>
+        </div>
       </section>
 
-      <section className="channels paper-section section-pad">
-        <div className="page-shell"><div className="section-head split"><div><div className="eyebrow">MEET PEOPLE WHERE THEY ARE</div><h2>The interface can change. The rail stays the same.</h2></div><p>Orders from WhatsApp, the app, or an assisted counter enter the same system of record.</p></div><div className="channel-grid"><div className="channel-copy"><span>WHATSAPP ORDERING</span><h3>No new behavior required.</h3><p>Browse today&apos;s menu, confirm delivery, and pay from the wallet in the conversation members already know.</p><ul><li><Check /> Structured menus</li><li><Check /> Identity-linked orders</li><li><Check /> Instant confirmation</li></ul></div><OrderingMockup /></div></div>
+      <section id="workers" className="showcase paper-section section-pad">
+        <div className="page-shell">
+          <div className="section-head split">
+            <div>
+              <div className="eyebrow">THE MEMBER EXPERIENCE · RAFIQI</div>
+              <h2>One app for work, home, and the money that goes back.</h2>
+            </div>
+            <p>A calm, multilingual surface members actually use every day &mdash; shift transport, studio life, earnings, and wellbeing in one place.</p>
+          </div>
+          <div className="phones-stage">
+            <div className="phone-shot left"><MemberMockup /></div>
+            <div className="phone-shot right"><WalletMockup /></div>
+          </div>
+        </div>
       </section>
 
-      <section className="control-section dark-section section-pad">
-        <div className="page-shell"><div className="section-head"><div className="eyebrow">CONTROL POINTS</div><h2>Infrastructure that answers the questions operations actually ask.</h2></div><div className="control-list">{controls.map(([n,t,d]) => <article key={n}><span>{n}</span><h3>{t}</h3><p>{d}</p><CornerDownRight aria-hidden="true" /></article>)}</div></div>
+      <section className="control-section paper-section section-pad">
+        <div className="page-shell">
+          <div className="section-head">
+            <div className="eyebrow">WHAT NIA OPERATES</div>
+            <h2>The full stack of living, work, and daily essentials.</h2>
+          </div>
+          <div className="control-list">
+            {controls.map(([n, t, d]) => (
+              <article key={n}>
+                <span>{n}</span>
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="ops-section paper-section section-pad">
-        <div className="page-shell"><div className="section-head split"><div><div className="eyebrow">OPERATIONAL TRUTH</div><h2>See what happened. Know what closes.</h2></div><p>Live order state, payment movement, and settlement exceptions—without stitching together five exports.</p></div><OpsMockup /></div>
+      <section id="platform" className="ops-section dark-section section-pad">
+        <div className="page-shell">
+          <div className="section-head split">
+            <div>
+              <div className="eyebrow">RAFIQI CENTRAL</div>
+              <h2>See who stays. Know what it returns.</h2>
+            </div>
+            <p>Live retention, attendance, and cost across every corridor &mdash; the enterprise view manufacturers use to run the workforce.</p>
+          </div>
+          <OpsMockup />
+        </div>
       </section>
 
-      <section id="books" className="books orange-section section-pad">
-        <div className="page-shell books-grid"><div><div className="eyebrow">NIA BOOKS</div><h2>The ledger isn&apos;t the end of the workflow. It&apos;s the foundation.</h2></div><div className="books-card"><div className="books-mark">N/B</div><p>Every order creates balanced entries across member value, operator receivables, kitchen payables, and settlement.</p><div className="journal"><div><span>Member meals</span><b>DR ₹90</b></div><div><span>Kitchen payable</span><b>CR ₹90</b></div><div className="journal-total"><span>Batch #284</span><b>BALANCED</b></div></div></div></div>
+      <section id="roi" className="roi paper-section section-pad">
+        <div className="page-shell">
+          <div className="section-head">
+            <div className="eyebrow">THE ROI MODEL</div>
+            <h2>Nia Shift costs ₹20 lakh a year for 1,000 migrant women workers.</h2>
+            <p className="lead-copy">Replacing the women who leave costs more. Here is how the model pays back.</p>
+          </div>
+          <div className="roi-metrics">
+            <div><b>275%</b><span>Return over time</span></div>
+            <div><b>Month 8</b><span>Payback period</span></div>
+            <div><b>1 day</b><span>Fee per worker per month</span></div>
+            <div><b>5%</b><span>Of factory cost, or lower</span></div>
+          </div>
+          <ol className="roi-timeline">
+            {roiRows.map(([when, title, note]) => (
+              <li key={when}><span className="roi-when">{when}</span><div><b>{title}</b><p>{note}</p></div></li>
+            ))}
+          </ol>
+        </div>
       </section>
 
-      <section className="architecture paper-section section-pad"><div className="page-shell"><div className="section-head"><div className="eyebrow">PLATFORM SERVICES</div><h2>Composable services.<br />One operating model.</h2></div><div className="services-grid">{services.map((service, index) => <div key={service}><span>{String(index + 1).padStart(2, '0')}</span><b>{service}</b><ArrowRight aria-hidden="true" /></div>)}</div></div></section>
+      <section className="architecture orange-section section-pad">
+        <div className="page-shell">
+          <div className="section-head">
+            <div className="eyebrow">THE PLATFORM</div>
+            <h2>Composable services. One operating model.</h2>
+          </div>
+          <div className="services-grid">
+            {services.map((service, index) => (
+              <div key={service}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <b>{service}</b>
+                <ArrowRight aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <section id="thesis" className="thesis dark-section section-pad"><div className="page-shell thesis-grid"><div className="eyebrow">OUR THESIS</div><blockquote>“The next category-defining food platform won&apos;t win by adding another marketplace. It will win by making the fragmented system underneath everyday access finally behave as one.”</blockquote><div className="thesis-note"><span>NIA / 2026</span><p>We build the infrastructure layer for institutions responsible for people&apos;s daily essentials.</p></div></div></section>
+      <section id="thesis" className="thesis dark-section section-pad">
+        <div className="page-shell thesis-grid">
+          <div className="eyebrow">THE PLATFORM THESIS</div>
+          <blockquote>
+            &ldquo;Managed living is the entry point, not the business. Once a worker lives with us, work, meals, savings, and remittance travel with them at no new acquisition cost. Living acquires the member. Continuity is what compounds.&rdquo;
+          </blockquote>
+          <div className="thesis-note">
+            <span>NIA / 2026</span>
+            <p>We build the workforce infrastructure layer for the institutions responsible for India&apos;s manufacturing corridors.</p>
+          </div>
+        </div>
+      </section>
 
-      <footer className="footer paper-section"><div className="page-shell footer-top"><h2>Build the next food system on Nia.</h2><a href="mailto:hello@nia.one">Start a conversation <ArrowRight /></a></div><div className="page-shell footer-mid"><div className="footer-wordmark">nia<span>.</span></div><div><b>Explore</b><a href="#platform">Platform</a><a href="#books">Nia Books</a><a href="#thesis">Our thesis</a></div><div><b>Connect</b><a href="mailto:hello@nia.one">hello@nia.one</a><a href="#top">LinkedIn ↗</a></div></div><div className="page-shell footer-bottom"><span>© 2026 Nia Technologies</span><span>Bengaluru, India</span><a href="#top">Back to top ↑</a></div></footer>
+      <footer id="contact" className="footer dark-section">
+        <div className="page-shell footer-top">
+          <h2>Infrastructure that makes leaving home <em>worth it.</em></h2>
+          <div className="footer-cta">
+            <a className="btn-primary" href="mailto:hello@nia.one">Talk to us <ArrowRight aria-hidden="true" /></a>
+            <a className="btn-ghost" href="mailto:hello@nia.one">Join on WhatsApp</a>
+          </div>
+        </div>
+        <div className="page-shell footer-mid">
+          <div className="footer-wordmark">Nia</div>
+          <div><b>Company</b><a href="#impact">Why Nia</a><a href="#platform">Platform</a><a href="#roi">ROI Model</a></div>
+          <div><b>For</b><a href="#workers">Workers</a><a href="#enterprise">Enterprise</a><a href="#platform">RafiQi Central</a></div>
+          <div><b>Connect</b><a href="mailto:hello@nia.one">hello@nia.one</a><a href="#top">LinkedIn ↗</a></div>
+        </div>
+        <div className="page-shell footer-bottom">
+          <span>© 2026 Nia Technologies</span>
+          <span>Chennai, India</span>
+          <a href="#top">Back to top ↑</a>
+        </div>
+      </footer>
     </main>
   );
 }
