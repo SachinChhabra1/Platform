@@ -7,7 +7,6 @@ import {
   ChevronRight,
   HeartPulse,
   IndianRupee,
-  MapPin,
   Search,
   ShieldCheck,
   Users,
@@ -121,12 +120,12 @@ export function OpsMockup() {
 
 export function CorridorRail() {
   const steps = [
-    ["Recruit", MapPin], ["Move", Bus], ["Live", BedDouble], ["Work", BriefcaseBusiness], ["Thrive", HeartPulse],
+    ["Living", BedDouble], ["Essentials", IndianRupee], ["Work", BriefcaseBusiness],
   ];
   return (
-    <div className="corridor-rail" aria-label="Nia member journey">
+    <div className="corridor-rail" aria-label="Nia member journey: living, essentials, then work">
       {steps.map(([step, Icon], index) => {
-        const StepIcon = Icon as typeof MapPin;
+        const StepIcon = Icon as typeof BedDouble;
         return <div className="rail-step" key={step as string}><span>0{index + 1}</span><StepIcon /><b>{step as string}</b>{index < steps.length - 1 && <ChevronRight aria-hidden="true" />}</div>;
       })}
     </div>

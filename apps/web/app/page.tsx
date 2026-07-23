@@ -21,8 +21,8 @@ const fertility = [
 
 const controls = [
   ["01", "Managed living", "Clean, safe studios near the plant, with everything a member needs to settle in from day one."],
-  ["02", "Work continuity", "Attendance, shift transport, and onboarding managed so production lines stay staffed."],
-  ["03", "Daily essentials", "Meals, savings, remittance, and healthcare that travel with the worker across corridors."],
+  ["02", "Daily essentials", "Meals, savings, remittance, and healthcare that travel with the worker across corridors."],
+  ["03", "Work continuity", "Attendance, shift transport, and onboarding managed so production lines stay staffed."],
   ["04", "Employer truth", "Retention, attendance, and output tracked against cost in one enterprise console."],
 ];
 
@@ -130,11 +130,11 @@ export default function Home() {
         <div className="page-shell">
           <div className="section-head">
             <div className="eyebrow">THE MEMBER JOURNEY</div>
-            <h2>One continuous system from recruitment to a life worth staying for.</h2>
+            <h2>We start with living. Essentials and work follow.</h2>
           </div>
           <CorridorRail />
           <p className="rail-copy">
-            Managed living is the entry point, not the business. Once a worker lives with us, work, meals, savings, and remittance travel with them at no new acquisition cost. Continuity is what compounds.
+            Managed living is the entry point. Once a member lives with us, daily essentials come next, followed by continuity at work. Each layer makes leaving home more worthwhile.
           </p>
         </div>
       </section>
