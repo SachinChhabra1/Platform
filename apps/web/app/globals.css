@@ -39,9 +39,10 @@ em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 .site-header { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.5rem; max-width: 78rem; margin-inline: auto; }
 .brand { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; }
 .brand-mark { display: grid; place-items: center; width: 1.85rem; height: 1.85rem; border-radius: 50%; background: var(--color-accent); color: var(--color-ink); font-family: var(--font-serif); font-size: 1.2rem; font-style: italic; }
-.desktop-nav { display: none; gap: 2rem; font-size: 0.9rem; color: var(--color-ivory-dim); }
-.desktop-nav a { transition: color 0.2s; }
-.desktop-nav a:hover { color: var(--color-foreground); }
+  .desktop-nav { display: none; align-items: center; gap: 2rem; font-size: 0.9rem; color: var(--color-ivory-dim); }
+  .desktop-nav a { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; transition: color 0.2s; }
+  .desktop-nav a:hover { color: var(--color-foreground); }
+  .desktop-nav a svg { width: 0.85rem; height: 0.85rem; }
 .header-cta { display: none; align-items: center; gap: 0.4rem; font-size: 0.85rem; padding: 0.6rem 1.1rem; border: 1px solid var(--color-line-strong); border-radius: 999px; transition: 0.2s; }
 .header-cta:hover { background: var(--color-foreground); color: var(--color-ink); }
 .header-cta svg { width: 0.95rem; height: 0.95rem; }
