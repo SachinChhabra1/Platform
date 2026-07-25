@@ -5,12 +5,12 @@ import { useState } from "react";
 import { BrandLogo } from "./brand-logo";
 
 const links = [
+  ["Order", "/order"],
   ["Record", "/#record"],
   ["How it works", "/#journey"],
   ["System", "/#system"],
   ["Outcomes", "/#outcomes"],
   ["Evidence", "/#evidence"],
-  ["Order", "/order"],
 ];
 
 const SELLER_FORM_URL = "https://nia.one/sell";

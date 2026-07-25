@@ -13,8 +13,10 @@ export function BrandLogo({ className = "", product }: BrandLogoProps) {
           alt=""
         />
       </span>
-      <span className="brand-name">Nia</span>
-      {product ? <span className="brand-product">{product}</span> : null}
+      <span className="brand-wording">
+        <span className="brand-name">Nia</span>
+        {product ? <span className="brand-product">{product}</span> : null}
+      </span>
     </span>
   );
 }

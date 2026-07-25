@@ -39,12 +39,12 @@ em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 /* ---------- Header ---------- */
 .site-header { position: relative; z-index: 10; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem; width: 100%; min-height: 5rem; padding-inline: clamp(1.5rem, 3vw, 3rem); border-bottom: 1px solid var(--color-line); }
 .brand { display: inline-flex; align-items: center; }
-.brand-lockup { display: inline-flex; align-items: center; gap: 0.65rem; line-height: 1; }
+.brand-lockup { display: inline-flex; align-items: center; gap: 0.55rem; line-height: 1; }
 .brand-logo-mark {
   display: grid;
   place-items: center;
-  width: 2.7rem;
-  height: 2.7rem;
+  width: 2.45rem;
+  height: 2.45rem;
   overflow: hidden;
   border-radius: 50%;
   background: var(--color-saffron);
@@ -56,20 +56,26 @@ em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
   filter: grayscale(1) contrast(2);
   mix-blend-mode: multiply;
 }
+.brand-wording {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.16rem;
+}
 .brand-name {
   font-family: var(--font-serif);
-  font-size: 2rem;
+  font-size: 1.85rem;
   font-weight: 400;
   letter-spacing: -0.035em;
+  line-height: 0.82;
 }
 .brand-product {
-  padding-left: 0.7rem;
-  border-left: 1px solid var(--color-line-strong);
   color: var(--color-ivory-dim);
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: 0.52rem;
   font-weight: 600;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.18em;
+  line-height: 1;
   text-transform: uppercase;
 }
 .desktop-nav { display: none; align-items: center; justify-content: center; gap: 1.75rem; font-size: 0.84rem; color: var(--color-ivory-dim); }
@@ -582,8 +588,8 @@ footer { padding-block: 3.5rem 2rem; border-top: 1px solid var(--color-line); }
 }
 @media (min-width: 1120px) {
   .site-header { min-height: 5.75rem; }
-  .brand-logo-mark { width: 3rem; height: 3rem; }
-  .brand-name { font-size: 2.2rem; }
+  .brand-logo-mark { width: 2.65rem; height: 2.65rem; }
+  .brand-name { font-size: 1.95rem; }
   .record-grid {
     grid-template-columns: minmax(0, 1.55fr) minmax(17rem, 0.62fr) minmax(18rem, 0.72fr);
     align-items: stretch;
@@ -613,9 +619,9 @@ footer { padding-block: 3.5rem 2rem; border-top: 1px solid var(--color-line); }
 }
 @media (max-width: 719px) {
   .site-header { grid-template-columns: 1fr auto; }
-  .brand-logo-mark { width: 2.35rem; height: 2.35rem; }
-  .brand-name { font-size: 1.7rem; }
-  .brand-product { font-size: 0.55rem; padding-left: 0.55rem; }
+  .brand-logo-mark { width: 2.25rem; height: 2.25rem; }
+  .brand-name { font-size: 1.65rem; }
+  .brand-product { font-size: 0.48rem; }
   .journey-destination { grid-template-columns: 1fr auto; }
   .journey-destination p { grid-column: 1 / -1; grid-row: 2; }
   .area-rail > div { width: max-content; }
