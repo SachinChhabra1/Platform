@@ -3,7 +3,7 @@
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 
-const links = [["System", "#system"], ["Outcomes", "#outcomes"], ["Evidence", "#evidence"], ["About", "#about"]];
+const links = [["System", "#system"], ["Outcomes", "#outcomes"], ["Evidence", "#evidence"], ["About", "#about"], ["Order", "/order"]];
 
 const SELLER_FORM_URL = "https://nia.one/sell";
 
