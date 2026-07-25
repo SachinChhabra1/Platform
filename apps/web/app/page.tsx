@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUpRight, Building2, Landmark, TrendingUp, Users } from "lucide-react";
 import { IntelligenceSystem, OutcomeConsole, TrustStrip } from "../components/product-mockups";
+import { NiaBooksRecord } from "../components/niabooks-record";
 import { SiteHeader } from "../components/site-header";
 
 const outcomes = [
@@ -16,7 +17,9 @@ const audiences = [
 export default function HomePage() {
   return (
     <main id="top">
-      <section className="hero-shell"><SiteHeader /><div className="hero-grid"><div className="hero-copy"><div className="kicker"><i /> AI infrastructure for working lives</div><h1>The intelligence behind a <em>better life.</em></h1><p>Nia works quietly in the background—coordinating living, essentials, and work—so people can save more, earn more, and belong more.</p><div className="hero-actions"><a className="primary-button" href="#system">See the system <ArrowDown /></a><a className="text-link" href="mailto:hello@nia.one">Partner with Nia <ArrowUpRight /></a></div></div><IntelligenceSystem /></div><div className="hero-foot"><span>One intelligence layer</span><b>Living</b><i /><b>Essentials</b><i /><b>Work</b><span className="hero-index">NIA / 2026</span></div></section>
+      <section className="hero-shell"><SiteHeader /><div className="hero-grid"><div className="hero-copy"><div className="kicker"><i /> NiaBooks · The Member record</div><h1>What a Member earns. Keeps. Saves. <em>Sends home.</em></h1><p>NiaBooks keeps membership, work, living, essentials and every transaction connected in one continuous record the Member can see and carry.</p><div className="hero-actions"><a className="primary-button" href="#record">See the Member record <ArrowDown /></a><a className="text-link" href="https://www.nia.one/">See the Nia ecosystem <ArrowUpRight /></a></div></div><IntelligenceSystem /></div><div className="hero-foot"><span>One continuous record</span><b>Earned</b><i /><b>Kept</b><i /><b>Saved</b><i /><b>Sent home</b><span className="hero-index">NIABOOKS / 2026</span></div></section>
+
+      <NiaBooksRecord />
 
       <section className="statement-section page-width" id="system"><div className="section-index">[ 01 — THE SYSTEM ]</div><h2>Complexity stays in the backend. <span>Life gets simpler at the front.</span></h2><div className="statement-grid"><p>Today, every part of a worker&apos;s life is managed separately. Housing does not understand shifts. Transport does not understand earnings. Employers cannot see the whole journey.</p><p>Nia connects those signals, reasons across them, and coordinates the next best action—before a small problem becomes a missed shift, lost income, or an early exit.</p></div><OutcomeConsole /><TrustStrip /></section>
 
