@@ -1,6 +1,8 @@
-import { ArrowDown, ArrowUpRight, Building2, Landmark, TrendingUp, Users } from "lucide-react";
+import { ArrowUpRight, Building2, Landmark, TrendingUp, Users } from "lucide-react";
 import { IntelligenceSystem, OutcomeConsole, TrustStrip } from "../components/product-mockups";
 import { NiaBooksRecord } from "../components/niabooks-record";
+import { PlatformJourney } from "../components/platform-journey";
+import { SiteFooter } from "../components/site-footer";
 import { SiteHeader } from "../components/site-header";
 
 const outcomes = [
@@ -17,8 +19,27 @@ const audiences = [
 export default function HomePage() {
   return (
     <main id="top">
-      <section className="hero-shell"><SiteHeader /><div className="hero-grid"><div className="hero-copy"><div className="kicker"><i /> NiaBooks · The Member record</div><h1>What a Member earns. Keeps. Saves. <em>Sends home.</em></h1><p>NiaBooks keeps membership, work, living, essentials and every transaction connected in one continuous record the Member can see and carry.</p><div className="hero-actions"><a className="primary-button" href="#record">See the Member record <ArrowDown /></a><a className="text-link" href="https://www.nia.one/">See the Nia ecosystem <ArrowUpRight /></a></div></div><IntelligenceSystem /></div><div className="hero-foot"><span>One continuous record</span><b>Earned</b><i /><b>Kept</b><i /><b>Saved</b><i /><b>Sent home</b><span className="hero-index">NIABOOKS / 2026</span></div></section>
+      <section className="hero-shell">
+        <SiteHeader />
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <h1>One record for every part of a Member&apos;s <em>working life.</em></h1>
+            <p>Membership, work, living, essentials and money feed NiaBooks. The Member sees what was earned, kept, saved and sent home.</p>
+            <div className="hero-actions">
+              <a className="primary-button" href="/niabooks">Explore NiaBooks <ArrowUpRight /></a>
+              <a className="text-link" href="/membership">Start with Membership <ArrowUpRight /></a>
+            </div>
+          </div>
+          <IntelligenceSystem />
+        </div>
+        <div className="hero-foot">
+          <span>Follow the record</span>
+          <b>Membership</b><i /><b>Work</b><i /><b>Living</b><i /><b>Essentials</b><i /><b>Wallet</b>
+          <span className="hero-index">NIABOOKS / 2026</span>
+        </div>
+      </section>
 
+      <PlatformJourney />
       <NiaBooksRecord />
 
       <section className="statement-section page-width" id="system"><div className="section-index">[ 01 — THE SYSTEM ]</div><h2>Complexity stays in the backend. <span>Life gets simpler at the front.</span></h2><div className="statement-grid"><p>Today, every part of a worker&apos;s life is managed separately. Housing does not understand shifts. Transport does not understand earnings. Employers cannot see the whole journey.</p><p>Nia connects those signals, reasons across them, and coordinates the next best action—before a small problem becomes a missed shift, lost income, or an early exit.</p></div><OutcomeConsole /><TrustStrip /></section>
@@ -29,7 +50,7 @@ export default function HomePage() {
 
       <section className="belief-section" id="about"><div className="page-width belief-grid"><div className="section-index light">[ 04 — OUR BELIEF ]</div><blockquote>AI should not make life feel more technical. It should make life feel <em>more possible.</em></blockquote><div className="belief-note"><Users /><p>We are building the intelligence infrastructure for people who move to make modern India possible.</p></div></div></section>
 
-      <footer><div className="page-width footer-grid"><div><a className="brand footer-brand" href="#top"><span className="brand-mark">n</span><span>nia</span></a><p>Intelligence for better working lives.</p></div><div><small>CONNECT</small><a href="mailto:hello@nia.one">hello@nia.one</a><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></div><div><small>EXPLORE</small><a href="#system">System</a><a href="#outcomes">Outcomes</a><a href="#evidence">Evidence</a></div></div><div className="page-width footer-bottom"><span>© 2026 Nia</span><span>Designed for dignity. Built for scale.</span></div></footer>
+      <SiteFooter />
     </main>
   );
 }

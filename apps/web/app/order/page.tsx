@@ -211,7 +211,7 @@ export default function OrderPage() {
     <main className={styles.store}>
       <header className={styles.header}>
         <Link className={styles.brand} href="/" aria-label="NiaSave home">
-          <BrandLogo />
+          <BrandLogo product="Essentials" />
         </Link>
         <div className={styles.location}>
           <MapPin aria-hidden="true" />
@@ -404,7 +404,7 @@ export default function OrderPage() {
       </div>
 
       <footer className={styles.footer}>
-        <BrandLogo />
+        <BrandLogo product="Essentials" />
         <p>Certified essentials that cost less, reveal their source and write back to the Member&apos;s NiaBooks record.</p>
         <div>
           <Link href="/">NiaBooks</Link>
