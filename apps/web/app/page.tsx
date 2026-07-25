@@ -1,4 +1,4 @@
-import { ArrowUpRight, Building2, Landmark, TrendingUp, Users } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Building2, Landmark, TrendingUp, Users } from "lucide-react";
 import { IntelligenceSystem, OutcomeConsole, TrustStrip } from "../components/product-mockups";
 import { NiaBooksRecord } from "../components/niabooks-record";
 import { PlatformJourney } from "../components/platform-journey";
@@ -23,24 +23,25 @@ export default function HomePage() {
         <SiteHeader />
         <div className="hero-grid">
           <div className="hero-copy">
-            <h1>One record for every part of a Member&apos;s <em>working life.</em></h1>
-            <p>Membership, work, living, essentials and money feed NiaBooks. The Member sees what was earned, kept, saved and sent home.</p>
+            <div className="kicker"><i /> NiaBooks · The Member record</div>
+            <h1>What a Member earns. Keeps. Saves. <em>Sends home.</em></h1>
+            <p>NiaBooks keeps membership, work, living, essentials and every transaction connected in one continuous record the Member can see and carry.</p>
             <div className="hero-actions">
-              <a className="primary-button" href="/niabooks">Explore NiaBooks <ArrowUpRight /></a>
-              <a className="text-link" href="/membership">Start with Membership <ArrowUpRight /></a>
+              <a className="primary-button" href="#record">See the Member record <ArrowDown /></a>
+              <a className="text-link" href="https://www.nia.one/">See the Nia ecosystem <ArrowUpRight /></a>
             </div>
           </div>
           <IntelligenceSystem />
         </div>
         <div className="hero-foot">
-          <span>Follow the record</span>
-          <b>Membership</b><i /><b>Work</b><i /><b>Living</b><i /><b>Essentials</b><i /><b>Wallet</b>
+          <span>One continuous record</span>
+          <b>Earned</b><i /><b>Kept</b><i /><b>Saved</b><i /><b>Sent home</b>
           <span className="hero-index">NIABOOKS / 2026</span>
         </div>
       </section>
 
-      <PlatformJourney />
       <NiaBooksRecord />
+      <PlatformJourney />
 
       <section className="statement-section page-width" id="system"><div className="section-index">[ 01 — THE SYSTEM ]</div><h2>Complexity stays in the backend. <span>Life gets simpler at the front.</span></h2><div className="statement-grid"><p>Today, every part of a worker&apos;s life is managed separately. Housing does not understand shifts. Transport does not understand earnings. Employers cannot see the whole journey.</p><p>Nia connects those signals, reasons across them, and coordinates the next best action—before a small problem becomes a missed shift, lost income, or an early exit.</p></div><OutcomeConsole /><TrustStrip /></section>
 

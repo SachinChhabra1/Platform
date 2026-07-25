@@ -5,9 +5,11 @@ import { useState } from "react";
 import { BrandLogo } from "./brand-logo";
 
 const links = [
-  ["NiaBooks", "/niabooks"],
+  ["Record", "/#record"],
   ["How it works", "/#journey"],
-  ["Essentials", "/essentials"],
+  ["System", "/#system"],
+  ["Outcomes", "/#outcomes"],
+  ["Evidence", "/#evidence"],
   ["Order", "/order"],
 ];
 
