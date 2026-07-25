@@ -584,9 +584,27 @@ footer { padding-block: 3.5rem 2rem; border-top: 1px solid var(--color-line); }
   .site-header { min-height: 5.75rem; }
   .brand-logo-mark { width: 3rem; height: 3rem; }
   .brand-name { font-size: 2.2rem; }
-  .record-grid { grid-template-columns: minmax(0, 1.55fr) minmax(17rem, 0.62fr) minmax(18rem, 0.72fr); gap: clamp(1.75rem, 2.6vw, 2.75rem); }
+  .record-grid {
+    grid-template-columns: minmax(0, 1.55fr) minmax(17rem, 0.62fr) minmax(18rem, 0.72fr);
+    align-items: stretch;
+    gap: clamp(1.75rem, 2.6vw, 2.75rem);
+  }
   .record-core { min-height: 45rem; }
   .record-core-inner { min-height: 43.6rem; }
+  .record-outputs {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+  .record-outputs ul {
+    display: grid;
+    flex: 1;
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
+  .record-outputs li {
+    min-height: 0;
+    height: 100%;
+  }
 }
 @media (max-width: 1119px) {
   .record-grid { grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.75fr); }
